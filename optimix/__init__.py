@@ -1,11 +1,4 @@
-from .learnable import Learnable
-from .learnable import LearnableReduce
-from .func import FuncData
-from .func import FuncDataWrapper
-from .func import FuncDataReduce
-from .func import FuncDataReduceWrapper
-from .variables import Variables
-from .variables import merge_variables
+from .function import Function
 from .types import Scalar
 from .types import Vector
 from .types import Matrix
@@ -14,3 +7,26 @@ from .optimize import minimize_scalar
 from .optimize import maximize_scalar
 from .optimize import minimize
 from .optimize import maximize
+
+from pkg_resources import get_distribution as _get_distribution
+from pkg_resources import DistributionNotFound as _DistributionNotFound
+
+try:
+    __version__ = _get_distribution('optimix').version
+except _DistributionNotFound:
+    __version__ = 'unknown'
+
+
+def test():
+    import os
+    p = __import__('optimix').__path__[0]
+    src_path = os.path.abspath(p)
+    old_path = os.getcwd()
+    os.chdir(src_path)
+
+    try:
+        return_code = __import__('pytest').main([])
+    finally:
+        os.chdir(old_path)
+
+    return return_code

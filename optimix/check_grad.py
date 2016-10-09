@@ -13,7 +13,7 @@ from scipy.optimize import check_grad as _check_grad
 _step = sqrt(finfo(float).eps)
 
 
-def approx_fprime(xk, f, step):
+def approx_fprime(xk, f, step=_step):
     f0 = f(xk)
     grad = [zeros_like(asarray(f0).ravel()) for i in range(len(xk))]
     d = zeros(len(grad))

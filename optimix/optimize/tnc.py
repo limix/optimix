@@ -3,6 +3,7 @@ import numpy as np
 from scipy.optimize import fmin_tnc
 
 from ..negative import negative_function
+from ..function import FunctionDataFeed
 
 
 def _do_flatten(x):
@@ -11,19 +12,25 @@ def _do_flatten(x):
     return np.concatenate(x)
 
 
-def minimize(function):
+def minimize(function, purpose='learn'):
+
+    f = FunctionDataFeed(function, function._data[purpose])
+
+    # def data(self, *args, **kwargs):
+    #     fs = [f.data(*args, **kwargs) for f in self.__functions]
+    #     return FunctionReduceDataFeed(self, fs)
 
     def func(x):
         x = np.asarray(x).ravel()
-        function.variables().from_flat(x)
-        return function.value()
+        f.variables().from_flat(x)
+        return f.value()
 
     def grad(x):
         x = np.asarray(x).ravel()
-        function.variables().from_flat(x)
-        return _do_flatten(function.gradient())
+        f.variables().from_flat(x)
+        return _do_flatten(f.gradient())
 
-    x0 = function.variables().flatten()
+    x0 = f.variables().flatten()
     r = fmin_tnc(func, x0, fprime=grad, disp=0)
     return r[0]
 
