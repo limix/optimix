@@ -1,5 +1,6 @@
 import collections
 from six import create_bound_method
+from six import string_types
 
 from .variables import Variables
 from .variables import merge_variables
@@ -43,6 +44,7 @@ class Function(object):
         return self.__variables
 
     def set_data(self, data, purpose='learn'):
+        assert isinstance(purpose, string_types)
         if not isinstance(data, collections.Sequence):
             data = (data,)
         self._data[purpose] = data
