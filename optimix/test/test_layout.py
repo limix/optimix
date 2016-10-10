@@ -14,8 +14,8 @@ from quadratic_functions import Quadratic4Scalar2
 
 from vector_valued_functions import VectorValued1Scalar1
 from vector_valued_functions import VectorValued2Scalar1
-from vector_valued_functions import VectorValued3Scalar1
-from vector_valued_functions import VectorValued4Scalar1
+from vector_valued_functions import VectorValued1Scalar2
+from vector_valued_functions import VectorValued2Scalar2
 
 
 def test_quadratic1scalar1_gradient_layout():
@@ -91,3 +91,31 @@ def test_vectorvalued1scalar1_gradient_layout():
     x = array([1.5, 1.0, 0.0])
     assert_almost_equal(f.value(x), [12., 8., 0.])
     assert_almost_equal(f.gradient(x), [array([-6., -4., -0.])])
+
+
+def test_vectorvalued2scalar1_gradient_layout():
+    f = VectorValued2Scalar1()
+    x1 = array([1.5, 1.0, 0.0])
+    x2 = array([0.0, -3.0, 1.0])
+    assert_almost_equal(f.value(x1, x2), [0., - 24., 0.])
+    assert_almost_equal(f.gradient(x1, x2), [array([-0., 12., -0.])])
+
+
+def test_vectorvalued1scalar2_gradient_layout():
+    f = VectorValued1Scalar2()
+    x = array([1.5, 1.0, 0.0])
+    assert_almost_equal(f.value(x), [432., 288., 0.])
+    assert_almost_equal(f.gradient(x), [array(
+        [-432., -288., -0.]), array([288., 192., 0.])])
+
+
+def test_vectorvalued2scalar2_gradient_layout():
+    f = VectorValued2Scalar2()
+    x1 = array([1.5, 1.0, 0.0])
+    x2 = array([0.0, -3.0, 1.0])
+    assert_almost_equal(f.value(x1, x2), [12., -46., 18.])
+    assert_almost_equal(f.gradient(x1, x2), [array(
+        [-12.,  -8.,  -0.]), array([0., -36.,  12.])])
+
+if __name__ == '__main__':
+    __import__('pytest').main([__file__, '-s'])

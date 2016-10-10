@@ -26,39 +26,11 @@ class VectorValued2Scalar1(Function):
 
     def value(self, x0, x1):
         s = self.get('scale')
-        return (s - 5.0)**2 * x0 * x1 / 2.0
+        return (s - 5.0)**2 * (x0 * x1) / 2.0
 
     def derivative_scale(self, x0, x1):
         s = self.get('scale')
-        return (s - 5.0) * x0 * x1
-
-
-class VectorValued3Scalar1(Function):
-
-    def __init__(self):
-        super(VectorValued3Scalar1, self).__init__(scale=Scalar(1.0))
-
-    def value(self, x0, x1):
-        s = self.get('scale')
-        return (s - 5.0)**2 * x0.dot(x1) / 2.0
-
-    def derivative_scale(self, x0, x1):
-        s = self.get('scale')
-        return (s - 5.0) * x0.dot(x1)
-
-
-class VectorValued4Scalar1(Function):
-
-    def __init__(self):
-        super(VectorValued4Scalar1, self).__init__(scale=Scalar(1.0))
-
-    def value(self, x0, x1):
-        s = self.get('scale')
-        return (s - 5.0)**2 * norm(x0.dot(x1.T)) / 2.0
-
-    def derivative_scale(self, x0, x1):
-        s = self.get('scale')
-        return (s - 5.0) * norm(x0.dot(x1.T))
+        return (s - 5.0) * (x0 * x1)
 
 
 class VectorValued1Scalar2(Function):
@@ -101,47 +73,3 @@ class VectorValued2Scalar2(Function):
     def derivative_b(self, x0, x1):
         b = self.get('b')
         return 2 * (b + 5.0) * x1
-
-
-class VectorValued3Scalar2(Function):
-
-    def __init__(self):
-        super(VectorValued3Scalar2, self).__init__(
-            a=Scalar(1.0), b=Scalar(1.0))
-
-    def value(self, x0, x1):
-        a = self.get('a')
-        b = self.get('b')
-        return ((a - 5.0)**2 * (b + 5.0)**2 * x0.dot(x1)) / 2.0
-
-    def derivative_a(self, x0, x1):
-        a = self.get('a')
-        b = self.get('b')
-        return 2 * (a - 5.0) * (b + 5.0)**2 * x0.dot(x1)
-
-    def derivative_b(self, x0, x1):
-        a = self.get('a')
-        b = self.get('b')
-        return 2 * (a - 5.0)**2 * (b + 5.0) * x0.dot(x1)
-
-
-class VectorValued4Scalar2(Function):
-
-    def __init__(self):
-        super(VectorValued4Scalar2, self).__init__(
-            a=Scalar(1.0), b=Scalar(1.0))
-
-    def value(self, x0, x1):
-        a = self.get('a')
-        b = self.get('b')
-        return ((a - 5.0)**2 * (b - 5.0)**2 * norm(x0.dot(x1.T))) / 2.0
-
-    def derivative_a(self, x0, x1):
-        a = self.get('a')
-        b = self.get('b')
-        return 2 * (a - 5.0) * (b + 5.0)**2 * norm(x0.dot(x1.T))
-
-    def derivative_b(self, x0, x1):
-        a = self.get('a')
-        b = self.get('b')
-        return 2 * (a - 5.0)**2 * (b + 5.0) * norm(x0.dot(x1.T))
