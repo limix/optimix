@@ -2,15 +2,20 @@ from numpy import zeros
 from numpy import array
 from numpy.testing import assert_almost_equal
 
-from funcs_testing import Quadratic1Scalar1
-from funcs_testing import Quadratic2Scalar1
-from funcs_testing import Quadratic3Scalar1
-from funcs_testing import Quadratic4Scalar1
+from quadratic_functions import Quadratic1Scalar1
+from quadratic_functions import Quadratic2Scalar1
+from quadratic_functions import Quadratic3Scalar1
+from quadratic_functions import Quadratic4Scalar1
 
-from funcs_testing import Quadratic1Scalar2
-from funcs_testing import Quadratic2Scalar2
-from funcs_testing import Quadratic3Scalar2
-from funcs_testing import Quadratic4Scalar2
+from quadratic_functions import Quadratic1Scalar2
+from quadratic_functions import Quadratic2Scalar2
+from quadratic_functions import Quadratic3Scalar2
+from quadratic_functions import Quadratic4Scalar2
+
+from vector_valued_functions import VectorValued1Scalar1
+from vector_valued_functions import VectorValued2Scalar1
+from vector_valued_functions import VectorValued3Scalar1
+from vector_valued_functions import VectorValued4Scalar1
 
 
 def test_quadratic1scalar1_gradient_layout():
@@ -79,3 +84,10 @@ def test_quadratic4scalar2_gradient_layout():
     assert_almost_equal(f.value(x1, x2), 3629.9906336)
     assert_almost_equal(f.gradient(x1, x2), [-8167.4789255926462,
                                              5444.9859503950975])
+
+
+def test_vectorvalued1scalar1_gradient_layout():
+    f = VectorValued1Scalar1()
+    x = array([1.5, 1.0, 0.0])
+    assert_almost_equal(f.value(x), [12., 8., 0.])
+    assert_almost_equal(f.gradient(x), [array([-6., -4., -0.])])
