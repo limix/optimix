@@ -8,6 +8,7 @@ from .optimize import minimize_scalar
 from .optimize import maximize_scalar
 from .optimize import minimize
 from .optimize import maximize
+from .variables import merge_variables
 from .util import as_data_function
 
 from pkg_resources import get_distribution as _get_distribution
