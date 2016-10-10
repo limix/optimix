@@ -3,7 +3,7 @@ import numpy as np
 from scipy.optimize import fmin_tnc
 
 from ..negative import negative_function
-from ..function import FunctionDataFeed
+from ..util import as_data_function
 
 
 def _do_flatten(x):
@@ -14,11 +14,7 @@ def _do_flatten(x):
 
 def minimize(function, purpose='learn'):
 
-    f = FunctionDataFeed(function, function._data[purpose])
-
-    # def data(self, *args, **kwargs):
-    #     fs = [f.data(*args, **kwargs) for f in self._functions]
-    #     return FunctionReduceDataFeed(self, fs)
+    f = as_data_function(function, purpose)
 
     def func(x):
         x = np.asarray(x).ravel()

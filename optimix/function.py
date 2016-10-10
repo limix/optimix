@@ -103,3 +103,6 @@ class FunctionReduceDataFeed(object):
         for f in self._functions:
             grad += f.gradient()
         return grad
+
+    def variables(self):
+        return self._target.variables()

@@ -17,6 +17,8 @@ from quadratic_functions import Quadratic2Scalar2
 from quadratic_functions import Quadratic3Scalar2
 from quadratic_functions import Quadratic4Scalar2
 
+from quadratic_function_reduces import QuadraticScalarReduce
+
 
 def test_quadratic1scalar1_layout():
     f = Quadratic1Scalar1()
@@ -93,6 +95,20 @@ def test_quadratic4scalar2_layout():
     minimize(f)
     assert_almost_equal(f.get('a'), 5.0)
     assert_almost_equal(f.get('b'), -1.48771687512)
+
+
+def test_quadratic1scalar1_reduce_layout():
+    f1 = Quadratic1Scalar1()
+    f2 = Quadratic1Scalar1()
+    f = QuadraticScalarReduce([f1, f2])
+    f1.set_data(1.2)
+    f2.set_data(+4.2)
+    from optimix.util import as_data_function
+    assert_almost_equal(as_data_function(f).value(), 43.2)
+    minimize(f)
+    assert_almost_equal(as_data_function(f).value(), 0)
+    assert_almost_equal(f1.get('scale'), 5, decimal=6)
+    assert_almost_equal(f2.get('scale'), 5, decimal=6)
 
 
 if __name__ == '__main__':
