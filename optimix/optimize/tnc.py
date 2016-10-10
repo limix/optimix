@@ -17,7 +17,7 @@ def minimize(function, purpose='learn'):
     f = FunctionDataFeed(function, function._data[purpose])
 
     # def data(self, *args, **kwargs):
-    #     fs = [f.data(*args, **kwargs) for f in self.__functions]
+    #     fs = [f.data(*args, **kwargs) for f in self._functions]
     #     return FunctionReduceDataFeed(self, fs)
 
     def func(x):

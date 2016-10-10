@@ -56,17 +56,17 @@ class Function(object):
 class FunctionReduce(object):
 
     def __init__(self, functions, prefix='noname'):
-        self.__functions = functions
+        self._functions = functions
         self.__prefix = prefix
 
     def gradient(self, *args, **kwargs):
         grad = []
-        for l in self.__functions:
+        for l in self._functions:
             grad += l.gradient(*args, **kwargs)
         return grad
 
     def variables(self):
-        vars_list = [l.variables() for l in self.__functions]
+        vars_list = [l.variables() for l in self._functions]
         vd = dict()
         for (i, vs) in enumerate(vars_list):
             vd['%s[%d]' % (self.__prefix, i)] = vs

@@ -1,4 +1,5 @@
 from .function import Function
+from .function import FunctionReduce
 from .types import Scalar
 from .types import Vector
 from .types import Matrix
@@ -7,6 +8,7 @@ from .optimize import minimize_scalar
 from .optimize import maximize_scalar
 from .optimize import minimize
 from .optimize import maximize
+from .util import as_data_function
 
 from pkg_resources import get_distribution as _get_distribution
 from pkg_resources import DistributionNotFound as _DistributionNotFound
