@@ -1,5 +1,8 @@
+
 from numpy import array
 from numpy import asarray
+from numpy import atleast_1d
+from numpy import atleast_2d
 
 from ndarray_listener import ndarray_listener
 
@@ -70,6 +73,8 @@ class Vector(object):
     def __init__(self, value):
         self._listeners = []
         self._fixed = False
+        value = asarray(value)
+        value = atleast_1d(value).ravel()
         self.raw = value
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
