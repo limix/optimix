@@ -1,7 +1,13 @@
 import collections
+from six import create_bound_method
 
 from .variables import Variables
 from .variables import merge_variables
+
+
+def variable_getter(self):
+    print("Hello, i am variable_getter")
+    return 1
 
 
 class Function(object):
@@ -9,6 +15,12 @@ class Function(object):
     def __init__(self, **kwargs):
         self.__variables = Variables(kwargs)
         self._data = dict()
+
+    def get(self, name):
+        return self.__variables.get(name).value
+
+    def set(self, name, value):
+        self.__variables.get(name).value = value
 
     def gradient(self, *args, **kwargs):
         names = sorted(self.__variables.names())
