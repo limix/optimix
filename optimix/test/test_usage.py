@@ -6,6 +6,7 @@ from optimix import Function
 from optimix import Scalar
 from optimix import Vector
 from optimix import minimize
+from optimix import minimize_scalar
 
 from quadratic_functions import Quadratic1Scalar1
 from quadratic_functions import Quadratic2Scalar1
@@ -25,6 +26,8 @@ def test_quadratic1scalar1_layout():
     f.set_data(1.2)
     minimize(f)
     assert_almost_equal(f.get('scale'), 5.0)
+    f.set('scale', 1.0)
+    minimize_scalar(f)
 
 
 def test_quadratic2scalar1_layout():

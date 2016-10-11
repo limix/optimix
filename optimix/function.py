@@ -14,17 +14,17 @@ def variable_getter(self):
 class Function(object):
 
     def __init__(self, **kwargs):
-        self.__variables = Variables(kwargs)
+        self._variables = Variables(kwargs)
         self._data = dict()
 
     def get(self, name):
-        return self.__variables.get(name).value
+        return self._variables.get(name).value
 
     def set(self, name, value):
-        self.__variables.get(name).value = value
+        self._variables.get(name).value = value
 
     def gradient(self, *args, **kwargs):
-        names = sorted(self.__variables.names())
+        names = sorted(self._variables.names())
         grad = []
         for name in names:
             g = getattr(self, 'derivative_' + name)(*args, **kwargs)
@@ -32,16 +32,16 @@ class Function(object):
         return grad
 
     def fix(self, var_name):
-        self.__variables[var_name].fix()
+        self._variables[var_name].fix()
 
     def unfix(self, var_name):
-        self.__variables[var_name].unfix()
+        self._variables[var_name].unfix()
 
     def isfixed(self, var_name):
-        return self.__variables[var_name].isfixed()
+        return self._variables[var_name].isfixed()
 
     def variables(self):
-        return self.__variables
+        return self._variables
 
     def set_data(self, data, purpose='learn'):
         assert isinstance(purpose, string_types)

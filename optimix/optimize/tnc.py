@@ -1,36 +1,52 @@
-import numpy as np
+from numpy import asarray
+from numpy import concatenate
 
 from scipy.optimize import fmin_tnc
 
-from ..negative import negative_function
 from ..util import as_data_function
 
 
-def _do_flatten(x):
+def do_flatten(x):
     if isinstance(x, list) or isinstance(x, tuple):
-        return np.concatenate([np.asarray(xi).ravel() for xi in x])
-    return np.concatenate(x)
+        return concatenate([asarray(xi).ravel() for xi in x])
+    return concatenate(x)
 
 
-def minimize(function, purpose='learn'):
+class ProxyFunction(object):
 
-    f = as_data_function(function, purpose)
+    def __init__(self, function, purpose, progress, negative):
+        self._function = as_data_function(function, purpose)
+        self._signal = -1 if negative else +1
 
-    def func(x):
-        x = np.asarray(x).ravel()
-        f.variables().from_flat(x)
-        return f.value()
+    def value(self):
+        return self._signal * self._function.value()
 
-    def grad(x):
-        x = np.asarray(x).ravel()
-        f.variables().from_flat(x)
-        return _do_flatten(f.gradient())
+    def gradient(self):
+        return [self._signal * gi for gi in self._function.gradient()]
 
-    x0 = f.variables().flatten()
-    r = fmin_tnc(func, x0, fprime=grad, disp=0)
-    return r[0]
+    def __call__(self, x):
+        x = asarray(x).ravel()
+        self._function.variables().from_flat(x)
+        v = self.value()
+        g = do_flatten(self.gradient())
+        return v, g
+
+    def set_solution(self, x):
+        self._function.variables().from_flat(asarray(x).ravel())
+
+    def get_solution(self):
+        return self._function.variables().flatten()
 
 
-def maximize(function):
-    function = negative_function(function)
-    return minimize(function)
+def _minimize(proxy_function):
+    x0 = proxy_function.get_solution()
+    r = fmin_tnc(proxy_function, x0, disp=0)
+    proxy_function.set_solution(r[0])
+
+
+def minimize(function, purpose='learn', progress=None):
+    return _minimize(ProxyFunction(function, purpose, progress, False))
+
+
+def maximize(function, purpose='learn', progress=None):
+    return _minimize(ProxyFunction(function, purpose, progress, True))
