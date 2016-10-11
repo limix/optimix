@@ -6,11 +6,6 @@ from .variables import Variables
 from .variables import merge_variables
 
 
-def variable_getter(self):
-    print("Hello, i am variable_getter")
-    return 1
-
-
 class Function(object):
 
     def __init__(self, **kwargs):
@@ -42,6 +37,9 @@ class Function(object):
 
     def variables(self):
         return self._variables
+
+    def set_nodata(self, purpose='learn'):
+        self._data[purpose] = tuple()
 
     def set_data(self, data, purpose='learn'):
         assert isinstance(purpose, string_types)
