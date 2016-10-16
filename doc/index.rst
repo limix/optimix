@@ -11,10 +11,3 @@ Optimix's documentation
 
 
 .. _on Github.: https://github.com/Horta/optimix
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
