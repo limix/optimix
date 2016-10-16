@@ -1,7 +1,7 @@
 import os
 import sys
-from setuptools import setup
-from setuptools import find_packages
+
+from setuptools import find_packages, setup
 
 
 def setup_package():
@@ -20,7 +20,7 @@ def setup_package():
 
     metadata = dict(
         name='optimix',
-        version='1.0.0',
+        version='1.0.1',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
         license="BSD",
