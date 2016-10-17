@@ -1,9 +1,8 @@
 import collections
-from six import create_bound_method
-from six import string_types
 
-from .variables import Variables
-from .variables import merge_variables
+from six import create_bound_method, string_types
+
+from .variables import Variables, merge_variables
 
 
 class Function(object):
@@ -104,3 +103,24 @@ class FunctionReduceDataFeed(object):
 
     def variables(self):
         return self._target.variables()
+
+
+class Composite(object):
+
+    def __init__(self, **kwargs):
+        super(Composite, self).__init__()
+        self._functions = kwargs
+
+    def gradient(self, *args, **kwargs):
+        import ipdb
+        ipdb.set_trace()
+        fnames = sorted(self._functions.names())
+        grad = []
+        for fname in fnames:
+            fg = getattr(self, 'derivative_' + fname)(*args, **kwargs)
+            f = self._functions[fname]
+            vnames = sorted(f.variables.names())
+            for vname in vnames:
+                g = getattr(f, 'derivative_' + vname)(*args, **kwargs)
+                grad.append(fg * g)
+        return grad

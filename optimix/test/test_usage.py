@@ -1,24 +1,12 @@
-from numpy import zeros
-from numpy import array
+from numpy import array, zeros
 from numpy.testing import assert_almost_equal
 
-from optimix import Function
-from optimix import Scalar
-from optimix import Vector
-from optimix import minimize
-from optimix import minimize_scalar
-
-from quadratic_functions import Quadratic1Scalar1
-from quadratic_functions import Quadratic2Scalar1
-from quadratic_functions import Quadratic3Scalar1
-from quadratic_functions import Quadratic4Scalar1
-
-from quadratic_functions import Quadratic1Scalar2
-from quadratic_functions import Quadratic2Scalar2
-from quadratic_functions import Quadratic3Scalar2
-from quadratic_functions import Quadratic4Scalar2
-
+from optimix import Function, Scalar, Vector, minimize, minimize_scalar
 from quadratic_function_reduces import QuadraticScalarReduce
+from quadratic_functions import (Quadratic1Scalar1, Quadratic1Scalar2,
+                                 Quadratic2Scalar1, Quadratic2Scalar2,
+                                 Quadratic3Scalar1, Quadratic3Scalar2,
+                                 Quadratic4Scalar1, Quadratic4Scalar2)
 
 
 def test_quadratic1scalar1_layout():
@@ -113,6 +101,30 @@ def test_quadratic1scalar1_reduce_layout():
     assert_almost_equal(f1.get('scale'), 5, decimal=6)
     assert_almost_equal(f2.get('scale'), 5, decimal=6)
 
+
+def test_merge_functions():
+    f1 = Quadratic1Scalar1()
+    f2 = Quadratic1Scalar1()
+
+    class SumFunction(Composite):
+
+        def __init__(self, f1, f2):
+            super(SumFunction, self).__init__(f1=f1, f2=f2)
+            self._f1 = f1
+            self._f2 = f2
+            # g(f1(a, b, c), f2(x1, x2))
+
+        def value():
+            pass
+
+        def derivative_f1(self):
+            # D_f1 g(f1, f2)
+            pass
+
+        def derivative_f2(self):
+            pass
+
+    s = SumFunction(f1, f2)
 
 if __name__ == '__main__':
     __import__('pytest').main([__file__, '-s'])
