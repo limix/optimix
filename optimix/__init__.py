@@ -1,19 +1,12 @@
-from .function import Function
-from .function import FunctionReduce
-from .types import Scalar
-from .types import Vector
-from .types import Matrix
-from .check_grad import check_grad
-from .check_grad import approx_fprime
-from .optimize import minimize_scalar
-from .optimize import maximize_scalar
-from .optimize import minimize
-from .optimize import maximize
-from .variables import merge_variables
-from .util import as_data_function
-
-from pkg_resources import get_distribution as _get_distribution
 from pkg_resources import DistributionNotFound as _DistributionNotFound
+from pkg_resources import get_distribution as _get_distribution
+
+from .check_grad import approx_fprime, check_grad
+from .function import Composite, Function, FunctionReduce
+from .optimize import maximize, maximize_scalar, minimize, minimize_scalar
+from .types import Matrix, Scalar, Vector
+from .util import as_data_function
+from .variables import merge_variables
 
 try:
     __version__ = _get_distribution('optimix').version

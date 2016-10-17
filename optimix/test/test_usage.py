@@ -1,7 +1,8 @@
 from numpy import array, zeros
 from numpy.testing import assert_almost_equal
 
-from optimix import Function, Scalar, Vector, minimize, minimize_scalar
+from optimix import (Composite, Function, Scalar, Vector, minimize,
+                     minimize_scalar)
 from quadratic_function_reduces import QuadraticScalarReduce
 from quadratic_functions import (Quadratic1Scalar1, Quadratic1Scalar2,
                                  Quadratic2Scalar1, Quadratic2Scalar2,
