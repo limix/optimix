@@ -11,6 +11,9 @@ class Function(object):
         self._variables = Variables(kwargs)
         self._data = dict()
 
+    def feed(self, purpose='learn'):
+        return FunctionDataFeed(self, self._data[purpose])
+
     def get(self, name):
         return self._variables.get(name).value
 
@@ -55,6 +58,10 @@ class FunctionReduce(object):
     def __init__(self, functions, prefix='noname'):
         self._functions = functions
         self.__prefix = prefix
+
+    def feed(self, purpose='learn'):
+        fs = [f.feed(purpose) for f in self._functions]
+        return FunctionReduceDataFeed(self, fs)
 
     def gradient(self, *args, **kwargs):
         grad = []
@@ -116,6 +123,9 @@ class Composite(object):
         else:
             self.__prefix = 'noname'
 
+    def feed(self, purpose='learn'):
+        return CompositeDataFeed(self, purpose)
+
     def gradient(self, *args, **kwargs):
         fnames = sorted(self._functions.keys())
         grad = []
@@ -156,23 +166,21 @@ class CompositeDataFeed(object):
         self._purpose = purpose
 
     def value(self):
-        from .util import as_data_function
         fnames = sorted(self._target._functions.keys())
 
         fvals = dict()
         for fname in fnames:
-            f = as_data_function(self._target._functions[fname], self._purpose)
+            f = self._target._functions[fname].feed(self._purpose)
             fvals[fname] = f.value()
 
         return self._target.value(**fvals)
 
     def gradient(self):
-        from .util import as_data_function
         fnames = sorted(self._target._functions.keys())
 
         g_fvals = dict()
         for fname in fnames:
-            f = as_data_function(self._target._functions[fname], self._purpose)
+            f = self._target._functions[fname].feed(self._purpose)
             g_fvals[fname] = f.value()
             g_fvals['g' + fname] = f.gradient()
 

@@ -95,10 +95,9 @@ def test_quadratic1scalar1_reduce_layout():
     f = QuadraticScalarReduce([f1, f2])
     f1.set_data(1.2)
     f2.set_data(+4.2)
-    from optimix.util import as_data_function
-    assert_almost_equal(as_data_function(f).value(), 43.2)
+    assert_almost_equal(f.feed().value(), 43.2)
     minimize(f)
-    assert_almost_equal(as_data_function(f).value(), 0)
+    assert_almost_equal(f.feed().value(), 0)
     assert_almost_equal(f1.get('scale'), 5, decimal=6)
     assert_almost_equal(f2.get('scale'), 5, decimal=6)
 
@@ -141,9 +140,7 @@ def test_composite():
     f1.set_data(1.5)
     f2.set_data([-0.2, 3.2])
 
-    from optimix.util import as_data_function
-
-    sa = as_data_function(s)
+    sa = s.feed()
     assert_allclose(sa.value(), 1.629999999999999)
     assert_allclose(sa.gradient(), [-4.5, 2.5600000000000005])
 
@@ -172,10 +169,8 @@ def test_composite_minimize():
     f1.set_data(1.5)
     f2.set_data([+0.2, 3.2])
 
-    from optimix.util import as_data_function
-
     minimize(s)
-    sa = as_data_function(s)
+    sa = s.feed()
     assert_allclose(sa.value(), 0, atol=1e-6)
     assert_allclose(sa.gradient(), [0, 0], atol=1e-6)
 

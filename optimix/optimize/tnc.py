@@ -3,8 +3,6 @@ from numpy import concatenate
 
 from scipy.optimize import fmin_tnc
 
-from ..util import as_data_function
-
 
 def do_flatten(x):
     if isinstance(x, list) or isinstance(x, tuple):
@@ -15,7 +13,7 @@ def do_flatten(x):
 class ProxyFunction(object):
 
     def __init__(self, function, purpose, progress, negative):
-        self._function = as_data_function(function, purpose)
+        self._function = function.feed(purpose)
         self._signal = -1 if negative else +1
 
     def value(self):

@@ -20,8 +20,6 @@ from vector_valued_functions import VectorValued2Scalar2
 
 from quadratic_function_reduces import QuadraticScalarReduce
 
-from optimix import as_data_function
-
 
 def test_quadratic1scalar1_layout():
     f1 = Quadratic1Scalar1()
@@ -32,7 +30,7 @@ def test_quadratic1scalar1_layout():
     f1.set_data(x1)
     f2.set_data(x2)
 
-    f = as_data_function(f)
+    f = f.feed()
     assert_almost_equal(f.value(), 0.8)
     assert_almost_equal(f.gradient(), [-4.8, 4.4])
 
@@ -47,7 +45,7 @@ def test_vectorvalued1scalar1_layout():
     f2.set_data(x2)
     f = QuadraticScalarReduce([f1, f2])
 
-    f = as_data_function(f)
+    f = f.feed()
     assert_almost_equal(f.value(), [24., 0., 0.])
     assert_almost_equal(f.gradient(), [array([-6., -4., -0.]),
                                        array([-6.,  4., -0.])])

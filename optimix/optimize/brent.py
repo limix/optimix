@@ -4,13 +4,10 @@ from numpy import asarray
 
 from brent_search import minimize as brent_minimize
 
-from ..util import as_data_function
-
-
 class ProxyFunction(object):
 
     def __init__(self, function, purpose, progress, negative):
-        self._function = as_data_function(function, purpose)
+        self._function = function.feed(purpose)
         self._signal = -1 if negative else +1
         self._progress = progress
         self._iteration = 0
