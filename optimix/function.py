@@ -110,6 +110,11 @@ class Composite(object):
     def __init__(self, **kwargs):
         super(Composite, self).__init__()
         self._functions = kwargs
+        self._data = dict()
+        if 'prefix' in kwargs:
+            self.__prefix = kwargs['prefix']
+        else:
+            self.__prefix = 'noname'
 
     def gradient(self, *args, **kwargs):
         fnames = sorted(self._functions.keys())
@@ -118,3 +123,38 @@ class Composite(object):
             fg = getattr(self, 'gradient_' + fname)(*args, **kwargs)
             grad += fg
         return grad
+
+    def set_nodata(self, purpose='learn'):
+        self._data[purpose] = tuple()
+
+    def set_data(self, data, purpose='learn'):
+        assert isinstance(purpose, string_types)
+        if not isinstance(data, collections.Sequence):
+            data = (data,)
+        self._data[purpose] = data
+
+    def unset_data(self, purpose='learn'):
+        del self._data[purpose]
+
+    def variables(self):
+        fnames = sorted(self._functions.keys())
+        vars_list = [self._functions[fn].variables() for fn in fnames]
+        vd = dict()
+        for (i, vs) in enumerate(vars_list):
+            vd['%s[%d]' % (self.__prefix, i)] = vs
+        return merge_variables(vd)
+
+class CompositeDataFeed(object):
+
+    def __init__(self, target, data):
+        self._target = target
+        self.raw = data
+
+    def value(self):
+        return self._target.value(*self.raw)
+
+    def gradient(self):
+        return self._target.gradient(*self.raw)
+
+    def variables(self):
+        return self._target.variables()
