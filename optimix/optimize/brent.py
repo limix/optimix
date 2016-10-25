@@ -6,8 +6,8 @@ from brent_search import minimize as brent_minimize
 
 class ProxyFunction(object):
 
-    def __init__(self, function, purpose, progress, negative):
-        self._function = function.feed(purpose)
+    def __init__(self, function, progress, negative):
+        self._function = function
         self._signal = -1 if negative else +1
         self._progress = progress
         self._iteration = 0
@@ -37,9 +37,9 @@ def _minimize(proxy_function):
     proxy_function.set_solution(x)
 
 
-def minimize(function, purpose='learn', progress=None):
-    return _minimize(ProxyFunction(function, purpose, progress, False))
+def minimize(function, progress=None):
+    return _minimize(ProxyFunction(function, progress, False))
 
 
-def maximize(function, purpose='learn', progress=None):
-    return _minimize(ProxyFunction(function, purpose, progress, True))
+def maximize(function, progress=None):
+    return _minimize(ProxyFunction(function, progress, True))
