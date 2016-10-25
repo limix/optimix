@@ -21,7 +21,7 @@ class Function(object):
         self._variables.get(name).value = value
 
     def gradient(self, *args, **kwargs):
-        names = sorted(self._variables.names())
+        names = sorted(self._variables.select(fixed=False).names())
         grad = []
         for name in names:
             g = getattr(self, 'derivative_' + name)(*args, **kwargs)

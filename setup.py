@@ -20,7 +20,7 @@ def setup_package():
 
     metadata = dict(
         name='optimix',
-        version='1.0.11',
+        version='1.0.12',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
         license="MIT",
