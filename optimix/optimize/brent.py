@@ -2,7 +2,7 @@ import sys
 
 from numpy import asarray
 
-from scipy.optimize import brent
+from brent_search import minimize as brent_minimize
 
 from ..util import as_data_function
 
@@ -36,7 +36,7 @@ class ProxyFunction(object):
 
 
 def _minimize(proxy_function):
-    x = brent(proxy_function)
+    x = brent_minimize(proxy_function)
     proxy_function.set_solution(x)
 
 
