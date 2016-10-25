@@ -112,15 +112,9 @@ class Composite(object):
         self._functions = kwargs
 
     def gradient(self, *args, **kwargs):
-        import ipdb
-        ipdb.set_trace()
-        fnames = sorted(self._functions.names())
+        fnames = sorted(self._functions.keys())
         grad = []
         for fname in fnames:
-            fg = getattr(self, 'derivative_' + fname)(*args, **kwargs)
-            f = self._functions[fname]
-            vnames = sorted(f.variables.names())
-            for vname in vnames:
-                g = getattr(f, 'derivative_' + vname)(*args, **kwargs)
-                grad.append(fg * g)
+            fg = getattr(self, 'gradient_' + fname)(*args, **kwargs)
+            grad += fg
         return grad

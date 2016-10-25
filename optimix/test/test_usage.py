@@ -1,5 +1,5 @@
 from numpy import array, zeros
-from numpy.testing import assert_almost_equal
+from numpy.testing import (assert_almost_equal, assert_allclose)
 
 from optimix import (Composite, Function, Scalar, Vector, minimize,
                      minimize_scalar)
@@ -105,7 +105,7 @@ def test_quadratic1scalar1_reduce_layout():
 
 def test_merge_functions():
     f1 = Quadratic1Scalar1()
-    f2 = Quadratic1Scalar1()
+    f2 = Quadratic2Scalar1()
 
     class SumFunction(Composite):
 
@@ -113,19 +113,24 @@ def test_merge_functions():
             super(SumFunction, self).__init__(f1=f1, f2=f2)
             self._f1 = f1
             self._f2 = f2
-            # g(f1(a, b, c), f2(x1, x2))
 
-        def value():
-            pass
+        def value(self, f1_x0, f2_x1, f2_x2):
+            return self._f1.value(f1_x0) + self._f2.value(f2_x1, f2_x2)
 
-        def derivative_f1(self):
-            # D_f1 g(f1, f2)
-            pass
+        def gradient_f1(self, f1_x0, f2_x1, f2_x2):
+            return self._f1.gradient(f1_x0)
 
-        def derivative_f2(self):
-            pass
+        def gradient_f2(self, f1_x0, f2_x1, f2_x2):
+            return self._f2.gradient(f2_x1, f2_x2)
 
     s = SumFunction(f1, f2)
+    assert_allclose(s.value(1.5, -0.2, 3.2), 6.879999999999999)
+    f1.set('scale', 2.0)
+    assert_allclose(s.value(1.5, -0.2, 3.2), 1.629999999999999)
+    assert_allclose(s.gradient_f1(1.5, -0.2, 3.2), [-4.5])
+    assert_allclose(s.gradient_f2(1.5, -0.2, 3.2), [2.5600000000000005])
+    assert_allclose(s.gradient(1.5, -0.2, 3.2), [-4.5, 2.5600000000000005])
+
 
 if __name__ == '__main__':
     __import__('pytest').main([__file__, '-s'])
