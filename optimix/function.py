@@ -144,17 +144,40 @@ class Composite(object):
             vd['%s[%d]' % (self.__prefix, i)] = vs
         return merge_variables(vd)
 
+    def _get_data(self, purpose):
+        if purpose in self._data:
+            return self._data[purpose]
+        fnames = sorted(self._functions.keys())
+
 class CompositeDataFeed(object):
 
-    def __init__(self, target, data):
+    def __init__(self, target, purpose):
         self._target = target
-        self.raw = data
+        self._purpose = purpose
 
     def value(self):
-        return self._target.value(*self.raw)
+        from .util import as_data_function
+        fnames = sorted(self._target._functions.keys())
+
+        fvals = dict()
+        for fname in fnames:
+            f = as_data_function(self._target._functions[fname], self._purpose)
+            fvals[fname] = f.value()
+
+        return self._target.value(**fvals)
 
     def gradient(self):
-        return self._target.gradient(*self.raw)
+        from .util import as_data_function
+        fnames = sorted(self._target._functions.keys())
+
+        fvals = dict()
+        gfvals = dict()
+        for fname in fnames:
+            f = as_data_function(self._target._functions[fname], self._purpose)
+            fvals[fname] = f.value()
+            gfvals['g' + fname] = f.gradient()
+
+        return self._target.gradient(**fvals, **gfvals)
 
     def variables(self):
         return self._target.variables()

@@ -13,5 +13,5 @@ def as_data_function(function, purpose='learn'):
         fs = [as_data_function(f, purpose) for f in function._functions]
         return FunctionReduceDataFeed(function, fs)
     elif isinstance(function, Composite):
-        return CompositeDataFeed(function, function._data[purpose])
+        return CompositeDataFeed(function, purpose)
     raise Exception

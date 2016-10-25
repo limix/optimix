@@ -114,24 +114,32 @@ def test_composite():
             self._f1 = f1
             self._f2 = f2
 
-        def value(self, f1_x0, f2_x1, f2_x2):
-            return self._f1.value(f1_x0) + self._f2.value(f2_x1, f2_x2)
+        def value(self, f1, f2):
+            return f1 + f2
 
-        def gradient_f1(self, f1_x0, f2_x1, f2_x2):
-            return self._f1.gradient(f1_x0)
+        def gradient_f1(self, f1, f2, gf1, gf2):
+            return gf1
 
-        def gradient_f2(self, f1_x0, f2_x1, f2_x2):
-            return self._f2.gradient(f2_x1, f2_x2)
+        def gradient_f2(self, f1, f2, gf1, gf2):
+            return gf2
 
     s = SumFunction(f1, f2)
-    assert_allclose(s.value(1.5, -0.2, 3.2), 6.879999999999999)
+    assert_allclose(s.value(f1.value(1.5), f2.value(-0.2, 3.2)),
+                    6.879999999999999)
     f1.set('scale', 2.0)
-    assert_allclose(s.value(1.5, -0.2, 3.2), 1.629999999999999)
-    assert_allclose(s.gradient_f1(1.5, -0.2, 3.2), [-4.5])
-    assert_allclose(s.gradient_f2(1.5, -0.2, 3.2), [2.5600000000000005])
-    assert_allclose(s.gradient(1.5, -0.2, 3.2), [-4.5, 2.5600000000000005])
+    assert_allclose(s.value(f1.value(1.5), f2.value(-0.2, 3.2)),
+                    1.629999999999999)
+    assert_allclose(s.gradient_f1(f1.value(1.5), f2.value(-0.2, 3.2),
+                    f1.gradient(1.5), f2.gradient(-0.2, 3.2)), [-4.5])
+    assert_allclose(s.gradient_f2(f1.value(1.5), f2.value(-0.2, 3.2),
+                    f1.gradient(1.5), f2.gradient(-0.2, 3.2)),
+                    [2.5600000000000005])
+    assert_allclose(s.gradient(f1.value(1.5), f2.value(-0.2, 3.2),
+                    f1.gradient(1.5), f2.gradient(-0.2, 3.2)),
+                    [-4.5, 2.5600000000000005])
 
-    s.set_data([1.5, -0.2, 3.2])
+    f1.set_data(1.5)
+    f2.set_data([-0.2, 3.2])
 
     from optimix.util import as_data_function
 
@@ -150,18 +158,19 @@ def test_composite_minimize():
             self._f1 = f1
             self._f2 = f2
 
-        def value(self, f1_x0, f2_x1, f2_x2):
-            return self._f1.value(f1_x0) + self._f2.value(f2_x1, f2_x2)
+        def value(self, f1, f2):
+            return f1 + f2
 
-        def gradient_f1(self, f1_x0, f2_x1, f2_x2):
-            return self._f1.gradient(f1_x0)
+        def gradient_f1(self, f1, f2, gf1, gf2):
+            return gf1
 
-        def gradient_f2(self, f1_x0, f2_x1, f2_x2):
-            return self._f2.gradient(f2_x1, f2_x2)
+        def gradient_f2(self, f1, f2, gf1, gf2):
+            return gf2
 
     s = SumFunction(f1, f2)
 
-    s.set_data([1.5, +0.2, 3.2])
+    f1.set_data(1.5)
+    f2.set_data([+0.2, 3.2])
 
     from optimix.util import as_data_function
 
