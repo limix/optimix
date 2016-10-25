@@ -15,12 +15,12 @@ def setup_package():
 
     setup_requires = [] + pytest_runner
     install_requires = ['pytest', 'scipy>=0.17', 'numpy>=1.9',
-                        'six', 'ndarray_listener>=1.0', 'brent_search>=1.0.6']
+                        'six', 'ndarray_listener>=1.0', 'brent_search>=1.0.7']
     tests_require = install_requires
 
     metadata = dict(
         name='optimix',
-        version='1.0.7',
+        version='1.0.8',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
         license="MIT",
