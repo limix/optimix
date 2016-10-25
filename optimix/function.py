@@ -92,6 +92,14 @@ class FunctionDataFeed(object):
     def variables(self):
         return self._target.variables()
 
+    def maximize(self):
+        from .optimize import maximize
+        return maximize(self)
+
+    def minimize(self):
+        from .optimize import minimize
+        return minimize(self)
+
 
 class FunctionReduceDataFeed(object):
 
@@ -110,6 +118,14 @@ class FunctionReduceDataFeed(object):
 
     def variables(self):
         return self._target.variables()
+
+    def maximize(self):
+        from .optimize import maximize
+        return maximize(self)
+
+    def minimize(self):
+        from .optimize import minimize
+        return minimize(self)
 
 
 class Composite(object):
@@ -188,3 +204,11 @@ class CompositeDataFeed(object):
 
     def variables(self):
         return self._target.variables()
+
+    def maximize(self):
+        from .optimize import maximize
+        return maximize(self)
+
+    def minimize(self):
+        from .optimize import minimize
+        return minimize(self)
