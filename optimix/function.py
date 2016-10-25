@@ -170,14 +170,13 @@ class CompositeDataFeed(object):
         from .util import as_data_function
         fnames = sorted(self._target._functions.keys())
 
-        fvals = dict()
-        gfvals = dict()
+        g_fvals = dict()
         for fname in fnames:
             f = as_data_function(self._target._functions[fname], self._purpose)
-            fvals[fname] = f.value()
-            gfvals['g' + fname] = f.gradient()
+            g_fvals[fname] = f.value()
+            g_fvals['g' + fname] = f.gradient()
 
-        return self._target.gradient(**fvals, **gfvals)
+        return self._target.gradient(**g_fvals)
 
     def variables(self):
         return self._target.variables()
