@@ -1,4 +1,3 @@
 # optimix
-Abstract function optimisation for SciPy.
 
-Further explanation soon.
+Abstract function optimisation for SciPy.

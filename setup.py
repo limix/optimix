@@ -20,10 +20,10 @@ def setup_package():
 
     metadata = dict(
         name='optimix',
-        version='1.0.3',
+        version='1.0.1',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
-        license="BSD",
+        license="MIT",
         url='https://github.com/Horta/optimix',
         packages=find_packages(),
         zip_safe=True,

@@ -36,13 +36,16 @@ script:
 - pushd /
 - python -c "import optimix; optimix.test()"
 - popd
-deploy:
-  provider: pypi
-  skip_cleanup: true
-  user: danilo.horta
-  on:
-    branch: master
-  password:
-    secure: DWzf3hAggNQIZXXKDfxxArrq/Y7Gb7eKIsRsyw1BswFepA+UDm6SCINcDn3uqN1erOErGTwpasvbEF28ZEWcBzUiUlG8SLcICWiFMiRcWuRB5ICpekrQRh8NCpTahHONy1RbslnRavG2PC8neX++XOocd80JD2njo5opC4LYcsDz3oh54drvmASh0XHQPgfpLadnUofkAgHVmhu8GdJI+Yrmh+khr0UHJr5zYFuMIX6Mjbf4gp9gzrvrc+jrWzG3t6+oDoT6elP/O2UBYmVZffnYgnuOBMUHurzHGXXvMek+WJV8Px5IjeoCJA8+cIP0MnFtIbTCfLGstckZ8II3VCoC7llHhkS+FV7HYP/SGWY4KK7eaAwo509WBGKO2G+kHDIYybIUn6sVFAeRt7Gp+AR4kjdnCHYcKLTKMwsUhLUCQv6EzZbwLRz3TKuk59F+BFdXPlmEpk2UZG4uLNCrA1hWiTnaM2w5EM69BaB/ffw6VhiEut1aCAxJvpwjJDI7cBvePd0IbaS9Gj+JGoh0Zy2JRTbppdyJjug2cbglLw5AwagueMsNN8tIjQh7mtFQFOsFL5TbnkfOSZ9ERagJvD6yEgl0tjYVIW6vpsPfPFR/j+qfNeNVjEAWjvvM86FlYUMyFxX4/4e7ANwfsz1k6XwUeTwrjdl/12ITNDcsseY=
+branches:
+  only:
+  - master
 notifications:
   email: false
+deploy:
+  provider: pypi
+  user: dhorta
+  password:
+    secure: gMVr58IMUuquKL6zPLa/S17aaiSOiOOrBICfnVDDjaJSZ3QChe1erwzNNsfCDpMot5NKf/q0edO7cmBSIxW/12At25IfYjxQE4hancPINsFpSOPwk/Gx68aQ+n082K2nxH5bggxfM+OPTgKp2WzL0jMJC8K4TiIaxZt2CurlK3+qKNw3WgpX4vdfSsbMAlRUiiVu3HuDA5yObOGFc9vfHXjMCgFuhYPD1uKXiRBVOlf5U1PPuKK0ZeFlg3TBDkPgB+Z1x/q7N/m7KxahGs9H1tdokvlkxCWXVud4VgYbB/71jtRUZKBYIIuDZ4PQjtC5Z69SzVhkU+57zDqvutPaHyLcF/5llgTI5AOzva2RkoPP8QOwg2LSjcHeXrr3mKAPxgd+0G27dv/O5CYKsIn4Fq0oRuRXEX8PIXlAXMY55lEHk5BfLYC3eUFgbb5NzWve5mUm2QqfcSLCPKit5Fep/FddLf5TnKgd9FKUcwUlN/X8N+30w4sT2grEfiGL/JQ4JgefNJF4vEle/YFbsk8MyKS8ieF5mJuux7e4z5+okYtTrJFPq4yyVnBd2LQqwAJ7vVOiVWCBLPVtas6ykCDC+IyigKI4jvYVvHg6gpfkWBDBLsmi5ilcdzopm4zxgytS7X6yLJlOOGyiEa0tM4hS3aAqGTiinb+HljxsfL2yNdE=
+  on:
+    distributions: sdist bdist_wheel
+    repo: Horta/optimix
