@@ -24,16 +24,17 @@ class ProxyFunction(object):
 
     def __call__(self, x):
         x = asarray(x).ravel()
-        self._function.variables().from_flat(x)
+        self._function.variables().select(fixed=False).from_flat(x)
         v = self.value()
         g = do_flatten(self.gradient())
         return v, g
 
     def set_solution(self, x):
-        self._function.variables().from_flat(asarray(x).ravel())
+        t = self._function.variables().select(fixed=False)
+        t.from_flat(asarray(x).ravel())
 
     def get_solution(self):
-        return self._function.variables().flatten()
+        return self._function.variables().select(fixed=False).flatten()
 
 
 def _minimize(proxy_function):
