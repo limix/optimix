@@ -17,13 +17,15 @@ An alternative way would be via pip::
 Quick start
 -----------
 
-A function in :py:mod:`optimix` sense is a map of input values and variable values
-to output values. Those values can be scalars, vectors and/or matrices but what
-is most important is that input values and variable values are not treated in
-the same way. Derivatives are always over variables (not inputs) and thus the
-optimization is always performed over variables. The reason for this is that
-input values are meant to be datasets and variable values are meant to be
-model parameters. I hope the next examples help clarify this.
+A function in :py:mod:`optimix` sense is a map of input values and variable
+values to output values.
+Those values can be scalars, vectors and/or matrices but what is most important
+is that input values and variable values are not treated in the same way.
+Derivatives are always over variables (not inputs) and thus the optimization
+is always performed over variables.
+The reason for this is that input values are meant to be datasets and variable
+values are meant to be model parameters. I hope the next examples help clarify
+this.
 
 Single input
 ^^^^^^^^^^^^
