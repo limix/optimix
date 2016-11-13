@@ -158,10 +158,5 @@ The output should be
 
   Optimum found: (5, -5)
 
-.. toctree::
-  :caption: Table of contents
-  :name: mastertoc
-
-
 .. _on Github.: https://github.com/Horta/optimix
 .. _conda: http://conda.pydata.org/docs/index.html
