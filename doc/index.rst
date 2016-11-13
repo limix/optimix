@@ -12,5 +12,8 @@ You can get the source and open issues on `Github.`_
   :name: mastertoc
   :maxdepth: 2
 
+  install
+  quick-start
+
 
 .. Github.: https://github.com/Horta/optimix
