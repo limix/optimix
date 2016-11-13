@@ -1,7 +1,7 @@
 Optimix's documentation
 =======================
 
-You can get the source and open issues `on Github.`_
+You can get the source and open issues on `Github.`_
 
 .. include:: install.rst
 
@@ -13,4 +13,4 @@ You can get the source and open issues `on Github.`_
   :maxdepth: 2
 
 
-.. _on Github.: https://github.com/Horta/optimix
+.. Github.: https://github.com/Horta/optimix
