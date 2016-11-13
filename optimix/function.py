@@ -1,9 +1,10 @@
-import collections
+from __future__ import unicode_literals
 
-from six import create_bound_method, string_types
+import collections
 
 from .variables import Variables, merge_variables
 
+from ._unicode import unicode_airlock
 
 class Function(object):
 
@@ -12,6 +13,7 @@ class Function(object):
         self._data = dict()
 
     def feed(self, purpose='learn'):
+        purpose = unicode_airlock(purpose)
         return FunctionDataFeed(self, self._data[purpose])
 
     def get(self, name):
@@ -41,15 +43,17 @@ class Function(object):
         return self._variables
 
     def set_nodata(self, purpose='learn'):
+        purpose = unicode_airlock(purpose)
         self._data[purpose] = tuple()
 
     def set_data(self, data, purpose='learn'):
-        assert isinstance(purpose, string_types)
+        purpose = unicode_airlock(purpose)
         if not isinstance(data, collections.Sequence):
             data = (data,)
         self._data[purpose] = data
 
     def unset_data(self, purpose='learn'):
+        purpose = unicode_airlock(purpose)
         del self._data[purpose]
 
 
@@ -60,6 +64,7 @@ class FunctionReduce(object):
         self.__prefix = prefix
 
     def feed(self, purpose='learn'):
+        purpose = unicode_airlock(purpose)
         fs = [f.feed(purpose) for f in self._functions]
         return FunctionReduceDataFeed(self, fs)
 
@@ -140,6 +145,7 @@ class Composite(object):
             self.__prefix = 'noname'
 
     def feed(self, purpose='learn'):
+        purpose = unicode_airlock(purpose)
         return CompositeDataFeed(self, purpose)
 
     def gradient(self, *args, **kwargs):
@@ -151,15 +157,17 @@ class Composite(object):
         return grad
 
     def set_nodata(self, purpose='learn'):
+        purpose = unicode_airlock(purpose)
         self._data[purpose] = tuple()
 
     def set_data(self, data, purpose='learn'):
-        assert isinstance(purpose, string_types)
+        purpose = unicode_airlock(purpose)
         if not isinstance(data, collections.Sequence):
             data = (data,)
         self._data[purpose] = data
 
     def unset_data(self, purpose='learn'):
+        purpose = unicode_airlock(purpose)
         del self._data[purpose]
 
     def variables(self):
@@ -178,6 +186,7 @@ class Composite(object):
 class CompositeDataFeed(object):
 
     def __init__(self, target, purpose):
+        purpose = unicode_airlock(purpose)
         self._target = target
         self._purpose = purpose
 

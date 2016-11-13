@@ -1,8 +1,8 @@
+from __future__ import unicode_literals
 
 from numpy import array
 from numpy import asarray
 from numpy import atleast_1d
-from numpy import atleast_2d
 
 from ndarray_listener import ndarray_listener
 

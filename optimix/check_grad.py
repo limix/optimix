@@ -1,14 +1,10 @@
 from __future__ import division
 
-from numpy import ndarray
 from numpy import asarray
 from numpy import zeros
 from numpy import zeros_like
-from numpy import empty
 from numpy import finfo
 from numpy import sqrt
-
-from scipy.optimize import check_grad as _check_grad
 
 _step = sqrt(finfo(float).eps)
 
