@@ -5,7 +5,7 @@ You can get the source and open issues `on Github.`_
 
 .. include:: install.rst
 
-
+.. include:: quick-start.rst
 
 .. toctree::
   :caption: Table of contents
