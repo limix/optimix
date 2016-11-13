@@ -1,4 +1,6 @@
-:tocdepth: 2
+.. toctree::
+  :caption: Table of Contents
+  :name: mastertoc
 
 =======================
 Optimix's documentation
