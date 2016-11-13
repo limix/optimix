@@ -3,10 +3,6 @@ Optimix's documentation
 
 You can get the source and open issues on `Github.`_
 
-.. include:: install.rst
-
-.. include:: quick-start.rst
-
 .. toctree::
   :caption: Table of contents
   :name: mastertoc
@@ -14,6 +10,10 @@ You can get the source and open issues on `Github.`_
 
   install
   quick-start
+
+.. include:: install.rst
+
+.. include:: quick-start.rst
 
 
 .. Github.: https://github.com/Horta/optimix
