@@ -1,19 +1,12 @@
+:tocdepth: 2
+
 Optimix's documentation
 =======================
 
 You can get the source and open issues on `Github.`_
 
-.. toctree::
-  :caption: Table of contents
-  :name: mastertoc
-  :maxdepth: 2
-
-  install
-  quick-start
+.. Github.: https://github.com/Horta/optimix
 
 .. include:: install.rst
 
 .. include:: quick-start.rst
-
-
-.. Github.: https://github.com/Horta/optimix
