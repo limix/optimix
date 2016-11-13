@@ -161,7 +161,7 @@ The output should be
 .. toctree::
   :caption: Table of contents
   :name: mastertoc
-  :maxdepth: 2
+  :maxdepth: 1
 
 
 .. _on Github.: https://github.com/Horta/optimix
