@@ -1,7 +1,14 @@
 import os
 import sys
 
-from setuptools import find_packages, setup
+from setuptools import find_packages
+from setuptools import setup
+
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except(IOError, ImportError):
+    long_description = open('README.md').read()
 
 
 def setup_package():
@@ -15,14 +22,16 @@ def setup_package():
 
     setup_requires = [] + pytest_runner
     install_requires = ['pytest', 'scipy>=0.17', 'numpy>=1.9',
-                        'six', 'ndarray_listener>=1.0', 'brent_search>=1.0.7']
-    tests_require = install_requires
+                        'ndarray_listener>=1.0', 'brent_search>=1.0.7']
+    tests_require = ['pytest']
 
     metadata = dict(
         name='optimix',
         version='1.1.0.dev1',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
+        description="Abstract function optimisation.",
+        long_description=long_description,
         license="MIT",
         url='https://github.com/Horta/optimix',
         packages=find_packages(),
@@ -31,6 +40,14 @@ def setup_package():
         setup_requires=setup_requires,
         tests_require=tests_require,
         include_package_data=True,
+        classifiers=[
+            "Development Status :: 5 - Production/Stable",
+            "License :: OSI Approved :: MIT License",
+            "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3.4",
+            "Programming Language :: Python :: 3.5",
+            "Operating System :: OS Independent",
+        ],
     )
 
     try:

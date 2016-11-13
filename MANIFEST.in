@@ -1,6 +1,4 @@
-exclude .gitignore .travis.yml
 include LICENSE
 include README.md
 include setup.cfg
 recursive-include optimix *.py
-prune doc
