@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 
-__import__('sphinx_rtd_theme')
+import sphinx_rtd_theme
 
 try:
     import optimix
@@ -36,7 +36,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 pygments_style = 'sphinx'
 todo_include_todos = False
 html_theme = 'sphinx_rtd_theme'
-html_theme_path = ["_themes", ]
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 htmlhelp_basename = 'optimixdoc'
 latex_elements = {}
 latex_documents = [
