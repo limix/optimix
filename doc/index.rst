@@ -6,15 +6,13 @@ You can get the source and open issues `on Github.`_
 Install
 -------
 
-The recommended way of installing it is via
-[conda](http://conda.pydata.org/docs/index.html)
-```bash
-conda install -c conda-forge optimix
-```
+The recommended way of installing it is via `conda`_::
 
-An alternative way would be via pip
-```bash
-pip install optimix
+  conda install -c conda-forge optimix
+
+An alternative way would be via pip::
+
+  pip install optimix
 
 Quick start
 -----------
@@ -165,3 +163,4 @@ The output should be
 
 
 .. _on Github.: https://github.com/Horta/optimix
+.. _conda: http://conda.pydata.org/docs/index.html
