@@ -27,7 +27,7 @@ def setup_package():
 
     metadata = dict(
         name='optimix',
-        version='1.1.0.dev1',
+        version='1.1.0',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
         description="Abstract function optimisation.",
