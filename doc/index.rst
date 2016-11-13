@@ -6,7 +6,7 @@ Optimix's documentation
 
 You can get the source and open issues on `Github.`_
 
-.. Github.: https://github.com/Horta/optimix
+.. _Github.: https://github.com/Horta/optimix
 
 *******
 Install
