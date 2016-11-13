@@ -42,4 +42,3 @@ dependencies:
 - zlib=1.2.8=3
 - pip:
   - sphinx-rtd-theme==0.1.9
-  - sphinxcontrib-programoutput==0.8
