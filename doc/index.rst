@@ -2,6 +2,8 @@
   :caption: Table of Contents
   :name: mastertoc
 
+  install
+
 =======================
 Optimix's documentation
 =======================
