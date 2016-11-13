@@ -2,7 +2,7 @@
   :caption: Table of Contents
   :name: mastertoc
 
-  index#install
+  index
 
 =======================
 Optimix's documentation
