@@ -1,6 +1,4 @@
-from numpy.linalg import norm
-
-from optimix import Function, Scalar, Vector, minimize
+from optimix import Function, Scalar, minimize
 
 
 class Quadratic(Function):
@@ -13,11 +11,11 @@ class Quadratic(Function):
         b = self.get('b')
         return ((a - 5.0)**2 * x0 + (b + 5.0)**2 * x1) / 2.0
 
-    def derivative_a(self, x0, x1):
+    def derivative_a(self, x0, _):
         a = self.get('a')
         return 2 * (a - 5.0) * x0
 
-    def derivative_b(self, x0, x1):
+    def derivative_b(self, _, x1):
         b = self.get('b')
         return 2 * (b + 5.0) * x1
 
@@ -25,6 +23,6 @@ f = Quadratic()
 x0 = 2.3
 x1 = 1.0
 f.set_data((x0, x1))
-minimize(f)
+minimize(f.feed())
 
 print("Optimum found: (%g, %g)" % (f.get('a'), f.get('b')))
