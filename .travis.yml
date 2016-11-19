@@ -1,4 +1,5 @@
 language: python
+cache: ccache
 matrix:
   include:
   - os: linux
