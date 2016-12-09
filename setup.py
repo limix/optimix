@@ -22,18 +22,18 @@ def setup_package():
 
     setup_requires = [] + pytest_runner
     install_requires = ['pytest', 'scipy>=0.17', 'numpy>=1.9',
-                        'ndarray_listener>=1.0', 'brent_search>=1.0.7']
+                        'ndarray-listener>=1.0', 'brent-search>=1.0.7']
     tests_require = ['pytest']
 
     metadata = dict(
         name='optimix',
-        version='1.1.1',
+        version='1.1.2',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
         description="Abstract function optimisation.",
         long_description=long_description,
         license="MIT",
-        url='https://github.com/Horta/optimix',
+        url='https://github.com/glimix/optimix',
         packages=find_packages(),
         zip_safe=True,
         install_requires=install_requires,
