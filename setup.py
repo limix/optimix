@@ -1,13 +1,12 @@
 import os
 import sys
 
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
-except(IOError, ImportError):
+except (IOError, ImportError):
     long_description = open('README.md').read()
 
 
@@ -21,13 +20,15 @@ def setup_package():
     pytest_runner = ['pytest-runner'] if needs_pytest else []
 
     setup_requires = [] + pytest_runner
-    install_requires = ['pytest', 'scipy>=0.17', 'numpy>=1.9',
-                        'ndarray-listener>=1.0', 'brent-search>=1.0.7']
+    install_requires = [
+        'pytest', 'scipy>=0.17', 'numpy>=1.9', 'ndarray-listener>=1.0',
+        'brent-search>=1.0.7'
+    ]
     tests_require = ['pytest']
 
     metadata = dict(
         name='optimix',
-        version='1.1.2',
+        version='1.1.3dev0',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
         description="Abstract function optimisation.",
@@ -47,23 +48,14 @@ def setup_package():
             "Programming Language :: Python :: 3.4",
             "Programming Language :: Python :: 3.5",
             "Operating System :: OS Independent",
-        ],
-    )
-
-    try:
-        from distutils.command.bdist_conda import CondaDistribution
-    except ImportError:
-        pass
-    else:
-        metadata['distclass'] = CondaDistribution
-        metadata['conda_buildnum'] = 1
-        metadata['conda_features'] = ['mkl']
+        ], )
 
     try:
         setup(**metadata)
     finally:
         del sys.path[0]
         os.chdir(old_path)
+
 
 if __name__ == '__main__':
     setup_package()
