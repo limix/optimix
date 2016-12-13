@@ -10,7 +10,7 @@ Optimix's documentation
 
 You can get the source and open issues on `Github.`_
 
-.. _Github.: https://github.com/Horta/optimix
+.. _Github.: https://github.com/glimix/optimix
 
 *******
 Install
