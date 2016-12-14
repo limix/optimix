@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
-except (IOError, ImportError):
+except (OSError, IOError, ImportError):
     long_description = open('README.md').read()
 
 
@@ -21,14 +21,14 @@ def setup_package():
 
     setup_requires = [] + pytest_runner
     install_requires = [
-        'pytest', 'scipy>=0.17', 'numpy>=1.9', 'ndarray-listener>=1.0',
-        'brent-search>=1.0.7'
+        'pytest', 'scipy>=0.17', 'numpy>=1.9', 'ndarray-listener',
+        'brent-search'
     ]
     tests_require = ['pytest']
 
     metadata = dict(
         name='optimix',
-        version='1.1.3dev0',
+        version='1.1.3dev1',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
         description="Abstract function optimisation.",
@@ -45,7 +45,6 @@ def setup_package():
             "Development Status :: 5 - Production/Stable",
             "License :: OSI Approved :: MIT License",
             "Programming Language :: Python :: 2.7",
-            "Programming Language :: Python :: 3.4",
             "Programming Language :: Python :: 3.5",
             "Operating System :: OS Independent",
         ], )
