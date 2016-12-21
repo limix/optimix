@@ -1,35 +1,28 @@
 language: python
+sudo: required
+dist: trusty
 git:
   depth: 5
 matrix:
   include:
-  - os: linux
-    sudo: false
-    dist: trusty
-    python: '2.7'
-  - os: linux
-    sudo: false
-    dist: trusty
-    python: '3.5'
+  - python: 2.7
+  - python: 3.5
+before_install:
+  - travis/install_pandoc.sh
 script:
-- pip install pypandoc
-- python -c "from pypandoc import download_pandoc as dp; dp(targetfolder='~/bin/');"
-- export PATH=~/bin:$PATH
-- python setup.py sdist
-- pip install dist/`ls dist | grep -i -E '\.(gz)$' | head -1`
-- pushd /
-- python -c "import optimix; optimix.test()"
-- popd
-branches:
-  only:
-  - master
+  - python setup.py sdist
+  - pip install dist/`ls dist | grep -i -E '\.(gz)$' | head -1`
+  - pushd /
+  - python -c "import sys; import optimix; sys.exit(optimix.test())"
+  - popd
 notifications:
   email: false
 deploy:
   provider: pypi
+  skip_upload_docs: true
   user: dhorta
   password:
     secure: 1zpPL8o+AszhHeAbOIBHIBW979TFeHfnfP+8MSTVw8eQwksopz70BamgmmqcRQResnyH9eXw/wl0xmGtxklvSH5q2PW+QsmFPJveoJ1KVDZmW4g1Zt8zQEqen/TC73+d7SlMTf9TlBJBho7lko5NEeAwDSex20O35cnTGDRhYWOpkGbwP9s9Iulc/BQuTWWDPi+INfxCWjsPVzKfhtguKuzYb3VZQlwxb9VKuWUON16u+879CO35McGVXqqdiytLbfmzTjLJiJrI20pNkod9ZiBmzjYrbJeuTtNjAZm7cv5Q+tEdLVXoMJtOb4FgJnLq1p2aWlAb7vcmcjRUk5JymGDKKzOw+0xK7mUJPyMVi677KBD9wmFJ1P02u13y0s9ga/swLV1hyn2iJCgMVlvmEi2pvkSkQlwzvGcZkTmAMM1LhARdP1hS3+ITurxjSTjXZ4sqpFOWwo2zUeEaHjt93reAwrkem5ghj0HQ8vxHDhhx9YFkZxZeULrcveYokg4xQiIGV1fbGwmR9oIH4eMnhbPKiMawQPHO4qKcQBKt6N+/XXUBq35GYPrgqDz8eXP4ZgKhTPzN8FUAKQmnVVms5uYM2iES3j9R1T6SEC6nID8b92gBX14KR8e3yeHpg4wOxX9i/BZ3toRvYkkMdzVgmUOyns9VkBwY05juRmI/OaU=
   on:
-    distributions: sdist bdist_wheel
+    distributions: sdist
     repo: glimix/optimix
