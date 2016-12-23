@@ -21,14 +21,14 @@ def setup_package():
 
     setup_requires = [] + pytest_runner
     install_requires = [
-        'pytest', 'scipy>=0.17', 'numpy>=1.9', 'ndarray-listener',
-        'brent-search'
+        'scipy>=0.17', 'numpy>=1.9', 'ndarray-listener>=1.0.18',
+        'brent-search>=1.0.17'
     ]
-    tests_require = ['pytest']
+    tests_require = ['pytest>=3']
 
     metadata = dict(
         name='optimix',
-        version='1.1.3',
+        version='1.1.4',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
         description="Abstract function optimisation.",
