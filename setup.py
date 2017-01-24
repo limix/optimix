@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 try:
     import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
+    long_description = pypandoc.convert_file('README.md', 'rst')
 except (OSError, IOError, ImportError):
     long_description = open('README.md').read()
 
@@ -28,7 +28,7 @@ def setup_package():
 
     metadata = dict(
         name='optimix',
-        version='1.1.4',
+        version='1.1.5.rc0',
         maintainer="Danilo Horta",
         maintainer_email="horta@ebi.ac.uk",
         description="Abstract function optimisation.",
@@ -44,8 +44,6 @@ def setup_package():
         classifiers=[
             "Development Status :: 5 - Production/Stable",
             "License :: OSI Approved :: MIT License",
-            "Programming Language :: Python :: 2.7",
-            "Programming Language :: Python :: 3.5",
             "Operating System :: OS Independent",
         ], )
 
