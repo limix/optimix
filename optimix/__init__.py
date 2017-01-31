@@ -5,6 +5,7 @@ from .check_grad import approx_fprime, check_grad
 from .function import Composite, Function, FunctionReduce
 from .optimize import maximize, maximize_scalar, minimize, minimize_scalar
 from .types import Matrix, Scalar, Vector
+from . import testing
 
 try:
     __version__ = _get_distribution('optimix').version

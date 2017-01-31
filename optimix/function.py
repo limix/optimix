@@ -30,6 +30,13 @@ class Function(object):
             grad.append(g)
         return grad
 
+    def get_derivative_list(self):
+        names = sorted(self._variables.select(fixed=False).names())
+        derivative_list = []
+        for name in names:
+            derivative_list.append('derivative_' + name)
+        return derivative_list
+
     def fix(self, var_name):
         self._variables[var_name].fix()
 

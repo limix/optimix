@@ -38,25 +38,29 @@ class Assertion(object):
         for cx in containers:
             for cy in containers:
                 f = func()
-                self._assert_shape(f.value(cx[0], cy[0]), cx[1], cy[1])
+                self._assert_value_shape(f.value(cx[0], cy[0]), cx[1], cy[1])
 
-    # def assert_gradient_shape(self):
-    #
-    #     func = self._func
-    #     item0 = self._item0
-    #     item1 = self._item1
-    #
-    #     containers = [(item0, "item"), ([item0], "vector"),
-    #                   (_compact([item0]), "vector"),
-    #                   ([item0, item1], "vector"),
-    #                   (_compact([item0, item1]), "vector")]
-    #
-    #     for cx in containers:
-    #         for cy in containers:
-    #             f = func()
-    #             self._assert_shape(f.value(cx[0], cy[0]), cx[1], cy[1])
+    def assert_derivative_shape(self):
 
-    def _assert_shape(self, value, cx, cy):
+        func = self._func
+        item0 = self._item0
+        item1 = self._item1
+
+        containers = [(item0, "item"), ([item0], "vector"),
+                      (_compact([item0]), "vector"),
+                      ([item0, item1], "vector"),
+                      (_compact([item0, item1]), "vector")]
+
+        derivative_names = func.get_derivative_list()
+
+        for dn in derivative_names:
+            for cx in containers:
+                for cy in containers:
+                    f = func()
+                    d = getattr(f, dn)(cx[0], cy[0])
+                    self._assert_derivative_shape(d, cx[1], cy[1], dn)
+
+    def _assert_value_shape(self, value, cx, cy):
         def errmsg(premiss):
             return "Interface premiss %s violated." % premiss
 
@@ -72,3 +76,24 @@ class Assertion(object):
         elif cx == "vector" and cy == "vector":
             if not self._ismatrix(value):
                 raise AssertionError(errmsg("value(vector, vector) -> matrix"))
+
+    def _assert_derivative_shape(self, derivative, cx, cy, derivative_name):
+        def errmsg(premiss):
+            return "Interface premiss %s violated." % premiss
+
+        if cx == "item" and cy == "item":
+            if not self._isitem(gradient):
+                raise AssertionError(
+                    errmsg("%s(item, item) -> item" % derivative_name))
+        elif cx == "item" and cy == "vector":
+            if not self._isvector(derivative):
+                raise AssertionError(
+                    errmsg("%s(item, vector) -> vector" % derivative_name))
+        elif cx == "vector" and cy == "item":
+            if not self._isvector(derivative):
+                raise AssertionError(
+                    errmsg("%s(vector, item) -> vector" % derivative_name))
+        elif cx == "vector" and cy == "vector":
+            if not self._ismatrix(derivative):
+                raise AssertionError(
+                    errmsg("%s(vector, vector) -> matrix" % derivative_name))
