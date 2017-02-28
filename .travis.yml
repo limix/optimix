@@ -20,6 +20,7 @@ notifications:
   email: false
 deploy:
   provider: pypi
+  skip_cleanup: true
   skip_upload_docs: true
   user: dhorta
   password:
