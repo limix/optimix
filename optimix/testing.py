@@ -101,7 +101,7 @@ class Assertion(object):
 
                     pf = ProxyFunction(f)
                     x0 = pf.get_solution()
-                    print(check_grad(func, grad, x0))
+                    # print(check_grad(func, grad, x0))
 
             # TODO: finish this
             # npt.assert_almost_equal(check_grad(func, grad, [2.0]), 0, decimal=6)
