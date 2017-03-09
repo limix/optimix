@@ -1,5 +1,4 @@
-import sys
-
+"""Wrapper for Brent search."""
 from numpy import asarray
 
 from brent_search import minimize as brent_minimize
@@ -37,8 +36,14 @@ def _minimize(proxy_function):
 
 
 def minimize(function, progress=False):
+    t = function.variables().select(fixed=False)
+    if len(t) == 0:
+        return function.variables().flatten()[0]
     return _minimize(ProxyFunction(function, progress, False))
 
 
 def maximize(function, progress=False):
+    t = function.variables().select(fixed=False)
+    if len(t) == 0:
+        return function.variables().flatten()[0]
     return _minimize(ProxyFunction(function, progress, True))
