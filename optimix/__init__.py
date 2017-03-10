@@ -21,8 +21,11 @@ def test():
     os.chdir(src_path)
 
     try:
-        return_code = __import__('pytest').main([])
+        return_code = __import__('pytest').main(['-q', '--doctest-modules'])
     finally:
         os.chdir(old_path)
+
+    if return_code == 0:
+        print("Congratulations. All tests have passed!")
 
     return return_code
