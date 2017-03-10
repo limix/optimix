@@ -18,11 +18,3 @@ script:
 - popd
 notifications:
   email: false
-deploy:
-  provider: pypi
-  user: dhorta
-  password:
-    secure: k+gJC9LCnIJdoOzte8hagJ/8zlJ7V6ujl6gAGK+XqdSyjzQKK0kV9KUxyBC/LmbyWE9wR3IQY9bteatVuGC3EZPkGwM3fTU8woYO511y+i7+HX5jAkpNA1SGBcIb3y4iZlm4i+RLaET1mMdHftaJK+D/2r98ruLMCdaLP5g9AHlDUFVW1dLqxTtwa6xN4xRDTnxhaMOhVbc0jg/CcTOJUOklTNm6OdZJmU1kQ7xlwYwbszMLSSdMVHf4vUSB44onrXSyopzeNg+74oi0befv3vgXcrP14KQaQMbOuyzWMIHJv00VmgOUe44aAR9eM+YvulUZHFsHdgUJ9M7wLH2G0BBWtPFTCEpMy6gPd+7aCP0wUU0RN+0cYIiAAu3AtS7p3StCHWLljdMwBxjJuuff5Ji+t782py5Wmi2SREGff2LlmuCjfJGbc7W6d8vNRAFBKXZYZ2qzdJdF26Ep6yLA5jVn0hLiEpvO+Vbqq7oUT2YsU3+CQR+laN0qMwZA21d4vwPhnWeFeEQnKRkbSROODOY7pjxxvFx4MN7f6Sc3saXg7FTLfB30ixkXU0G5UebYhoDPMaMYce8FZi0tpELMOVE0r3dTL1w3wXGwmruBzJBHWTb4Bi+j0CRgmJ1GpJn0N/RtSRlboyzMaffqhM5M0n6/7ROyvk4le/NwlEWX+mY=
-  on:
-    repo: glimix/optimix
-    branch: 1.1.x
