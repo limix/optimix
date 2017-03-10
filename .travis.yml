@@ -9,22 +9,20 @@ matrix:
   - python: 3.5
   - python: 3.6
 before_install:
-  - travis/install_pandoc.sh
+- travis/install_pandoc.sh
 script:
-  - python setup.py sdist bdist_wheel
-  - pip install dist/`ls dist | grep -i -E '\.(gz)$' | head -1`
-  - pushd /
-  - python -c "import sys; import optimix; sys.exit(optimix.test())"
-  - popd
+- python setup.py sdist bdist_wheel
+- pip install dist/`ls dist | grep -i -E '\.(gz)$' | head -1`
+- pushd /
+- python -c "import sys; import optimix; sys.exit(optimix.test())"
+- popd
 notifications:
   email: false
 deploy:
   provider: pypi
-  skip_cleanup: true
-  skip_upload_docs: true
   user: dhorta
   password:
-    secure: 1zpPL8o+AszhHeAbOIBHIBW979TFeHfnfP+8MSTVw8eQwksopz70BamgmmqcRQResnyH9eXw/wl0xmGtxklvSH5q2PW+QsmFPJveoJ1KVDZmW4g1Zt8zQEqen/TC73+d7SlMTf9TlBJBho7lko5NEeAwDSex20O35cnTGDRhYWOpkGbwP9s9Iulc/BQuTWWDPi+INfxCWjsPVzKfhtguKuzYb3VZQlwxb9VKuWUON16u+879CO35McGVXqqdiytLbfmzTjLJiJrI20pNkod9ZiBmzjYrbJeuTtNjAZm7cv5Q+tEdLVXoMJtOb4FgJnLq1p2aWlAb7vcmcjRUk5JymGDKKzOw+0xK7mUJPyMVi677KBD9wmFJ1P02u13y0s9ga/swLV1hyn2iJCgMVlvmEi2pvkSkQlwzvGcZkTmAMM1LhARdP1hS3+ITurxjSTjXZ4sqpFOWwo2zUeEaHjt93reAwrkem5ghj0HQ8vxHDhhx9YFkZxZeULrcveYokg4xQiIGV1fbGwmR9oIH4eMnhbPKiMawQPHO4qKcQBKt6N+/XXUBq35GYPrgqDz8eXP4ZgKhTPzN8FUAKQmnVVms5uYM2iES3j9R1T6SEC6nID8b92gBX14KR8e3yeHpg4wOxX9i/BZ3toRvYkkMdzVgmUOyns9VkBwY05juRmI/OaU=
+    secure: k+gJC9LCnIJdoOzte8hagJ/8zlJ7V6ujl6gAGK+XqdSyjzQKK0kV9KUxyBC/LmbyWE9wR3IQY9bteatVuGC3EZPkGwM3fTU8woYO511y+i7+HX5jAkpNA1SGBcIb3y4iZlm4i+RLaET1mMdHftaJK+D/2r98ruLMCdaLP5g9AHlDUFVW1dLqxTtwa6xN4xRDTnxhaMOhVbc0jg/CcTOJUOklTNm6OdZJmU1kQ7xlwYwbszMLSSdMVHf4vUSB44onrXSyopzeNg+74oi0befv3vgXcrP14KQaQMbOuyzWMIHJv00VmgOUe44aAR9eM+YvulUZHFsHdgUJ9M7wLH2G0BBWtPFTCEpMy6gPd+7aCP0wUU0RN+0cYIiAAu3AtS7p3StCHWLljdMwBxjJuuff5Ji+t782py5Wmi2SREGff2LlmuCjfJGbc7W6d8vNRAFBKXZYZ2qzdJdF26Ep6yLA5jVn0hLiEpvO+Vbqq7oUT2YsU3+CQR+laN0qMwZA21d4vwPhnWeFeEQnKRkbSROODOY7pjxxvFx4MN7f6Sc3saXg7FTLfB30ixkXU0G5UebYhoDPMaMYce8FZi0tpELMOVE0r3dTL1w3wXGwmruBzJBHWTb4Bi+j0CRgmJ1GpJn0N/RtSRlboyzMaffqhM5M0n6/7ROyvk4le/NwlEWX+mY=
   on:
-    distributions: sdist
     repo: glimix/optimix
+    branch: 1.1.x
