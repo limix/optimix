@@ -13,7 +13,7 @@ from quadratic_functions import (Quadratic1Scalar1, Quadratic1Scalar2,
 def test_quadratic1scalar1_layout():
     f = Quadratic1Scalar1()
     f.set_data(1.2)
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.get('scale'), 5.0)
     f.set('scale', 1.0)
 
@@ -23,7 +23,7 @@ def test_quadratic2scalar1_layout():
     x1 = 2.3
     x2 = 1.0
     f.set_data((x1, x2))
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.get('scale'), 5.0)
 
 
@@ -32,7 +32,7 @@ def test_quadratic2scalar1_layout2():
     x1 = 2.3
     x2 = 1.0
     f.set_data((x1, x2))
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.get('scale'), 5.0)
 
 
@@ -41,7 +41,7 @@ def test_quadratic3scalar1_layout():
     x1 = array([1.5, 1.0, 0.0])
     x2 = array([1.5, 1.0, 0.0])
     f.set_data((x1, x2))
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.get('scale'), 5.0)
 
 
@@ -50,7 +50,7 @@ def test_quadratic4scalar1_layout():
     x1 = array([[1.5, 1.0, 0.0], [1.5, 5.0, 0.0]])
     x2 = array([[-1.5, 1.0, 0.0], [1.5, 5.0, 0.0]])
     f.set_data((x1, x2))
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.get('scale'), 5.0)
 
 
@@ -58,7 +58,7 @@ def test_quadratic1scalar2_layout():
     f = Quadratic1Scalar2()
     x = 1.2
     f.set_data(x)
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.get('a'), 4.99999999927461)
     assert_almost_equal(f.get('b'), -0.408820867345221)
 
@@ -68,7 +68,7 @@ def test_quadratic2scalar2_layout():
     x1 = 2.3
     x2 = 1.0
     f.set_data((x1, x2))
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.get('a'), 5.000000014635099)
     assert_almost_equal(f.get('b'), -4.999999925540513)
 
@@ -78,7 +78,7 @@ def test_quadratic3scalar2_layout():
     x1 = array([1.5, 1.0, 0.0])
     x2 = array([1.5, 1.0, 0.0])
     f.set_data((x1, x2))
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.get('a'), 4.99999999927461)
     assert_almost_equal(f.get('b'), -0.408820867345222)
 
@@ -88,7 +88,7 @@ def test_quadratic4scalar2_layout():
     x1 = array([[1.5, 1.0, 0.0], [1.5, 5.0, 0.0]])
     x2 = array([[-1.5, 1.0, 0.0], [1.5, 5.0, 0.0]])
     f.set_data((x1, x2))
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.get('a'), 5.0)
     assert_almost_equal(f.get('b'), -0.4088208673452219)
 
@@ -100,7 +100,7 @@ def test_quadratic1scalar1_reduce_layout():
     f1.set_data(1.2)
     f2.set_data(+4.2)
     assert_almost_equal(f.feed().value(), 43.2)
-    f.feed().minimize()
+    f.feed().minimize(progress=False)
     assert_almost_equal(f.feed().value(), 0)
     assert_almost_equal(f1.get('scale'), 5, decimal=6)
     assert_almost_equal(f2.get('scale'), 5, decimal=6)
@@ -155,7 +155,7 @@ def test_composite():
     assert_allclose(sa.gradient(), [-4.5, 2.5600000000000005])
 
 
-def test_composite_minimize():
+def test_composite_minimize(progress=False):
     f1 = Quadratic1Scalar1()
     f2 = Quadratic2Scalar1()
 
@@ -180,7 +180,7 @@ def test_composite_minimize():
     f2.set_data([+0.2, 3.2])
 
     sa = s.feed()
-    sa.minimize()
+    sa.minimize(progress=False)
     assert_allclose(sa.value(), 0, atol=1e-6)
     assert_allclose(sa.gradient(), [0, 0], atol=1e-6)
 

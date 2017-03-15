@@ -68,6 +68,9 @@ class FunctionReduce(object):
         self.functions = functions
         self.__prefix = prefix
 
+    def operand(self, i):
+        return self.functions[i]
+
     def feed(self, purpose='learn'):
         purpose = unicode_airlock(purpose)
         fs = [f.feed(purpose) for f in self.functions]
