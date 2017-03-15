@@ -12,6 +12,7 @@ try:
 except _DistributionNotFound:
     __version__ = 'unknown'
 
+from .exception import OptimixError
 
 def test():
     import os

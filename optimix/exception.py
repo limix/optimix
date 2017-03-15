@@ -1,0 +1,2 @@
+class OptimixError(Exception):
+    pass
