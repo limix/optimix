@@ -1,4 +1,3 @@
-from numpy import zeros
 from numpy import array
 from numpy.testing import assert_almost_equal
 

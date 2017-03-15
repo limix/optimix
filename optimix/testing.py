@@ -1,5 +1,6 @@
 from numpy import asarray as _asarray
 from numpy import concatenate as _concat
+from numpy import stack
 from .check_grad import check_grad
 
 def _ni(v):
@@ -7,8 +8,7 @@ def _ni(v):
 
 
 def _compact(x):
-    from numpy import vstack
-    return vstack(x)
+    return stack(x, axis=0)
 
 def _do_flatten(x):
     if isinstance(x, list) or isinstance(x, tuple):

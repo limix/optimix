@@ -1,4 +1,5 @@
 from numpy.linalg import norm
+from numpy import dot, transpose, newaxis, asarray
 
 from optimix import Function
 from optimix import Scalar
@@ -26,11 +27,15 @@ class Quadratic2Scalar1(Function):
 
     def value(self, x0, x1):
         s = self.get('scale')
-        return (s - 5.0)**2 * x0 * x1 / 2.0
+        x0 = asarray(x0)[..., newaxis]
+        x1 = asarray(x1)[..., newaxis]
+        return (s - 5.0)**2 * dot(x0, transpose(x1)) / 2.0
 
     def derivative_scale(self, x0, x1):
         s = self.get('scale')
-        return (s - 5.0) * x0 * x1
+        x0 = asarray(x0)[..., newaxis]
+        x1 = asarray(x1)[..., newaxis]
+        return (s - 5.0) * dot(x0, transpose(x1))
 
 
 class Quadratic3Scalar1(Function):
