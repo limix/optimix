@@ -1,8 +1,8 @@
-from numpy import array, zeros
-from numpy.testing import (assert_almost_equal, assert_allclose)
+# pylint: disable=R0201,W0613
+from numpy import array
+from numpy.testing import assert_allclose, assert_almost_equal
+from optimix import Composite
 
-from optimix import (Composite, Function, Scalar, Vector, minimize,
-                     minimize_scalar)
 from quadratic_function_reduces import QuadraticScalarReduce
 from quadratic_functions import (Quadratic1Scalar1, Quadratic1Scalar2,
                                  Quadratic2Scalar1, Quadratic2Scalar2,
@@ -17,6 +17,7 @@ def test_quadratic1scalar1_layout():
     assert_almost_equal(f.get('scale'), 5.0)
     f.set('scale', 1.0)
 
+
 def test_quadratic2scalar1_layout():
     f = Quadratic2Scalar1()
     x1 = 2.3
@@ -24,6 +25,7 @@ def test_quadratic2scalar1_layout():
     f.set_data((x1, x2))
     f.feed().minimize()
     assert_almost_equal(f.get('scale'), 5.0)
+
 
 def test_quadratic2scalar1_layout2():
     f = Quadratic2Scalar1()
@@ -45,10 +47,8 @@ def test_quadratic3scalar1_layout():
 
 def test_quadratic4scalar1_layout():
     f = Quadratic4Scalar1()
-    x1 = array([[1.5, 1.0, 0.0],
-                [1.5, 5.0, 0.0]])
-    x2 = array([[-1.5, 1.0, 0.0],
-                [1.5, 5.0, 0.0]])
+    x1 = array([[1.5, 1.0, 0.0], [1.5, 5.0, 0.0]])
+    x2 = array([[-1.5, 1.0, 0.0], [1.5, 5.0, 0.0]])
     f.set_data((x1, x2))
     f.feed().minimize()
     assert_almost_equal(f.get('scale'), 5.0)
@@ -85,10 +85,8 @@ def test_quadratic3scalar2_layout():
 
 def test_quadratic4scalar2_layout():
     f = Quadratic4Scalar2()
-    x1 = array([[1.5, 1.0, 0.0],
-                [1.5, 5.0, 0.0]])
-    x2 = array([[-1.5, 1.0, 0.0],
-                [1.5, 5.0, 0.0]])
+    x1 = array([[1.5, 1.0, 0.0], [1.5, 5.0, 0.0]])
+    x2 = array([[-1.5, 1.0, 0.0], [1.5, 5.0, 0.0]])
     f.set_data((x1, x2))
     f.feed().minimize()
     assert_almost_equal(f.get('a'), 5.0)
@@ -113,7 +111,6 @@ def test_composite():
     f2 = Quadratic2Scalar1()
 
     class SumFunction(Composite):
-
         def __init__(self, f1, f2):
             super(SumFunction, self).__init__(f1=f1, f2=f2)
             self._f1 = f1
@@ -129,19 +126,26 @@ def test_composite():
             return gf2
 
     s = SumFunction(f1, f2)
-    assert_allclose(s.value(f1.value(1.5), f2.value(-0.2, 3.2)),
-                    6.879999999999999)
+    assert_allclose(
+        s.value(f1.value(1.5), f2.value(-0.2, 3.2)), 6.879999999999999)
     f1.set('scale', 2.0)
-    assert_allclose(s.value(f1.value(1.5), f2.value(-0.2, 3.2)),
-                    1.629999999999999)
-    assert_allclose(s.gradient_f1(f1.value(1.5), f2.value(-0.2, 3.2),
-                    f1.gradient(1.5), f2.gradient(-0.2, 3.2)), [-4.5])
-    assert_allclose(s.gradient_f2(f1.value(1.5), f2.value(-0.2, 3.2),
-                    f1.gradient(1.5), f2.gradient(-0.2, 3.2)),
-                    [2.5600000000000005])
-    assert_allclose(s.gradient(f1.value(1.5), f2.value(-0.2, 3.2),
-                    f1.gradient(1.5), f2.gradient(-0.2, 3.2)),
-                    [-4.5, 2.5600000000000005])
+    assert_allclose(
+        s.value(f1.value(1.5), f2.value(-0.2, 3.2)), 1.629999999999999)
+    assert_allclose(
+        s.gradient_f1(
+            f1.value(1.5),
+            f2.value(-0.2, 3.2), f1.gradient(1.5), f2.gradient(-0.2, 3.2)),
+        [-4.5])
+    assert_allclose(
+        s.gradient_f2(
+            f1.value(1.5),
+            f2.value(-0.2, 3.2), f1.gradient(1.5), f2.gradient(-0.2, 3.2)),
+        [2.5600000000000005])
+    assert_allclose(
+        s.gradient(
+            f1.value(1.5),
+            f2.value(-0.2, 3.2), f1.gradient(1.5), f2.gradient(-0.2, 3.2)),
+        [-4.5, 2.5600000000000005])
 
     f1.set_data(1.5)
     f2.set_data([-0.2, 3.2])
@@ -150,12 +154,12 @@ def test_composite():
     assert_allclose(sa.value(), 1.629999999999999)
     assert_allclose(sa.gradient(), [-4.5, 2.5600000000000005])
 
+
 def test_composite_minimize():
     f1 = Quadratic1Scalar1()
     f2 = Quadratic2Scalar1()
 
     class SumFunction(Composite):
-
         def __init__(self, f1, f2):
             super(SumFunction, self).__init__(f1=f1, f2=f2)
             self._f1 = f1
@@ -179,7 +183,6 @@ def test_composite_minimize():
     sa.minimize()
     assert_allclose(sa.value(), 0, atol=1e-6)
     assert_allclose(sa.gradient(), [0, 0], atol=1e-6)
-
 
 
 if __name__ == '__main__':

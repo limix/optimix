@@ -1,7 +1,10 @@
 from numpy import asarray as _asarray
 from numpy import concatenate as _concat
 from numpy import stack
+from numpy.testing import assert_allclose
+
 from .check_grad import check_grad
+
 
 def _ni(v):
     return next(iter(v))
@@ -10,14 +13,14 @@ def _ni(v):
 def _compact(x):
     return stack(x, axis=0)
 
+
 def _do_flatten(x):
-    if isinstance(x, list) or isinstance(x, tuple):
+    if isinstance(x, (list, tuple)):
         return _concat([_asarray(xi).ravel() for xi in x])
     return _concat(x)
 
 
-class ProxyFunction(object):
-
+class _ProxyFunction(object):
     def __init__(self, function):
         self._function = function
 
@@ -42,6 +45,33 @@ class ProxyFunction(object):
         return self._function.variables().select(fixed=False).flatten()
 
 
+def _isitem(v, e):
+    return isinstance(v, type(e))
+
+
+def _isvector(v, e):
+    return not _isitem(v, e) and _isitem(_ni(v), e)
+
+
+def _ismatrix(v, e):
+    return not _isitem(v, e) and not _isvector(v, e) and _ni(_ni(v))
+
+
+class FuncGrad(object):
+    def __init__(self, f):
+        self._f = f
+
+    def func(self, x):
+        t = self._f.variables().select(fixed=False)
+        t.from_flat(_asarray(x).ravel())
+        return self._f.feed().value()
+
+    def grad(self, x):
+        t = self._f.variables().select(fixed=False)
+        t.from_flat(_asarray(x).ravel())
+        return self._f.feed().gradient()
+
+
 class Assertion(object):
     def __init__(self, func, item0, item1, value_example,
                  **derivative_examples):
@@ -53,15 +83,6 @@ class Assertion(object):
             'derivative_' + k: v
             for (k, v) in iter(derivative_examples.items())
         }
-
-    def _isitem(self, v, e):
-        return isinstance(v, type(e))
-
-    def _isvector(self, v, e):
-        return not self._isitem(v, e) and self._isitem(_ni(v), e)
-
-    def _ismatrix(self, v, e):
-        return not self._isitem(v, e) and not self._isvector(v, e) and _ni(_ni(v))
 
     def _get_containers(self):
         item0 = self._item0
@@ -80,31 +101,15 @@ class Assertion(object):
 
     def assert_gradient(self):
         containers = self._get_containers()
-        derivative_names = self._func().get_derivative_list()
 
-        for dn in derivative_names:
-            for cx in containers:
-                for cy in containers:
-
-                    f = self._func()
-                    f.set_data((cx[0], cy[0]))
-
-                    def func(x):
-                        t = f.variables().select(fixed=False)
-                        t.from_flat(_asarray(x).ravel())
-                        return f.feed().value()
-
-                    def grad(x):
-                        t = f.variables().select(fixed=False)
-                        t.from_flat(_asarray(x).ravel())
-                        return f.feed().gradient()
-
-                    pf = ProxyFunction(f)
-                    x0 = pf.get_solution()
-                    # print(check_grad(func, grad, x0))
-
-            # TODO: finish this
-            # npt.assert_almost_equal(check_grad(func, grad, [2.0]), 0, decimal=6)
+        for cx in containers:
+            for cy in containers:
+                f = self._func()
+                f.set_data((cx[0], cy[0]))
+                fg = FuncGrad(f)
+                pf = _ProxyFunction(f)
+                x0 = pf.get_solution()
+                assert_allclose(check_grad(fg.func, fg.grad, x0), 0, atol=1e-7)
 
     def _assert_value_shape(self):
 
@@ -114,7 +119,7 @@ class Assertion(object):
         for cx in containers:
             for cy in containers:
                 f = func()
-                self.__assert_value_shape(f.value(cx[0], cy[0]), cx[1], cy[1])
+                self._assert_valshape_msg(f.value(cx[0], cy[0]), cx[1], cy[1])
 
     def _assert_derivative_shape(self):
 
@@ -129,46 +134,46 @@ class Assertion(object):
                 for cy in containers:
                     f = func()
                     d = getattr(f, dn)(cx[0], cy[0])
-                    self.__assert_derivative_shape(d, cx[1], cy[1], dn)
+                    self._assert_dershape_message(d, cx[1], cy[1], dn)
 
-    def __assert_value_shape(self, value, cx, cy):
+    def _assert_valshape_msg(self, value, cx, cy):
         def errmsg(premiss):
             return "Interface premiss %s violated." % premiss
 
         if cx == "item" and cy == "item":
-            if not self._isitem(value, self._value_example):
+            if not _isitem(value, self._value_example):
                 raise AssertionError(errmsg("value(item, item) -> item"))
         elif cx == "item" and cy == "vector":
-            if not self._isvector(value, self._value_example):
+            if not _isvector(value, self._value_example):
                 raise AssertionError(errmsg("value(item, vector) -> vector"))
         elif cx == "vector" and cy == "item":
-            if not self._isvector(value, self._value_example):
+            if not _isvector(value, self._value_example):
                 raise AssertionError(errmsg("value(vector, item) -> vector"))
         elif cx == "vector" and cy == "vector":
-            if not self._ismatrix(value, self._value_example):
+            if not _ismatrix(value, self._value_example):
                 raise AssertionError(errmsg("value(vector, vector) -> matrix"))
 
-    def __assert_derivative_shape(self, derivative, cx, cy, derivative_name):
+    def _assert_dershape_message(self, derivative, cx, cy, derivative_name):
         def errmsg(premiss):
             return "Interface premiss %s violated." % premiss
 
         if cx == "item" and cy == "item":
-            if not self._isitem(derivative,
-                                self._derivative_examples[derivative_name]):
+            if not _isitem(derivative,
+                           self._derivative_examples[derivative_name]):
                 raise AssertionError(
                     errmsg("%s(item, item) -> item" % derivative_name))
         elif cx == "item" and cy == "vector":
-            if not self._isvector(derivative,
-                                  self._derivative_examples[derivative_name]):
+            if not _isvector(derivative,
+                             self._derivative_examples[derivative_name]):
                 raise AssertionError(
                     errmsg("%s(item, vector) -> vector" % derivative_name))
         elif cx == "vector" and cy == "item":
-            if not self._isvector(derivative,
-                                  self._derivative_examples[derivative_name]):
+            if not _isvector(derivative,
+                             self._derivative_examples[derivative_name]):
                 raise AssertionError(
                     errmsg("%s(vector, item) -> vector" % derivative_name))
         elif cx == "vector" and cy == "vector":
-            if not self._ismatrix(derivative,
-                                  self._derivative_examples[derivative_name]):
+            if not _ismatrix(derivative,
+                             self._derivative_examples[derivative_name]):
                 raise AssertionError(
                     errmsg("%s(vector, vector) -> matrix" % derivative_name))

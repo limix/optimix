@@ -1,24 +1,9 @@
-from numpy import zeros
 from numpy import array
 from numpy.testing import assert_almost_equal
 
-from quadratic_functions import Quadratic1Scalar1
-from quadratic_functions import Quadratic2Scalar1
-from quadratic_functions import Quadratic3Scalar1
-from quadratic_functions import Quadratic4Scalar1
-
-from quadratic_functions import Quadratic1Scalar2
-from quadratic_functions import Quadratic2Scalar2
-from quadratic_functions import Quadratic3Scalar2
-from quadratic_functions import Quadratic4Scalar2
-
-from vector_valued_functions import VectorValued1Scalar1
-from vector_valued_functions import VectorValued2Scalar1
-from vector_valued_functions import VectorValued1Scalar2
-from vector_valued_functions import VectorValued2Scalar2
-
-
 from quadratic_function_reduces import QuadraticScalarReduce
+from quadratic_functions import Quadratic1Scalar1
+from vector_valued_functions import VectorValued1Scalar1
 
 
 def test_quadratic1scalar1_layout():
@@ -47,8 +32,9 @@ def test_vectorvalued1scalar1_layout():
 
     f = f.feed()
     assert_almost_equal(f.value(), [24., 0., 0.])
-    assert_almost_equal(f.gradient(), [array([-6., -4., -0.]),
-                                       array([-6.,  4., -0.])])
+    assert_almost_equal(f.gradient(),
+                        [array([-6., -4., -0.]), array([-6., 4., -0.])])
+
 
 if __name__ == '__main__':
     __import__('pytest').main([__file__, '-s'])

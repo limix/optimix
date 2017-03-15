@@ -1,13 +1,9 @@
+from numpy import asarray, dot, newaxis, transpose
 from numpy.linalg import norm
-from numpy import dot, transpose, newaxis, asarray
-
-from optimix import Function
-from optimix import Scalar
-from optimix import Vector
+from optimix import Function, Scalar
 
 
 class Quadratic1Scalar1(Function):
-
     def __init__(self):
         super(Quadratic1Scalar1, self).__init__(scale=Scalar(1.0))
 
@@ -21,7 +17,6 @@ class Quadratic1Scalar1(Function):
 
 
 class Quadratic2Scalar1(Function):
-
     def __init__(self):
         super(Quadratic2Scalar1, self).__init__(scale=Scalar(1.0))
 
@@ -39,7 +34,6 @@ class Quadratic2Scalar1(Function):
 
 
 class Quadratic3Scalar1(Function):
-
     def __init__(self):
         super(Quadratic3Scalar1, self).__init__(scale=Scalar(1.0))
 
@@ -53,7 +47,6 @@ class Quadratic3Scalar1(Function):
 
 
 class Quadratic4Scalar1(Function):
-
     def __init__(self):
         super(Quadratic4Scalar1, self).__init__(scale=Scalar(1.0))
 
@@ -67,7 +60,6 @@ class Quadratic4Scalar1(Function):
 
 
 class Quadratic1Scalar2(Function):
-
     def __init__(self):
         super(Quadratic1Scalar2, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
 
@@ -88,7 +80,6 @@ class Quadratic1Scalar2(Function):
 
 
 class Quadratic2Scalar2(Function):
-
     def __init__(self):
         super(Quadratic2Scalar2, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
 
@@ -107,7 +98,6 @@ class Quadratic2Scalar2(Function):
 
 
 class Quadratic3Scalar2(Function):
-
     def __init__(self):
         super(Quadratic3Scalar2, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
 
@@ -128,7 +118,6 @@ class Quadratic3Scalar2(Function):
 
 
 class Quadratic4Scalar2(Function):
-
     def __init__(self):
         super(Quadratic4Scalar2, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
 
