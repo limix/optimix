@@ -1,6 +1,7 @@
 from pkg_resources import DistributionNotFound as _DistributionNotFound
 from pkg_resources import get_distribution as _get_distribution
 
+from .exception import OptimixError
 from . import testing
 from .check_grad import approx_fprime, check_grad
 from .function import Composite, Function, FunctionReduce
@@ -11,8 +12,6 @@ try:
     __version__ = _get_distribution('optimix').version
 except _DistributionNotFound:
     __version__ = 'unknown'
-
-from .exception import OptimixError
 
 def test():
     import os
