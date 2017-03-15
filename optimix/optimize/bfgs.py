@@ -11,9 +11,10 @@ def do_flatten(x):
 
 
 class ProxyFunction(object):
-    def __init__(self, function, _, negative):
+    def __init__(self, function, progress, negative):
         self._function = function
         self._signal = -1 if negative else +1
+        self.progress = progress
 
     def value(self):
         return self._signal * self._function.value()
@@ -38,7 +39,8 @@ class ProxyFunction(object):
 
 def _minimize(proxy_function):
     x0 = proxy_function.get_solution()
-    r = fmin_l_bfgs_b(proxy_function, x0, disp=0)
+    disp = 1 if proxy_function.progress else 0
+    r = fmin_l_bfgs_b(proxy_function, x0, disp=disp)
     if r[2]['warnflag'] == 1:
         raise OptimixError("BFGS: too many function evaluations" +
                            " or too many iterations")
@@ -48,9 +50,9 @@ def _minimize(proxy_function):
     proxy_function.set_solution(r[0])
 
 
-def minimize(function, progress=None):
+def minimize(function, progress=True):
     return _minimize(ProxyFunction(function, progress, False))
 
 
-def maximize(function, progress=None):
+def maximize(function, progress=True):
     return _minimize(ProxyFunction(function, progress, True))
