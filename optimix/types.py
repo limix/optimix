@@ -1,8 +1,6 @@
 from __future__ import unicode_literals
 
-from numpy import array
-from numpy import asarray
-from numpy import atleast_1d
+from numpy import array, asarray, atleast_1d
 
 from ndarray_listener import ndarray_listener
 
@@ -67,8 +65,10 @@ class Scalar(object):
 
 class Vector(object):
 
-    __slots__ = ['raw', '_listeners', '_fixed', '__array_interface__',
-                 '__array_struct__']
+    __slots__ = [
+        'raw', '_listeners', '_fixed', '__array_interface__',
+        '__array_struct__'
+    ]
 
     def __init__(self, value):
         self._listeners = []
@@ -103,9 +103,10 @@ class Vector(object):
     def __setattr__(self, name, value):
         if name == 'value':
             if not hasattr(value, "__array_interface__"):
-                raise TypeError(("'%s'" % type(value)) +
-                                " object has no attribute" +
-                                " '__array_interface__'")
+                msg = "'%s'" % type(value)
+                msg += " object has no attribute"
+                msg += " '__array_interface__'"
+                raise TypeError(msg)
             Vector.__dict__['raw'].__set__(self, value)
             t = Vector.__dict__['__array_interface__']
             t.__set__(self, value.__array_interface__)

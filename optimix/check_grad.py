@@ -1,10 +1,6 @@
 from __future__ import division
 
-from numpy import asarray
-from numpy import zeros
-from numpy import zeros_like
-from numpy import finfo
-from numpy import sqrt
+from numpy import asarray, finfo, sqrt, zeros, zeros_like
 
 _step = sqrt(finfo(float).eps)
 

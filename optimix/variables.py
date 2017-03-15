@@ -4,10 +4,6 @@ from numpy import concatenate
 
 
 class Variables(dict):
-
-    def __init__(self, *args, **kw):
-        super(Variables, self).__init__(*args, **kw)
-
     def new(self):
         return Variables({name: None for name in self.names()})
 
@@ -38,13 +34,9 @@ class Variables(dict):
 
     def __str__(self):
         msg = 'Variables('
-        if len(self) == 0:
-            return msg + ')'
-
         names = sorted(self.names())
 
-        for i in range(len(names)):
-            n = names[i]
+        for i, n in enumerate(names):
             v = self[n]
             if i > 0:
                 msg += '          '
