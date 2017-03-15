@@ -11,7 +11,7 @@ def do_flatten(x):
 
 
 class ProxyFunction(object):
-    def __init__(self, function, progress, negative):
+    def __init__(self, function, _, negative):
         self._function = function
         self._signal = -1 if negative else +1
 
