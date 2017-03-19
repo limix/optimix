@@ -5,25 +5,47 @@ from numpy import asarray, finfo, sqrt, zeros, zeros_like
 _step = sqrt(finfo(float).eps)
 
 
-def approx_fprime(xk, f, step=_step):
-    f0 = f(xk)
-    grad = [zeros_like(asarray(f0).ravel()) for i in range(len(xk))]
-    d = zeros(len(grad))
-    for k in range(len(xk)):
-        d[k] = step
-        grad[k][:] = asarray((f(xk + d) - f0) / step).ravel()
-        d[k] = 0
+# def approx_fprime(xk, f, step=_step):
+#     f0 = f(xk)
+#     grad = [zeros_like(asarray(f0).ravel()) for i in range(len(xk))]
+#     d = zeros(len(grad))
+#     for k in range(len(xk)):
+#         d[k] = step
+#         grad[k][:] = asarray((f(xk + d) - f0) / step).ravel()
+#         d[k] = 0
+#     return grad
+
+
+# def check_grad(func, grad, x0, step=_step):
+#     g = grad(x0)
+#     g = [asarray(gi).ravel() for gi in g]
+#     fg = approx_fprime(x0, func, step)
+#
+#     e = 0.
+#     for i in range(len(x0)):
+#         e += sum((fg[i] - g[i])**2)
+#     e /= len(x0)
+#
+#     return e
+
+def approx_fprime(f, step=_step):
+    f0 = f.value()
+    grad = dict()
+    for name in f.variables().names():
+        f.set(name, f.get(name) + step)
+        grad[name] = asarray((f.value() - f0) / step).ravel()
+        f.set(name, f.get(name) - step)
     return grad
 
-
-def check_grad(func, grad, x0, step=_step):
-    g = grad(x0)
-    g = [asarray(gi).ravel() for gi in g]
-    fg = approx_fprime(x0, func, step)
+def check_grad(func, step=_step):
+    g = func.gradient()
+    # g = grad(x0)
+    g = {n:asarray(gi).ravel() for n, gi in iter(g.items())}
+    fg = approx_fprime(func, step)
 
     e = 0.
-    for i in range(len(x0)):
-        e += sum((fg[i] - g[i])**2)
-    e /= len(x0)
+    for name in set(g.keys()).union(fg.keys()):
+        e += sum((fg[name] - g[name])**2)
+    # e /= len(x0)
 
     return e

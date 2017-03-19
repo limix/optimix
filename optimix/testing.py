@@ -19,32 +19,6 @@ def _do_flatten(x):
         return _concat([_asarray(xi).ravel() for xi in x])
     return _concat(x)
 
-
-class _ProxyFunction(object):
-    def __init__(self, function):
-        self._function = function
-
-    def value(self):
-        return self._function.value()
-
-    def gradient(self):
-        return [gi for gi in self._function.gradient()]
-
-    def __call__(self, x):
-        x = _asarray(x).ravel()
-        self._function.variables().select(fixed=False).from_flat(x)
-        v = self.value()
-        g = _do_flatten(self.gradient())
-        return v, g
-
-    def set_solution(self, x):
-        t = self._function.variables().select(fixed=False)
-        t.from_flat(_asarray(x).ravel())
-
-    def get_solution(self):
-        return self._function.variables().select(fixed=False).flatten()
-
-
 def _isitem(v, e):
     return isinstance(v, type(e))
 
@@ -57,21 +31,6 @@ def _ismatrix(v, e):
     return not _isitem(v, e) and not _isvector(v, e) and _ni(_ni(v))
 
 
-class FuncGrad(object):
-    def __init__(self, f):
-        self._f = f
-
-    def func(self, x):
-        t = self._f.variables().select(fixed=False)
-        t.from_flat(_asarray(x).ravel())
-        return self._f.feed().value()
-
-    def grad(self, x):
-        t = self._f.variables().select(fixed=False)
-        t.from_flat(_asarray(x).ravel())
-        return self._f.feed().gradient()
-
-
 class Assertion(object):
     def __init__(self, func, item0, item1, value_example,
                  **derivative_examples):
@@ -80,8 +39,7 @@ class Assertion(object):
         self._item1 = item1
         self._value_example = value_example
         self._derivative_examples = {
-            'derivative_' + k: v
-            for (k, v) in iter(derivative_examples.items())
+            k: v for (k, v) in iter(derivative_examples.items())
         }
 
     def _get_containers(self):
@@ -106,10 +64,7 @@ class Assertion(object):
             for cy in containers:
                 f = self._func()
                 f.set_data((cx[0], cy[0]))
-                fg = FuncGrad(f)
-                pf = _ProxyFunction(f)
-                x0 = pf.get_solution()
-                assert_allclose(check_grad(fg.func, fg.grad, x0), 0, atol=1e-7)
+                assert_allclose(check_grad(f.feed()), 0, atol=1e-7)
 
     def _assert_value_shape(self):
 
@@ -127,14 +82,12 @@ class Assertion(object):
 
         containers = self._get_containers()
 
-        derivative_names = func().get_derivative_list()
-
-        for dn in derivative_names:
-            for cx in containers:
-                for cy in containers:
-                    f = func()
-                    d = getattr(f, dn)(cx[0], cy[0])
-                    self._assert_dershape_message(d, cx[1], cy[1], dn)
+        for cx in containers:
+            for cy in containers:
+                f = func()
+                d = f.gradient(cx[0], cy[0])
+                for name in d.keys():
+                    self._assert_dershape_message(d[name], cx[1], cy[1], name)
 
     def _assert_valshape_msg(self, value, cx, cy):
         def errmsg(premiss):

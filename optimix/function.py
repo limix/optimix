@@ -148,6 +148,12 @@ class FunctionDataFeed(object):
         from .optimize import minimize as _minimize
         return _minimize(self, progress=progress)
 
+    def get(self, name):
+        return self._target.get(name)
+
+    def set(self, name, value):
+        self._target.set(name, value)
+
 
 class FunctionReduceDataFeed(object):
     def __init__(self, target, functions):
