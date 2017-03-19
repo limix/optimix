@@ -32,7 +32,7 @@ class Variables(dict):
     #         offset += size
 
     def set(self, x):
-        """Set variable values via a dictionary mapping name -> value."""
+        """Set variable values via a dictionary mapping name to value."""
         for name, value in iter(x.items()):
             self[name].value = value
 

@@ -32,12 +32,13 @@ class Function(object):
     def set(self, name, value):
         self._variables.get(name).value = value
 
-    def gradient(self, *args, **kwargs):
-        names = sorted(self._variables.select(fixed=False).names())
-        grad = {}
-        for name in names:
-            grad[name] = getattr(self, 'derivative_' + name)(*args, **kwargs)
-        return grad
+    # def get_gradient(self, *args, **kwargs):
+    #     return getattr(self, 'gradient')(*args, **kwargs)
+        # names = sorted(self._variables.select(fixed=False).names())
+        # grad = {}
+        # for name in names:
+        #     grad[name] = getattr(self, 'derivative_' + name)(*args, **kwargs)
+        # return grad
 
     def get_derivative_list(self):
         names = sorted(self._variables.select(fixed=False).names())

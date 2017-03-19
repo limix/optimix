@@ -17,41 +17,42 @@ class ProxyFunction(object):
         self.progress = progress
 
     def names(self):
-        return self._function.variables().select(fixed=False).names()
+        return sorted(self._function.variables().select(fixed=False).names())
 
     def value(self):
         return self._signal * self._function.value()
 
-    # def gradient(self):
-    #     return [self._signal * gi for gi in self._function.gradient()]
-
     def gradient(self):
         g = self._function.gradient()
-        return [self._signal * g[name] for name in self.names()]
+        return {name:self._signal * g[name] for name in self.names()}
+
+    def unflatten(self, x):
+        variables = self._function.variables().select(fixed=False)
+        d = dict()
+        offset = 0
+        for name in self.names():
+            size = variables.get(name).size
+            d[name] = x[offset:offset + size]
+            offset += size
+        return d
+
+    def flatten(self, d):
+        names = self.names()
+        return do_flatten([d[name] for name in names])
 
     def __call__(self, x):
         x = asarray(x).ravel()
-        self._function.variables().select(fixed=False).from_flat(x)
+        self._function.variables().set(self.unflatten(x))
         v = self.value()
-        g = do_flatten(self.gradient())
+        g = self.flatten(self.gradient())
         return v, g
 
     def set_solution(self, x):
-        t = self._function.variables().select(fixed=False)
-        t.from_flat(asarray(x).ravel())
-
-    def set_named_solution(self, x):
-        variables = self._function.variables().select(fixed=False)
-        for i, v in iter(x.items()):
-            variables[i].value = v
-        # t.from_flat(asarray(x).ravel())
+        self._function.variables().set(self.unflatten(x))
 
     def get_solution(self):
-        return self._function.variables().select(fixed=False).flatten()
-
-    def get_named_solution(self):
-        variables = self._function.variables().select(fixed=False)
-        return {i:v for i, v in iter(variables.items())}
+        v = self._function.variables().select(fixed=False)
+        return concatenate([v.get(n).asarray().ravel() for n in self.names()])
 
 def _minimize(proxy_function):
     x0 = proxy_function.get_solution()
