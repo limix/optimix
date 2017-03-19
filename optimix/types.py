@@ -20,6 +20,11 @@ from ndarray_listener import ndarray_listener
 
 
 class Scalar(object):
+    r"""Scalar variable type.
+
+    It holds a ``float64`` value, listen to changes, and fix or
+    unfix its value.
+    """
     __slots__ = ['raw', '_listeners', '_fixed', 'value',
                  '__array_interface__', '__array_struct__']
 
@@ -103,7 +108,11 @@ class Scalar(object):
         return self.raw != that.raw
 
 class Vector(object):
+    r"""Vector variable type.
 
+    It holds an array of ``float64`` values, listen to changes, and fix or
+    unfix its values.
+    """
     __slots__ = [
         'raw', '_listeners', '_fixed', '__array_interface__',
         '__array_struct__', 'value'
