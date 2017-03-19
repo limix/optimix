@@ -70,12 +70,29 @@ class Scalar(object):
     def __repr__(self):
         return repr(self.raw)
 
+    def __ge__(self, that):
+        return self.raw >= that.raw
+
+    def __gt__(self, that):
+        return self.raw > that.raw
+
+    def __le__(self, that):
+        return self.raw <= that.raw
+
+    def __lt__(self, that):
+        return self.raw < that.raw
+
+    def __eq__(self, that):
+        return self.raw == that.raw
+
+    def __ne__(self, that):
+        return self.raw != that.raw
 
 class Vector(object):
 
     __slots__ = [
         'raw', '_listeners', '_fixed', '__array_interface__',
-        '__array_struct__'
+        '__array_struct__', 'value'
     ]
 
     def __init__(self, value):
@@ -92,7 +109,7 @@ class Vector(object):
         return self.raw.size
 
     def to_ndarray(self):
-        return array([self.raw])
+        return array(self.raw)
 
     @property
     def isfixed(self):
@@ -137,7 +154,7 @@ class Vector(object):
 
     def _notify(self):
         for l in self._listeners:
-            l(self.value)
+            l(self.to_ndarray())
 
     def __str__(self):
         return 'Vector(' + str(self.raw) + ')'
