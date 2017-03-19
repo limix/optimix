@@ -169,8 +169,11 @@ The output should be
 Public interface
 ****************
 
-- Variables: :class:`optimix.variables.Scalar` and
-             :class:`optimix.variables.Vector`.
+.. automodule:: optimix.types
+  :members:
+
+- Variable types: :class:`optimix.types.Scalar` and
+                  :class:`optimix.types.Vector`.
 
 .. automodule:: optimix.variables
   :members:
