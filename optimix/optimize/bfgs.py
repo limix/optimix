@@ -16,11 +16,18 @@ class ProxyFunction(object):
         self._signal = -1 if negative else +1
         self.progress = progress
 
+    def names(self):
+        return self._function.variables().select(fixed=False).names()
+
     def value(self):
         return self._signal * self._function.value()
 
+    # def gradient(self):
+    #     return [self._signal * gi for gi in self._function.gradient()]
+
     def gradient(self):
-        return [self._signal * gi for gi in self._function.gradient()]
+        g = self._function.gradient()
+        return [self._signal * g[name] for name in self.names()]
 
     def __call__(self, x):
         x = asarray(x).ravel()
@@ -33,14 +40,25 @@ class ProxyFunction(object):
         t = self._function.variables().select(fixed=False)
         t.from_flat(asarray(x).ravel())
 
+    def set_named_solution(self, x):
+        variables = self._function.variables().select(fixed=False)
+        for i, v in iter(x.items()):
+            variables[i].value = v
+        # t.from_flat(asarray(x).ravel())
+
     def get_solution(self):
         return self._function.variables().select(fixed=False).flatten()
 
+    def get_named_solution(self):
+        variables = self._function.variables().select(fixed=False)
+        return {i:v for i, v in iter(variables.items())}
 
 def _minimize(proxy_function):
     x0 = proxy_function.get_solution()
     disp = 1 if proxy_function.progress else 0
+
     r = fmin_l_bfgs_b(proxy_function, x0, disp=disp)
+
     if r[2]['warnflag'] == 1:
         raise OptimixError("BFGS: too many function evaluations" +
                            " or too many iterations")

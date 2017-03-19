@@ -23,10 +23,9 @@ class Function(object):
 
     def gradient(self, *args, **kwargs):
         names = sorted(self._variables.select(fixed=False).names())
-        grad = []
+        grad = {}
         for name in names:
-            g = getattr(self, 'derivative_' + name)(*args, **kwargs)
-            grad.append(g)
+            grad[name] = getattr(self, 'derivative_' + name)(*args, **kwargs)
         return grad
 
     def get_derivative_list(self):
@@ -77,9 +76,9 @@ class FunctionReduce(object):
         return FunctionReduceDataFeed(self, fs)
 
     def gradient(self, *args, **kwargs):
-        grad = []
+        grad = {}
         for l in self.functions:
-            grad += l.gradient(*args, **kwargs)
+            grad[l.name] = l.gradient(*args, **kwargs)
         return grad
 
     def variables(self):
@@ -122,9 +121,9 @@ class FunctionReduceDataFeed(object):
         return self._target.value_reduce([f.value() for f in self.functions])
 
     def gradient(self):
-        grad = []
+        grad = {}
         for f in self.functions:
-            grad += f.gradient()
+            grad[f.name] = f.gradient()
         return grad
 
     def variables(self):
@@ -155,11 +154,19 @@ class Composite(object):
 
     def gradient(self, *args, **kwargs):
         fnames = sorted(self.functions.keys())
-        grad = []
+        grad = {}
         for fname in fnames:
             fg = getattr(self, 'gradient_' + fname)(*args, **kwargs)
-            grad += fg
+            # grad += fg
+            grad[fname] = fg
         return grad
+
+    # def gradient(self, *args, **kwargs):
+    #     names = sorted(self._variables.select(fixed=False).names())
+    #     grad = {}
+    #     for name in names:
+    #         grad[name] = getattr(self, 'derivative_' + name)(*args, **kwargs)
+    #     return grad
 
     def set_nodata(self, purpose='learn'):
         purpose = unicode_airlock(purpose)
