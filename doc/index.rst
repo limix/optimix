@@ -8,6 +8,7 @@ Optimix's documentation
     :maxdepth: 2
 
     install
+    quick-start
     types
     variables
     function
