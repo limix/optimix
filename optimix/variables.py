@@ -1,3 +1,10 @@
+r"""
+Variables
+^^^^^^^^^
+
+Public interface
+^^^^^^^^^^^^^^^^
+"""
 from __future__ import unicode_literals
 
 class Variables(dict):

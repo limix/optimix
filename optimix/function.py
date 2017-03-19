@@ -1,3 +1,10 @@
+r"""
+Function
+^^^^^^^^
+
+Public interface
+^^^^^^^^^^^^^^^^
+"""
 from __future__ import unicode_literals
 
 import collections

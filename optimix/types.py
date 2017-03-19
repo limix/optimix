@@ -1,3 +1,13 @@
+r"""
+Types
+^^^^^
+
+- Variable types: :class:`optimix.types.Scalar` and
+                  :class:`optimix.types.Vector`.
+
+Public interface
+^^^^^^^^^^^^^^^^
+"""
 from __future__ import unicode_literals
 
 from numpy import array, asarray, atleast_1d, float64
