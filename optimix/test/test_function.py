@@ -1,9 +1,10 @@
 from __future__ import division
 
-from numpy import asarray, newaxis, transpose, dot, array
+from numpy import array, asarray, dot, empty, newaxis, transpose
 from numpy.testing import assert_allclose
 
-from optimix import Function, Scalar
+from optimix import Function, Scalar, Vector
+
 
 class Quadratic1Scalar1(Function):
     def __init__(self):
@@ -109,9 +110,9 @@ def test_function_quadratic2scalar2():
     assert_allclose(f.get('a'), 5.000000014635099)
     assert_allclose(f.get('b'), -4.999999925540513)
 
-class VectorValued2Scalar2(Function):
+class VectorValued(Function):
     def __init__(self):
-        super(VectorValued2Scalar2, self).__init__(
+        super(VectorValued, self).__init__(
             a=Scalar(1.0), b=Scalar(1.0))
 
     def value(self, x0, x1):
@@ -131,13 +132,45 @@ class VectorValued2Scalar2(Function):
         b = self.get('b')
         return 2 * (b + 5.0) * x1
 
-def test_function_vectorvalued2scalar2():
-    f = VectorValued2Scalar2()
+def test_function_vectorvalued():
+    f = VectorValued()
     x1 = array([1.5, 1.0, 0.0])
     x2 = array([0.0, -3.0, 1.0])
     assert_allclose(f.value(x1, x2), [12., -46., 18.])
     assert_allclose(f.gradient(x1, x2)['a'], array([-12., -8., -0.]))
     assert_allclose(f.gradient(x1, x2)['b'], array([0., -36., 12.]))
+
+class VectorValuedMix(Function):
+    def __init__(self):
+        super(VectorValuedMix, self).__init__(
+            a=Scalar(1.0), b=Vector([1.0, 2.0]))
+
+    def value(self, x0, x1):
+        a = self.get('a')
+        b = self.get('b')
+        return ((a - 5.0)**2 * x0 + 5.0**2 * x1 + sum(b * b)) / 2.0
+
+    def gradient(self, x0, x1):
+        return dict(a=self._derivative_a(x0, x1),
+                    b=self._derivative_b(x0, x1))
+
+    def _derivative_a(self, x0, _):
+        a = self.get('a')
+        return 2 * (a - 5.0) * x0
+
+    def _derivative_b(self, x0, _):
+        b = self.get('b')
+        g = empty((len(x0), len(b)))
+        g[:] = b
+        return g
+
+def test_function_vectorvaluedmix():
+    f = VectorValuedMix()
+    x1 = array([1.5, 1.0, 0.0])
+    x2 = array([0.0, -3.0, 1.0])
+    assert_allclose(f.value(x1, x2), [14.5, -27., 15.])
+    assert_allclose(f.gradient(x1, x2)['a'], [-12., -8., -0.])
+    assert_allclose(f.gradient(x1, x2)['b'], [[1., 2.], [1., 2.], [1., 2.]])
 
 
 if __name__ == '__main__':
