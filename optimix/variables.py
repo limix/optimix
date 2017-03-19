@@ -20,6 +20,10 @@ class Variables(dict):
             self[n].value = x[offset:offset + size]
             offset += size
 
+    def from_named(self, x):
+        for name, value in iter(x.items()):
+            self[name].value = value
+
     def select(self, fixed):
         names = [n for n in self.names() if self[n].isfixed == fixed]
         return Variables({n: self[n] for n in names})

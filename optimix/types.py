@@ -1,17 +1,21 @@
 from __future__ import unicode_literals
 
-from numpy import array, asarray, atleast_1d
+from numpy import array, asarray, atleast_1d, float64
 
 from ndarray_listener import ndarray_listener
 
 
 class Scalar(object):
-    __slots__ = ['raw', '_listeners', '_fixed', 'value']
+    __slots__ = ['raw', '_listeners', '_fixed', 'value',
+                 '__array_interface__', '__array_struct__']
 
     def __init__(self, value):
         self._listeners = []
         self._fixed = False
+        value = float64(value)
         self.raw = value
+        self.__array_interface__ = value.__array_interface__
+        self.__array_struct__ = value.__array_struct__
 
     def copy(self):
         return Scalar(self.raw)
@@ -36,10 +40,14 @@ class Scalar(object):
     def __setattr__(self, name, value):
         if name == 'value':
             try:
-                v = float(value)
+                value = float64(value)
             except TypeError:
-                v = value[0]
-            Scalar.__dict__['raw'].__set__(self, v)
+                value = value[0]
+            Scalar.__dict__['raw'].__set__(self, value)
+            t = Scalar.__dict__['__array_interface__']
+            t.__set__(self, value.__array_interface__)
+            t = Scalar.__dict__['__array_struct__']
+            t.__set__(self, value.__array_struct__)
             self._notify()
         else:
             Scalar.__dict__[name].__set__(self, value)
