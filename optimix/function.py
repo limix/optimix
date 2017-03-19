@@ -1,6 +1,10 @@
 r"""
+********
 Function
-^^^^^^^^
+********
+
+Introduction
+^^^^^^^^^^^^
 
 Public interface
 ^^^^^^^^^^^^^^^^

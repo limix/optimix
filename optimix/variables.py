@@ -1,6 +1,10 @@
 r"""
+*********
 Variables
-^^^^^^^^^
+*********
+
+Introduction
+^^^^^^^^^^^^
 
 Public interface
 ^^^^^^^^^^^^^^^^

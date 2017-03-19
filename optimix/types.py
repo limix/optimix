@@ -1,6 +1,10 @@
 r"""
+*****
 Types
-^^^^^
+*****
+
+Introduction
+^^^^^^^^^^^^
 
 - Variable types: :class:`optimix.types.Scalar` and
                   :class:`optimix.types.Vector`.
