@@ -103,7 +103,7 @@ The output should be
   Optimum found: (5, -5)
 
 Double inputs
-^^^^^^^^^^^^
+^^^^^^^^^^^^^
 
 You can also define a function of two inputs (or more) in a very natural way:
 

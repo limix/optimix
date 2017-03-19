@@ -6,8 +6,8 @@ Types
 Introduction
 ^^^^^^^^^^^^
 
-- Variable types: :class:`optimix.types.Scalar` and
-                  :class:`optimix.types.Vector`.
+We have two variables types: :class:`optimix.types.Scalar` and
+:class:`optimix.types.Vector`.
 
 Public interface
 ^^^^^^^^^^^^^^^^
@@ -28,8 +28,10 @@ class Scalar(object):
     Args:
         value (float): initial value.
     """
-    __slots__ = ['raw', '_listeners', '_fixed', 'value',
-                 '__array_interface__', '__array_struct__']
+    __slots__ = [
+        'raw', '_listeners', '_fixed', 'value', '__array_interface__',
+        '__array_struct__'
+    ]
 
     def __init__(self, value):
         self._listeners = []
@@ -54,7 +56,7 @@ class Scalar(object):
         return self.raw.size
 
     def asarray(self):
-        """Return a :mod:`numpy.ndarray` representation."""
+        """Return a :class:`numpy.ndarray` representation."""
         return array(self.raw)
 
     @property
@@ -71,7 +73,11 @@ class Scalar(object):
         self._fixed = False
 
     def listen(self, you):
-        """Request a callback for value modification."""
+        """Request a callback for value modification.
+
+        Args:
+            you (object): an instance having ``__call__`` attribute.
+        """
         self._listeners.append(you)
 
     def __setattr__(self, name, value):
@@ -122,11 +128,15 @@ class Scalar(object):
     def __ne__(self, that):
         return self.raw != that.raw
 
+
 class Vector(object):
     r"""Vector variable type.
 
     It holds an array of ``float64`` values, listen to changes, and fix or
     unfix its values.
+
+    Args:
+        value (float): initial value.
     """
     __slots__ = [
         'raw', '_listeners', '_fixed', '__array_interface__',
@@ -143,32 +153,43 @@ class Vector(object):
         self.__array_struct__ = value.__array_struct__
 
     def copy(self):
+        """Return a copy."""
         return Vector(self.raw)
 
     @property
-    def size(self):
-        return self.raw.size
-
-    @property
     def shape(self):
+        """Shape according to :mod:`numpy`."""
         return self.raw.shape
 
+    @property
+    def size(self):
+        """Size according to :mod:`numpy`."""
+        return self.raw.size
+
     def asarray(self):
+        """Return a :class:`numpy.ndarray` representation."""
         return array(self.raw)
 
     @property
     def isfixed(self):
+        """Return whether it is fixed or not."""
         return self._fixed
 
     def fix(self):
+        """Set it fixed."""
         self._fixed = True
 
     def unfix(self):
+        """Set it unfixed."""
         self._fixed = False
 
-    @property
-    def shape(self):
-        return self.raw.shape
+    def listen(self, you):
+        """Request a callback for value modification.
+
+        Args:
+            you (object): an instance having ``__call__`` attribute.
+        """
+        self._listeners.append(you)
 
     def __setattr__(self, name, value):
         if name == 'value':
@@ -193,9 +214,6 @@ class Vector(object):
                 v.talk_to(l)
             return v
         return Vector.__dict__[name].__get__(self)
-
-    def listen(self, you):
-        self._listeners.append(you)
 
     def _notify(self):
         for l in self._listeners:
