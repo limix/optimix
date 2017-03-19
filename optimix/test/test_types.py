@@ -23,6 +23,13 @@ def test_types_scalar_fix():
     a.fix()
     assert a.isfixed
 
+def test_types_scalar_copy():
+    a = Scalar(1.0)
+    b = a.copy()
+
+    assert a is not b
+    assert a == b
+
 def test_types_scalar_listen():
     a = Scalar(1.0)
 
@@ -39,6 +46,18 @@ def test_types_scalar_listen():
 
     assert l.value == 3.0
 
+def test_types_vector_comparison():
+    a = Vector([1.0, 2.0])
+    b = Vector([1.0, 1.5])
+
+    assert (a > b)[1]
+    assert (a == b)[0]
+    assert (a != b)[1]
+
+    b.value = asarray([1.0, 2.0])
+
+    assert all(a == b)
+
 def test_types_vector_fix():
     a = Vector([1.0, 2.0])
 
@@ -46,6 +65,13 @@ def test_types_vector_fix():
 
     a.fix()
     assert a.isfixed
+
+def test_types_vector_copy():
+    a = Vector([1.0])
+    b = a.copy()
+
+    assert a is not b
+    assert a == b
 
 def test_types_vector_listen():
     a = Vector([1.0, 2.0])

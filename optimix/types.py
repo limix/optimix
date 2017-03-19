@@ -104,6 +104,9 @@ class Vector(object):
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
 
+    def copy(self):
+        return Vector(self.raw)
+
     @property
     def size(self):
         return self.raw.size
@@ -161,6 +164,24 @@ class Vector(object):
 
     def __repr__(self):
         return repr(self.raw)
+
+    def __ge__(self, that):
+        return self.raw >= that.raw
+
+    def __gt__(self, that):
+        return self.raw > that.raw
+
+    def __le__(self, that):
+        return self.raw <= that.raw
+
+    def __lt__(self, that):
+        return self.raw < that.raw
+
+    def __eq__(self, that):
+        return self.raw == that.raw
+
+    def __ne__(self, that):
+        return self.raw != that.raw
 
 
 class Matrix(object):
