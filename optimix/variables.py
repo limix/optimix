@@ -17,7 +17,7 @@ class Variables(dict):
 
     # def flatten(self):
     #     names = sorted(self.names())
-    #     x = [self[k].to_ndarray().ravel() for k in names]
+    #     x = [self[k].asarray().ravel() for k in names]
     #     return concatenate(x)
 
     # def from_flat(self, x):

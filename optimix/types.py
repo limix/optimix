@@ -24,6 +24,9 @@ class Scalar(object):
 
     It holds a ``float64`` value, listen to changes, and fix or
     unfix its value.
+
+    Args:
+        value (float): initial value.
     """
     __slots__ = ['raw', '_listeners', '_fixed', 'value',
                  '__array_interface__', '__array_struct__']
@@ -37,24 +40,39 @@ class Scalar(object):
         self.__array_struct__ = value.__array_struct__
 
     def copy(self):
+        """Return a copy."""
         return Scalar(self.raw)
 
     @property
-    def size(self):
-        return 1
+    def shape(self):
+        """Shape according to :mod:`numpy`."""
+        return self.raw.shape
 
-    def to_ndarray(self):
-        return array([self.raw])
+    @property
+    def size(self):
+        """Size according to :mod:`numpy`."""
+        return self.raw.size
+
+    def asarray(self):
+        """Return a :mod:`numpy.ndarray` representation."""
+        return array(self.raw)
 
     @property
     def isfixed(self):
+        """Return whether it is fixed or not."""
         return self._fixed
 
     def fix(self):
+        """Set it fixed."""
         self._fixed = True
 
     def unfix(self):
+        """Set it unfixed."""
         self._fixed = False
+
+    def listen(self, you):
+        """Request a callback for value modification."""
+        self._listeners.append(you)
 
     def __setattr__(self, name, value):
         if name == 'value':
@@ -75,9 +93,6 @@ class Scalar(object):
         if name == 'value':
             name = 'raw'
         return Scalar.__dict__[name].__get__(self)
-
-    def listen(self, you):
-        self._listeners.append(you)
 
     def _notify(self):
         for l in self._listeners:
@@ -134,7 +149,11 @@ class Vector(object):
     def size(self):
         return self.raw.size
 
-    def to_ndarray(self):
+    @property
+    def shape(self):
+        return self.raw.shape
+
+    def asarray(self):
         return array(self.raw)
 
     @property
@@ -180,7 +199,7 @@ class Vector(object):
 
     def _notify(self):
         for l in self._listeners:
-            l(self.to_ndarray())
+            l(self.asarray())
 
     def __str__(self):
         return 'Vector(' + str(self.raw) + ')'
@@ -219,7 +238,7 @@ class Matrix(object):
     def size(self):
         return self.raw.size
 
-    def to_ndarray(self):
+    def asarray(self):
         return asarray([self.raw])
 
     @property
