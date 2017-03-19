@@ -6,12 +6,15 @@ Variables
 Introduction
 ^^^^^^^^^^^^
 
+:class:`.Variables` holds a set of variables.
+
 Public interface
 ^^^^^^^^^^^^^^^^
 """
 from __future__ import unicode_literals
 
 class Variables(dict):
+    r"""Set of variables."""
     # def new(self):
     #     return Variables({name: None for name in self.names()})
 
@@ -29,7 +32,7 @@ class Variables(dict):
     #         offset += size
 
     def set(self, x):
-        """Set variable values via a dictionary of name -> value."""
+        """Set variable values via a dictionary mapping name -> value."""
         for name, value in iter(x.items()):
             self[name].value = value
 

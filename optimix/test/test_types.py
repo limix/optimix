@@ -87,3 +87,6 @@ def test_types_vector_listen():
     a.listen(l)
     a.value = asarray([3.0, -1.0])
     assert_allclose(l.value, [3.0, -1.0])
+
+if __name__ == '__main__':
+    __import__('pytest').main([__file__, '-s'])
