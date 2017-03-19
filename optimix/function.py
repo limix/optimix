@@ -6,6 +6,9 @@ Function
 Introduction
 ^^^^^^^^^^^^
 
+- :class:`optimix.function.Function`
+- :class:`optimix.function.Composite`
+
 Public interface
 ^^^^^^^^^^^^^^^^
 """
@@ -18,11 +21,17 @@ from .variables import Variables, merge_variables
 
 
 class Function(object):
+    r"""Base-class for object representing functions.
+
+    Args:
+        kwargs (dict): map of variable name to variable value.
+    """
     def __init__(self, **kwargs):
         self._variables = Variables(kwargs)
         self._data = dict()
 
     def feed(self, purpose='learn'):
+        r"""Return a function with attached data."""
         purpose = unicode_airlock(purpose)
         return FunctionDataFeed(self, self._data[purpose])
 
@@ -32,44 +41,60 @@ class Function(object):
     def set(self, name, value):
         self._variables.get(name).value = value
 
-    # def get_gradient(self, *args, **kwargs):
-    #     return getattr(self, 'gradient')(*args, **kwargs)
-        # names = sorted(self._variables.select(fixed=False).names())
-        # grad = {}
-        # for name in names:
-        #     grad[name] = getattr(self, 'derivative_' + name)(*args, **kwargs)
-        # return grad
-
-    def get_derivative_list(self):
-        names = sorted(self._variables.select(fixed=False).names())
-        derivative_list = []
-        for name in names:
-            derivative_list.append('derivative_' + name)
-        return derivative_list
-
     def fix(self, var_name):
+        """Set a variable fixed.
+
+        Args:
+            var_name (str): variable name.
+        """
         self._variables[var_name].fix()
 
     def unfix(self, var_name):
+        """Set a variable unfixed.
+
+        Args:
+            var_name (str): variable name.
+        """
         self._variables[var_name].unfix()
 
     def isfixed(self, var_name):
+        """Return whether a variable it is fixed or not.
+
+        Args:
+            var_name (str): variable name.
+        """
         return self._variables[var_name].isfixed()
 
     def variables(self):
+        r"""Function variables."""
         return self._variables
 
     def set_nodata(self, purpose='learn'):
+        r"""Disable data feeding.
+
+        Args:
+            purpose (str): name of the data source.
+        """
         purpose = unicode_airlock(purpose)
         self._data[purpose] = tuple()
 
     def set_data(self, data, purpose='learn'):
+        r"""Set a named data source.
+
+        Args:
+            purpose (str): name of the data source.
+        """
         purpose = unicode_airlock(purpose)
         if not isinstance(data, collections.Sequence):
             data = (data, )
         self._data[purpose] = data
 
     def unset_data(self, purpose='learn'):
+        r"""Unset a named data source.
+
+        Args:
+            purpose (str): name of the data source.
+        """
         purpose = unicode_airlock(purpose)
         del self._data[purpose]
 
