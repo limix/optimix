@@ -164,3 +164,13 @@ The output should be
 .. testoutput::
 
   Optimum found: (5, -5)
+
+****************
+Public interface
+****************
+
+.. automodule:: optimix.variables
+  :members:
+
+.. automodule:: optimix.function
+  :members:

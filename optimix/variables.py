@@ -1,34 +1,34 @@
 from __future__ import unicode_literals
 
-from numpy import concatenate
-
-
 class Variables(dict):
-    def new(self):
-        return Variables({name: None for name in self.names()})
+    # def new(self):
+    #     return Variables({name: None for name in self.names()})
 
-    def flatten(self):
-        names = sorted(self.names())
-        x = [self[k].to_ndarray().ravel() for k in names]
-        return concatenate(x)
+    # def flatten(self):
+    #     names = sorted(self.names())
+    #     x = [self[k].to_ndarray().ravel() for k in names]
+    #     return concatenate(x)
 
-    def from_flat(self, x):
-        names = sorted(self.names())
-        offset = 0
-        for n in names:
-            size = self[n].size
-            self[n].value = x[offset:offset + size]
-            offset += size
+    # def from_flat(self, x):
+    #     names = sorted(self.names())
+    #     offset = 0
+    #     for n in names:
+    #         size = self[n].size
+    #         self[n].value = x[offset:offset + size]
+    #         offset += size
 
-    def from_named(self, x):
+    def set(self, x):
+        """Set variable values via a dictionary of name -> value."""
         for name, value in iter(x.items()):
             self[name].value = value
 
     def select(self, fixed):
+        """Return a subset of variables according to ``fixed``."""
         names = [n for n in self.names() if self[n].isfixed == fixed]
         return Variables({n: self[n] for n in names})
 
     def names(self):
+        """Return the variable names."""
         return sorted(super(Variables, self).keys())
 
     def keys(self):
