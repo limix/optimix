@@ -38,13 +38,13 @@ def test_check_grad_fprime():
     f.feed().minimize(progress=False)
     assert_allclose(approx_fprime(f.feed())['scale'], 0, atol=1e-7)
 
-# def test_check_grad_reduce():
-#     f0 = Quadratic1Scalar1()
-#     f1 = Quadratic1Scalar1()
-#     f = QuadraticScalarReduce([f0, f1])
-#     f0.set_data(1.1)
-#     f1.set_data(0.3)
-#     print(check_grad(f.feed()))
+def test_check_grad_reduce():
+    f0 = Quadratic1Scalar1()
+    f1 = Quadratic1Scalar1()
+    f = QuadraticScalarReduce([f0, f1])
+    f0.set_data(1.1)
+    f1.set_data(0.3)
+    assert_allclose(check_grad(f.feed()), 0, atol=1e-7)
 
 if __name__ == '__main__':
     __import__('pytest').main([__file__, '-s'])
