@@ -14,6 +14,7 @@ Public interface
 """
 from __future__ import unicode_literals
 
+# pylint: disable=E0611
 from numpy import array, asarray, atleast_1d, float64
 
 from ndarray_listener import ndarray_listener

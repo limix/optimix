@@ -24,7 +24,7 @@ class ProxyFunction(object):
 
     def gradient(self):
         g = self._function.gradient()
-        return {name:self._signal * g[name] for name in self.names()}
+        return {name: self._signal * g[name] for name in self.names()}
 
     def unflatten(self, x):
         variables = self._function.variables().select(fixed=False)
@@ -53,6 +53,7 @@ class ProxyFunction(object):
     def get_solution(self):
         v = self._function.variables().select(fixed=False)
         return concatenate([v.get(n).asarray().ravel() for n in self.names()])
+
 
 def _minimize(proxy_function):
     x0 = proxy_function.get_solution()

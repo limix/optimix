@@ -1,8 +1,8 @@
 """Wrapper for Brent search."""
 from numpy import asarray
+from tqdm import tqdm
 
 from brent_search import minimize as brent_minimize
-from tqdm import tqdm
 
 
 class ProxyFunction(object):

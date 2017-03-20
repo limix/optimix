@@ -178,10 +178,10 @@ class QuadraticScalarReduce(FunctionReduce):
         super(QuadraticScalarReduce, self).__init__(functions, 'sum')
 
     def value_reduce(self, values): # pylint: disable=R0201
-        return add.reduce(values)
+        return add.reduce(values.values())
 
-    def derivative_reduce(self, derivatives): # pylint: disable=R0201
-        return add.reduce(derivatives)
+    def gradient_reduce(self, gradients): # pylint: disable=R0201
+        return add.reduce(gradients.values())
 
 
 # def test_function_quadratic1scalar1_reduce():
