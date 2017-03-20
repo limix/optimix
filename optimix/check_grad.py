@@ -8,9 +8,9 @@ def approx_fprime(f, step=_step):
     f0 = f.value()
     grad = dict()
     for name in f.variables().names():
-        f.set(name, f.get(name) + step)
+        f.variables().get(name).value = f.variables().get(name).value + step
         grad[name] = asarray((f.value() - f0) / step).ravel()
-        f.set(name, f.get(name) - step)
+        f.variables().get(name).value = f.variables().get(name) - step
     return grad
 
 def check_grad(func, step=_step):

@@ -20,11 +20,11 @@ class Quadratic1Scalar1(Function):
         super(Quadratic1Scalar1, self).__init__(scale=Scalar(1.0))
 
     def value(self, x):
-        s = self.get('scale')
+        s = self.variables().get('scale').value
         return (s - 5.0)**2 * x / 2.0
 
     def gradient(self, x):
-        s = self.get('scale')
+        s = self.variables().get('scale').value
         return dict(scale=(s - 5.0) * x)
 
 def test_check_grad():

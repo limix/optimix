@@ -11,8 +11,8 @@ class Quadratic2Scalar2(Function):
         super(Quadratic2Scalar2, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
 
     def value(self, x0, x1):
-        a = self.get('a')
-        b = self.get('b')
+        a = self.variables().get('a')
+        b = self.variables().get('b')
         return ((a - 5.0)**2 * x0 + (b + 5.0)**2 * x1) / 2.0
 
     def gradient(self, x0, x1):
@@ -20,11 +20,11 @@ class Quadratic2Scalar2(Function):
                     b=self._derivative_b(x0, x1))
 
     def _derivative_a(self, x0, _):
-        a = self.get('a')
+        a = self.variables().get('a')
         return 2 * (a - 5.0) * x0
 
     def _derivative_b(self, _, x1):
-        b = self.get('b')
+        b = self.variables().get('b')
         return 2 * (b + 5.0) * x1
 
 def test_function_variables():

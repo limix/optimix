@@ -40,11 +40,11 @@ class Function(object):
         purpose = unicode_airlock(purpose)
         return FunctionDataFeed(self, self._data[purpose], self._name)
 
-    def get(self, name):
-        return self._variables.get(name).value
-
-    def set(self, name, value):
-        self._variables.get(name).value = value
+    # def get(self, name):
+    #     return self._variables.get(name).value
+    #
+    # def set(self, name, value):
+    #     self._variables.get(name).value = value
 
     def fix(self, var_name):
         """Set a variable fixed.
@@ -158,11 +158,11 @@ class FunctionDataFeed(object):
         from .optimize import minimize as _minimize
         return _minimize(self, progress=progress)
 
-    def get(self, name):
-        return self._target.get(name)
-
-    def set(self, name, value):
-        self._target.set(name, value)
+    # def get(self, name):
+    #     return self._target.get(name)
+    #
+    # def set(self, name, value):
+    #     self._target.set(name, value)
 
 
 class FunctionReduceDataFeed(object):
@@ -197,11 +197,11 @@ class FunctionReduceDataFeed(object):
         from .optimize import minimize as _minimize
         return _minimize(self, progress=progress)
 
-    def get(self, name):
-        return self._target.get(name)
-
-    def set(self, name, value):
-        self._target.set(name, value)
+    # def get(self, name):
+    #     return self._target.get(name)
+    #
+    # def set(self, name, value):
+    #     self._target.set(name, value)
 
 
 class Composite(object):
