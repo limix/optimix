@@ -1,9 +1,11 @@
 from __future__ import division
 
-from numpy import add
+from numpy import add, zeros
+from numpy.random import RandomState
 from numpy.testing import assert_allclose
 
-from optimix import Function, FunctionReduce, Scalar, approx_fprime, check_grad
+from optimix import (Function, FunctionReduce, Scalar, Vector, approx_fprime,
+                     check_grad)
 
 
 class QuadraticScalarReduce(FunctionReduce):
@@ -54,6 +56,28 @@ def test_check_grad_reduce():
     f0.set_data(1.1)
     f1.set_data(0.3)
     assert_allclose(check_grad(f.feed()), 0, atol=1e-7)
+
+
+class LinearMean(Function):
+    def __init__(self, size):
+        Function.__init__(self, effsizes=Vector(zeros(size)))
+
+    def value(self, x):
+        return x.dot(self.variables().get('effsizes').value)
+
+    def gradient(self, x):
+        return dict(effsizes=self._derivative_effsizes(x))
+
+    def _derivative_effsizes(self, x):
+        return x
+
+
+def test_check_grad_vectors():
+    random = RandomState(1)
+    mean = LinearMean(5)
+    x = random.randn(2, 5)
+    mean.set_data(x)
+    assert_allclose(check_grad(mean.feed()), 0, atol=1e-7)
 
 
 if __name__ == '__main__':

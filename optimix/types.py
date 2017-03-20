@@ -37,7 +37,7 @@ class Scalar(object):
     def __init__(self, value):
         self._listeners = []
         self._fixed = False
-        value = float64(value)
+        value = ndarray_listener(float64(value))
         self.raw = value
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
@@ -100,6 +100,7 @@ class Scalar(object):
         if name == 'value':
             name = 'raw'
         return Scalar.__dict__[name].__get__(self)
+        # return Scalar.__dict__[name].__get__(self)
 
     def _notify(self):
         for l in self._listeners:

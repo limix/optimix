@@ -1,4 +1,4 @@
-from numpy import asarray
+from numpy import asarray, atleast_1d
 from numpy.testing import assert_allclose
 
 from optimix import Scalar, Vector
@@ -87,6 +87,12 @@ def test_types_vector_listen():
     a.listen(l)
     a.value = asarray([3.0, -1.0])
     assert_allclose(l.value, [3.0, -1.0])
+
+def test_types_modify_scalar():
+    a = Scalar(1.0)
+    value = atleast_1d(a.value)
+    value[0] = 2.0
+    assert a.value == value[0]
 
 if __name__ == '__main__':
     __import__('pytest').main([__file__, '-s'])
