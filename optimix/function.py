@@ -26,6 +26,7 @@ class Function(object):
     Args:
         kwargs (dict): map of variable name to variable value.
     """
+
     def __init__(self, **kwargs):
         self._variables = Variables(kwargs)
         self._data = dict()
@@ -39,12 +40,6 @@ class Function(object):
         r"""Return a function with attached data."""
         purpose = unicode_airlock(purpose)
         return FunctionDataFeed(self, self._data[purpose], self._name)
-
-    # def get(self, name):
-    #     return self._variables.get(name).value
-    #
-    # def set(self, name, value):
-    #     self._variables.get(name).value = value
 
     def fix(self, var_name):
         """Set a variable fixed.
@@ -158,12 +153,6 @@ class FunctionDataFeed(object):
         from .optimize import minimize as _minimize
         return _minimize(self, progress=progress)
 
-    # def get(self, name):
-    #     return self._target.get(name)
-    #
-    # def set(self, name, value):
-    #     self._target.set(name, value)
-
 
 class FunctionReduceDataFeed(object):
     def __init__(self, target, functions, name='unamed'):
@@ -185,104 +174,6 @@ class FunctionReduceDataFeed(object):
             for j, v in iter(g.items()):
                 grad['%s[%d].%s' % (self.__name, i, j)] = v
         return grad
-
-    def variables(self):
-        return self._target.variables()
-
-    def maximize(self, progress=True):
-        from .optimize import maximize as _maximize
-        return _maximize(self, progress=progress)
-
-    def minimize(self, progress=True):
-        from .optimize import minimize as _minimize
-        return _minimize(self, progress=progress)
-
-    # def get(self, name):
-    #     return self._target.get(name)
-    #
-    # def set(self, name, value):
-    #     self._target.set(name, value)
-
-
-class Composite(object):
-    def __init__(self, **kwargs):
-        super(Composite, self).__init__()
-        self.functions = kwargs
-        self._data = dict()
-        if 'prefix' in kwargs:
-            self.__prefix = kwargs['prefix']
-        else:
-            self.__prefix = 'unamed'
-
-    def feed(self, purpose='learn'):
-        purpose = unicode_airlock(purpose)
-        return CompositeDataFeed(self, purpose)
-
-    def gradient(self, *args, **kwargs):
-        fnames = sorted(self.functions.keys())
-        grad = {}
-        for fname in fnames:
-            fg = getattr(self, 'gradient_' + fname)(*args, **kwargs)
-            # grad += fg
-            grad[fname] = fg
-        return grad
-
-    # def gradient(self, *args, **kwargs):
-    #     names = sorted(self._variables.select(fixed=False).names())
-    #     grad = {}
-    #     for name in names:
-    #         grad[name] = getattr(self, 'derivative_' + name)(*args, **kwargs)
-    #     return grad
-
-    def set_nodata(self, purpose='learn'):
-        purpose = unicode_airlock(purpose)
-        self._data[purpose] = tuple()
-
-    def set_data(self, data, purpose='learn'):
-        purpose = unicode_airlock(purpose)
-        if not isinstance(data, collections.Sequence):
-            data = (data, )
-        self._data[purpose] = data
-
-    def unset_data(self, purpose='learn'):
-        purpose = unicode_airlock(purpose)
-        del self._data[purpose]
-
-    def variables(self):
-        fnames = sorted(self.functions.keys())
-        vars_list = [self.functions[fn].variables() for fn in fnames]
-        vd = dict()
-        for (i, vs) in enumerate(vars_list):
-            vd['%s[%d]' % (self.__prefix, i)] = vs
-        return merge_variables(vd)
-
-
-class CompositeDataFeed(object):
-    def __init__(self, target, purpose):
-        purpose = unicode_airlock(purpose)
-        self._target = target
-        self._purpose = purpose
-
-    def value(self):
-        fnames = sorted(self._target.functions.keys())
-
-        fvals = dict()
-        for fname in fnames:
-            f = self._target.functions[fname].feed(self._purpose)
-            fvals[fname] = f.value()
-
-        return self._target.value(**fvals)
-
-    def gradient(self):
-        fnames = sorted(self._target.functions.keys())
-
-        g_fvals = dict()
-        for fname in fnames:
-            f = self._target.functions[fname].feed(self._purpose)
-            g_fvals[fname] = f.value()
-            g_fvals['g' + fname] = f.gradient()
-
-        return self._target.gradient(**g_fvals)
 
     def variables(self):
         return self._target.variables()
