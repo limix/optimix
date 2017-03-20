@@ -181,7 +181,9 @@ class FunctionReduceDataFeed(object):
     def gradient(self):
         grad = {}
         for i, l in enumerate(self.functions):
-            grad['%s[%d]' % (self.__name, i)] = l.gradient()
+            g = l.gradient()
+            for j, v in iter(g.items()):
+                grad['%s[%d].%s' % (self.__name, i, j)] = v
         return grad
 
     def variables(self):
