@@ -65,11 +65,8 @@ class LinearMean(Function):
     def value(self, x):
         return x.dot(self.variables().get('effsizes').value)
 
-    def gradient(self, x):
-        return dict(effsizes=self._derivative_effsizes(x))
-
-    def _derivative_effsizes(self, x):
-        return x
+    def gradient(self, x): # pylint: disable=R0201
+        return dict(effsizes=x)
 
 
 def test_check_grad_vectors():

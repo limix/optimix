@@ -94,5 +94,11 @@ def test_types_modify_scalar():
     value[0] = 2.0
     assert a.value == value[0]
 
+def test_types_modify_vector():
+    a = Vector([1.0, 2.0])
+    value = atleast_1d(a.value)
+    value[0] = 2.0
+    assert_allclose(a.value, value)
+
 if __name__ == '__main__':
     __import__('pytest').main([__file__, '-s'])

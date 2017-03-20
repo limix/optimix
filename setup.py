@@ -21,7 +21,7 @@ def setup_package():
 
     setup_requires = [] + pytest_runner
     install_requires = [
-        'scipy>=0.19', 'numpy>=1.12', 'ndarray-listener>=1.0.18',
+        'scipy>=0.19', 'numpy>=1.12', 'ndarray-listener>=1.0.20',
         'brent-search>=1.0.17', 'tqdm'
     ]
     tests_require = ['pytest>=3']

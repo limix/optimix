@@ -3,6 +3,8 @@ from numpy import concatenate as _concat
 from numpy import stack
 from numpy.testing import assert_allclose
 
+from ndarray_listener import ndarray_listener
+
 from .check_grad import check_grad
 
 
@@ -19,8 +21,9 @@ def _do_flatten(x):
         return _concat([_asarray(xi).ravel() for xi in x])
     return _concat(x)
 
+
 def _isitem(v, e):
-    return isinstance(v, type(e))
+    return isinstance(v, type(e)) and v.shape == e.shape
 
 
 def _isvector(v, e):
@@ -37,10 +40,10 @@ class Assertion(object):
         self._func = func
         self._item0 = item0
         self._item1 = item1
-        self._value_example = value_example
-        self._derivative_examples = {
-            k: v for (k, v) in iter(derivative_examples.items())
-        }
+        self._value_example = ndarray_listener(value_example)
+        de = derivative_examples
+        de = {k: ndarray_listener(v) for k, v in de.items()}
+        self._derivative_examples = {k: v for (k, v) in iter(de.items())}
 
     def _get_containers(self):
         item0 = self._item0
@@ -64,7 +67,7 @@ class Assertion(object):
             for cy in containers:
                 f = self._func()
                 f.set_data((cx[0], cy[0]))
-                assert_allclose(check_grad(f.feed()), 0, atol=1e-7)
+                assert_allclose(check_grad(f.feed()), 0, atol=1e-6)
 
     def _assert_value_shape(self):
 
@@ -95,9 +98,13 @@ class Assertion(object):
 
         if cx == "item" and cy == "item":
             if not _isitem(value, self._value_example):
+                import pdb
+                pdb.set_trace()
                 raise AssertionError(errmsg("value(item, item) -> item"))
         elif cx == "item" and cy == "vector":
             if not _isvector(value, self._value_example):
+                import pdb
+                pdb.set_trace()
                 raise AssertionError(errmsg("value(item, vector) -> vector"))
         elif cx == "vector" and cy == "item":
             if not _isvector(value, self._value_example):

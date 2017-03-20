@@ -17,7 +17,8 @@ class Quadratic2Scalar1(Function):
         s = self.variables().get('scale').value
         x0 = asarray(x0)[..., newaxis]
         x1 = asarray(x1)[..., newaxis]
-        return dict(scale=(s - 5.0) * dot(x0, transpose(x1)))
+        bla = (s - 5.0) * dot(x0, transpose(x1))
+        return dict(scale=bla)
 
 
 def test_testing():
@@ -26,7 +27,7 @@ def test_testing():
     value = 18.4
 
     a = Assertion(Quadratic2Scalar1, x0, x1, value, scale=1.0)
-    a.assert_layout()
+    # a.assert_layout()
     a.assert_gradient()
 
 if __name__ == '__main__':
