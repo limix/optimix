@@ -98,13 +98,9 @@ class Assertion(object):
 
         if cx == "item" and cy == "item":
             if not _isitem(value, self._value_example):
-                import pdb
-                pdb.set_trace()
                 raise AssertionError(errmsg("value(item, item) -> item"))
         elif cx == "item" and cy == "vector":
             if not _isvector(value, self._value_example):
-                import pdb
-                pdb.set_trace()
                 raise AssertionError(errmsg("value(item, vector) -> vector"))
         elif cx == "vector" and cy == "item":
             if not _isvector(value, self._value_example):
