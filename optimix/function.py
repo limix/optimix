@@ -29,11 +29,16 @@ class Function(object):
     def __init__(self, **kwargs):
         self._variables = Variables(kwargs)
         self._data = dict()
+        self._name = kwargs.get('name', 'unamed')
+
+    @property
+    def name(self):
+        return self._name
 
     def feed(self, purpose='learn'):
         r"""Return a function with attached data."""
         purpose = unicode_airlock(purpose)
-        return FunctionDataFeed(self, self._data[purpose])
+        return FunctionDataFeed(self, self._data[purpose], self._name)
 
     def get(self, name):
         return self._variables.get(name).value
@@ -100,9 +105,9 @@ class Function(object):
 
 
 class FunctionReduce(object):
-    def __init__(self, functions, prefix='noname'):
+    def __init__(self, functions, name='unamed'):
         self.functions = functions
-        self.__prefix = prefix
+        self.__name = name
 
     def operand(self, i):
         return self.functions[i]
@@ -110,26 +115,31 @@ class FunctionReduce(object):
     def feed(self, purpose='learn'):
         purpose = unicode_airlock(purpose)
         fs = [f.feed(purpose) for f in self.functions]
-        return FunctionReduceDataFeed(self, fs)
+        return FunctionReduceDataFeed(self, fs, self.__name)
 
     def gradient(self, *args, **kwargs):
         grad = {}
-        for l in self.functions:
-            grad[l.name] = l.gradient(*args, **kwargs)
+        for i, l in enumerate(self.functions):
+            grad['%s[%d]' % (self.__name, i)] = l.gradient(*args, **kwargs)
         return grad
 
     def variables(self):
         vars_list = [l.variables() for l in self.functions]
         vd = dict()
         for (i, vs) in enumerate(vars_list):
-            vd['%s[%d]' % (self.__prefix, i)] = vs
+            vd['%s[%d]' % (self.__name, i)] = vs
         return merge_variables(vd)
 
 
 class FunctionDataFeed(object):
-    def __init__(self, target, data):
+    def __init__(self, target, data, name):
         self._target = target
         self.raw = data
+        self._name = name
+
+    @property
+    def name(self):
+        return self._name
 
     def value(self):
         return self._target.value(*self.raw)
@@ -156,17 +166,22 @@ class FunctionDataFeed(object):
 
 
 class FunctionReduceDataFeed(object):
-    def __init__(self, target, functions):
+    def __init__(self, target, functions, name='unamed'):
         self._target = target
         self.functions = functions
+        self.__name = name
+
+    @property
+    def name(self):
+        return self.__name
 
     def value(self):
         return self._target.value_reduce([f.value() for f in self.functions])
 
     def gradient(self):
         grad = {}
-        for f in self.functions:
-            grad[f.name] = f.gradient()
+        for i, l in enumerate(self.functions):
+            grad['%s[%d]' % (self.__name, i)] = l.gradient()
         return grad
 
     def variables(self):
@@ -180,6 +195,12 @@ class FunctionReduceDataFeed(object):
         from .optimize import minimize as _minimize
         return _minimize(self, progress=progress)
 
+    def get(self, name):
+        return self._target.get(name)
+
+    def set(self, name, value):
+        self._target.set(name, value)
+
 
 class Composite(object):
     def __init__(self, **kwargs):
@@ -189,7 +210,7 @@ class Composite(object):
         if 'prefix' in kwargs:
             self.__prefix = kwargs['prefix']
         else:
-            self.__prefix = 'noname'
+            self.__prefix = 'unamed'
 
     def feed(self, purpose='learn'):
         purpose = unicode_airlock(purpose)

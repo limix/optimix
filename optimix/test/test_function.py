@@ -1,9 +1,9 @@
 from __future__ import division
 
-from numpy import array, asarray, dot, empty, newaxis, transpose
+from numpy import array, asarray, dot, empty, newaxis, transpose, add
 from numpy.testing import assert_allclose
 
-from optimix import Function, Scalar, Vector
+from optimix import Function, Scalar, Vector, FunctionReduce, check_grad
 
 
 class Quadratic1Scalar1(Function):
@@ -171,6 +171,50 @@ def test_function_vectorvaluedmix():
     assert_allclose(f.value(x1, x2), [14.5, -27., 15.])
     assert_allclose(f.gradient(x1, x2)['a'], [-12., -8., -0.])
     assert_allclose(f.gradient(x1, x2)['b'], [[1., 2.], [1., 2.], [1., 2.]])
+
+
+class QuadraticScalarReduce(FunctionReduce):
+    def __init__(self, functions):
+        super(QuadraticScalarReduce, self).__init__(functions, 'sum')
+
+    def value_reduce(self, values): # pylint: disable=R0201
+        return add.reduce(values)
+
+    def derivative_reduce(self, derivatives): # pylint: disable=R0201
+        return add.reduce(derivatives)
+
+
+# def test_function_quadratic1scalar1_reduce():
+#     f1 = Quadratic1Scalar1()
+#     f2 = Quadratic1Scalar1()
+#     f = QuadraticScalarReduce([f1, f2])
+#     x1 = 1.2
+#     x2 = -1.1
+#     f1.set_data(x1)
+#     f2.set_data(x2)
+#
+#     f = f.feed()
+#     assert_allclose(f.value(), 0.8)
+#     import pdb; pdb.set_trace()
+#     print(check_grad(f))
+#     # print(f.gradient())
+#     # assert_allclose(f.gradient(), [-4.8, 4.4])
+
+#
+# def test_vectorvalued1scalar1_layout():
+#     f1 = VectorValued1Scalar1()
+#     x1 = array([1.5, 1.0, 0.0])
+#     f2 = VectorValued1Scalar1()
+#     x2 = array([1.5, -1.0, 0.0])
+#
+#     f1.set_data(x1)
+#     f2.set_data(x2)
+#     f = QuadraticScalarReduce([f1, f2])
+#
+#     f = f.feed()
+#     assert_almost_equal(f.value(), [24., 0., 0.])
+#     assert_almost_equal(f.gradient(),
+#                         [array([-6., -4., -0.]), array([-6., 4., -0.])])
 
 
 if __name__ == '__main__':
