@@ -1,5 +1,3 @@
-from inspect import signature
-
 from numpy import asarray as _asarray
 from numpy import concatenate as _concat
 from numpy import stack
@@ -11,8 +9,14 @@ from .check_grad import check_grad
 
 
 def _nparams(o):
-    return len(signature(o.value).parameters)
+    try:
+        from inspect import signature
 
+        return len(signature(o.value).parameters)
+    except ImportError:
+        from inspect import getargspec
+
+        return len(getargspec(o.value).args) - 1 # pylint: disable=W1505
 
 def _ni(v):
     return next(iter(v))

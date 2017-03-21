@@ -16,29 +16,14 @@ from __future__ import unicode_literals
 
 class Variables(dict):
     r"""Set of variables."""
-
-    # def new(self):
-    #     return Variables({name: None for name in self.names()})
-
-    # def flatten(self):
-    #     names = sorted(self.names())
-    #     x = [self[k].asarray().ravel() for k in names]
-    #     return concatenate(x)
-
-    # def from_flat(self, x):
-    #     names = sorted(self.names())
-    #     offset = 0
-    #     for n in names:
-    #         size = self[n].size
-    #         self[n].value = x[offset:offset + size]
-    #         offset += size
-
     def set(self, x):
         """Set variable values via a dictionary mapping name to value."""
         for name, value in iter(x.items()):
-            if hasattr(value,
-                       'ndim') and self[name].value.ndim < value.ndim:
-                self[name].value.itemset(value.squeeze())
+            if hasattr(value, 'ndim'):
+                if self[name].value.ndim < value.ndim:
+                    self[name].value.itemset(value.squeeze())
+                else:
+                    self[name].value = value
             else:
                 self[name].value.itemset(value)
 
