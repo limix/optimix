@@ -1,3 +1,5 @@
+from inspect import signature
+
 from numpy import asarray as _asarray
 from numpy import concatenate as _concat
 from numpy import stack
@@ -6,6 +8,10 @@ from numpy.testing import assert_allclose
 from ndarray_listener import ndarray_listener
 
 from .check_grad import check_grad
+
+
+def _nparams(o):
+    return len(signature(o.value).parameters)
 
 
 def _ni(v):
@@ -59,89 +65,81 @@ class Assertion(object):
         return containers
 
     def assert_layout(self):
-        self._assert_value_shape()
-        self._assert_derivative_shape()
+        self._assert_value_shape([], [])
 
     def assert_gradient(self):
-        containers = self._get_containers()
+        self._assert_gradient_value([])
 
-        for cx in containers:
-            for cy in containers:
-                f = self._func()
-                f.set_data((cx[0], cy[0]))
-                assert_allclose(check_grad(f.feed()), 0, atol=1e-6)
+    def _assert_gradient_value(self, input_values):
+        f = self._func()
+        if len(input_values) == _nparams(f):
+            f.set_data(tuple(input_values))
+            assert_allclose(check_grad(f.feed()), 0, atol=1e-6)
+            return
 
-    def _assert_value_shape(self):
+        for cx in self._get_containers():
+            self._assert_gradient_value(input_values + [cx[0]])
 
-        func = self._func
-        containers = self._get_containers()
+    def _assert_value_shape(self, input_values, container_names):
 
-        for cx in containers:
-            for cy in containers:
-                f = func()
-                self._assert_valshape_msg(f.value(cx[0], cy[0]), cx, cy)
+        if len(input_values) == _nparams(self._func()):
+            v = self._func().value(*input_values)
+            self._assert_valshape_msg(
+                v, input_values=input_values, container_names=container_names)
+            return
 
-    def _assert_derivative_shape(self):
+        for cx in self._get_containers():
+            self._assert_value_shape(input_values + [cx[0]],
+                                     container_names + [cx[1]])
 
-        func = self._func
-
-        containers = self._get_containers()
-
-        for cx in containers:
-            for cy in containers:
-                f = func()
-                d = f.gradient(cx[0], cy[0])
-                for name in d.keys():
-                    self._assert_dershape_message(d[name], cx, cy, name)
-
-    def _assert_valshape_msg(self, value, cx, cy):
-
-        if cx[1] == "item" and cy[1] == "item":
-            if not _isitem(value, self._value_example):
-                raise AssertionError(
-                    _errmsg("value(item, item) -> item", value, cx[0], cy[0]))
-        elif cx[1] == "item" and cy[1] == "vector":
-            if not _isvector(value, self._value_example):
-                raise AssertionError(
-                    _errmsg("value(item, vector) -> vector", value, cx[0], cy[
-                        0]))
-        elif cx[1] == "vector" and cy[1] == "item":
-            if not _isvector(value, self._value_example):
-                raise AssertionError(
-                    _errmsg("value(vector, item) -> vector", value, cx[0], cy[
-                        0]))
-        elif cx[1] == "vector" and cy[1] == "vector":
-            if not _ismatrix(value, self._value_example):
-                raise AssertionError(
-                    _errmsg("value(vector, vector) -> matrix", value, cx[0],
-                            cy[0]))
-
-    def _assert_dershape_message(self, der, cx, cy, der_name):
-
-        if cx[1] == "item" and cy[1] == "item":
-            if not _isitem(der, self._derivative_examples[der_name]):
-                raise AssertionError(
-                    _errmsg("%s(item, item) -> item" % der_name, der, cx[0],
-                            cy[0]))
-        elif cx[1] == "item" and cy[1] == "vector":
-            if not _isvector(der, self._derivative_examples[der_name]):
-                raise AssertionError(
-                    _errmsg("%s(item, vector) -> vector" % der_name, der, cx[
-                        0], cy[0]))
-        elif cx[1] == "vector" and cy[1] == "item":
-            if not _isvector(der, self._derivative_examples[der_name]):
-                raise AssertionError(
-                    _errmsg("%s(vector, item) -> vector" % der_name, der, cx[
-                        0], cy[0]))
-        elif cx[1] == "vector" and cy[1] == "vector":
-            if not _ismatrix(der, self._derivative_examples[der_name]):
-                raise AssertionError(
-                    _errmsg("%s(vector, vector) -> matrix" % der_name, der, cx[
-                        0], cy[0]))
+    def _assert_valshape_msg(self, value, input_values, container_names):
+        if len(input_values) == 1:
+            return _assert_valshape_msg_1d(self._value_example, value,
+                                           input_values[0], container_names[0])
+        elif len(input_values) == 2:
+            return _assert_valshape_msg_2d(self._value_example, value,
+                                           input_values, container_names)
+        assert False
 
 
-def _errmsg(premiss, value, lval, rval):
-    msg = "Interface premiss %s violated." % premiss
-    msg += "\n  Got (%s:%s, %s:%s) -> %s:%s instead." % (
-        type(lval), lval, type(rval), rval, type(value), value)
-    return msg
+def _assert_valshape_msg_1d(example, value, x, xname):
+    def _errmsg(premiss, value, lval):
+        msg = "Interface premiss %s violated." % premiss
+        msg += "\n  Got (%s:%s, ) -> %s:%s instead." % (type(lval), lval,
+                                                        type(value), value)
+        return msg
+
+    if xname == "item":
+        if not _isitem(value, example):
+            raise AssertionError(_errmsg("value(item, ) -> item", value, x))
+    elif xname == "vector":
+        if not _isvector(value, example):
+            raise AssertionError(_errmsg("value(item, ) -> vector", value, x))
+
+
+def _assert_valshape_msg_2d(example, value, xy, xyname):
+    def _errmsg(premiss, value, lval, rval):
+        msg = "Interface premiss %s violated." % premiss
+        msg += "\n  Got (%s:%s, %s:%s) -> %s:%s instead." % (
+            type(lval), lval, type(rval), rval, type(value), value)
+        return msg
+
+    x, y = xy
+    xname, yname = xyname
+
+    if xname == "item" and yname == "item":
+        if not _isitem(value, example):
+            raise AssertionError(
+                _errmsg("value(item, item) -> item", value, x, y))
+    elif xname == "item" and yname == "vector":
+        if not _isvector(value, example):
+            raise AssertionError(
+                _errmsg("value(item, vector) -> vector", value, x, y))
+    elif xname == "vector" and yname == "item":
+        if not _isvector(value, example):
+            raise AssertionError(
+                _errmsg("value(vector, item) -> vector", value, x, y))
+    elif xname == "vector" and yname == "vector":
+        if not _ismatrix(value, example):
+            raise AssertionError(
+                _errmsg("value(vector, vector) -> matrix", value, x, y))
