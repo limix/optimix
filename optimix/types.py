@@ -194,12 +194,6 @@ class Vector(object):
 
     def __setattr__(self, name, value):
         if name == 'value':
-            if not hasattr(value, "__array_interface__"):
-                msg = "'%s'" % type(value)
-                msg += " object has no attribute"
-                msg += " '__array_interface__'"
-                raise TypeError(msg)
-
             value = asarray(value)
             value = atleast_1d(value).ravel()
 
