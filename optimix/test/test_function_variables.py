@@ -82,7 +82,7 @@ def test_function_variables_gradient_reduce():
 
     assert_allclose(f.feed().value(), 145.6)
     gradient = f.feed().gradient()
-    names = list(gradient.keys())
+    names = sorted(list(gradient.keys()))
     letter = ['a', 'b']
     for i in range(2):
         for j in range(2):
