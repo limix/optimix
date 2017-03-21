@@ -58,7 +58,7 @@ def test_function_variables_reduce():
     f = QuadraticScalarReduce([f0, f1])
 
     letter = ['a', 'b']
-    names = f.variables().names()
+    names = sorted(f.variables().names())
     for i in range(2):
         for j in range(2):
             for ii in range(2):
