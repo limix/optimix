@@ -84,7 +84,7 @@ class Scalar(object):
     def __setattr__(self, name, value):
         if name == 'value':
             try:
-                value = float64(value)
+                value = ndarray_listener(float64(value))
             except TypeError:
                 value = value[0]
             Scalar.__dict__['raw'].__set__(self, value)
@@ -100,7 +100,6 @@ class Scalar(object):
         if name == 'value':
             name = 'raw'
         return Scalar.__dict__[name].__get__(self)
-        # return Scalar.__dict__[name].__get__(self)
 
     def _notify(self):
         for l in self._listeners:
@@ -200,6 +199,10 @@ class Vector(object):
                 msg += " object has no attribute"
                 msg += " '__array_interface__'"
                 raise TypeError(msg)
+
+            value = asarray(value)
+            value = atleast_1d(value).ravel()
+
             Vector.__dict__['raw'].__set__(self, value)
             t = Vector.__dict__['__array_interface__']
             t.__set__(self, value.__array_interface__)
