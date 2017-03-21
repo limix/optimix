@@ -13,8 +13,10 @@ Public interface
 """
 from __future__ import unicode_literals
 
+
 class Variables(dict):
     r"""Set of variables."""
+
     # def new(self):
     #     return Variables({name: None for name in self.names()})
 
@@ -34,7 +36,11 @@ class Variables(dict):
     def set(self, x):
         """Set variable values via a dictionary mapping name to value."""
         for name, value in iter(x.items()):
-            self[name].value = value
+            if hasattr(value,
+                       'ndim') and self[name].value.ndim < value.ndim:
+                self[name].value.itemset(value.squeeze())
+            else:
+                self[name].value.itemset(value)
 
     def select(self, fixed):
         """Return a subset of variables according to ``fixed``."""

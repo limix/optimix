@@ -44,8 +44,8 @@ class ProxyFunction(object):
 
 
 def _minimize(proxy_function):
-    x = brent_minimize(proxy_function)
-    proxy_function.set_solution(x)
+    x = asarray(brent_minimize(proxy_function))
+    proxy_function.set_solution(x[0:1])
 
 
 def minimize(function, progress=True):
