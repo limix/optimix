@@ -112,12 +112,6 @@ class FunctionReduce(object):
         fs = [f.feed(purpose) for f in self.functions]
         return FunctionReduceDataFeed(self, fs, self.__name)
 
-    # def gradient(self, *args, **kwargs):
-    #     grad = {}
-    #     for i, l in enumerate(self.functions):
-    #         grad['%s[%d]' % (self.__name, i)] = l.gradient(*args, **kwargs)
-    #     return grad
-
     def variables(self):
         vars_list = [l.variables() for l in self.functions]
         vd = dict()
@@ -182,21 +176,6 @@ class FunctionReduceDataFeed(object):
                 grad['%s[%d]' % (self.__name, i)][gn] = gv
         gr = self._target.gradient_reduce
         return gr(value, grad)
-
-    # def variables(self):
-    #     vars_list = [l.variables() for l in self.functions]
-    #     vd = dict()
-    #     for (i, vs) in enumerate(vars_list):
-    #         vd['%s[%d]' % (self.__name, i)] = vs
-    #     return merge_variables(vd)
-
-    # def gradient(self):
-    #     grad = {}
-    #     for i, l in enumerate(self.functions):
-    #         g = l.gradient()
-    #         for j, v in iter(g.items()):
-    #             grad['%s[%d].%s' % (self.__name, i, j)] = v
-    #     return grad
 
     def variables(self):
         return self._target.variables()

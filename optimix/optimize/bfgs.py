@@ -1,7 +1,10 @@
+from __future__ import division
+
 from numpy import asarray, concatenate
 from scipy.optimize import fmin_l_bfgs_b
 
 from ..exception import OptimixError
+from .exception import BadSolutionError
 
 
 def do_flatten(x):
@@ -15,6 +18,11 @@ class ProxyFunction(object):
         self._function = function
         self._signal = -1 if negative else +1
         self.progress = progress
+        self._solutions = []
+
+    @property
+    def solutions(self):
+        return self._solutions
 
     def names(self):
         return sorted(self._function.variables().select(fixed=False).names())
@@ -42,6 +50,7 @@ class ProxyFunction(object):
 
     def __call__(self, x):
         x = asarray(x).ravel()
+        self._solutions.append(x.copy())
         self._function.variables().set(self.unflatten(x))
         v = self.value()
         g = self.flatten(self.gradient())
@@ -55,17 +64,38 @@ class ProxyFunction(object):
         return concatenate([v.get(n).asarray().ravel() for n in self.names()])
 
 
-def _minimize(proxy_function):
-    x0 = proxy_function.get_solution()
+def _try_minimize(proxy_function, n):
     disp = 1 if proxy_function.progress else 0
 
-    r = fmin_l_bfgs_b(proxy_function, x0, disp=disp)
+    if n == 0:
+        raise OptimixError("Too many bad solutions")
+
+    try:
+        x0 = proxy_function.get_solution()
+        return fmin_l_bfgs_b(proxy_function, x0, disp=disp)
+
+    except BadSolutionError:
+
+        xs = proxy_function.solutions
+        if len(xs) < 2:
+            raise OptimixError("Bad solution at the first iteration.")
+
+        proxy_function.set_solution(xs[-2] / 5 + xs[-1] / 5)
+
+        if disp == 1:
+            print("Optimix: Restarting L-BFGS-B due to bad solution.")
+        return _try_minimize(proxy_function, n - 1)
+
+
+def _minimize(proxy_function):
+
+    r = _try_minimize(proxy_function, 5)
 
     if r[2]['warnflag'] == 1:
-        raise OptimixError("BFGS: too many function evaluations" +
+        raise OptimixError("L-BFGS-B: too many function evaluations" +
                            " or too many iterations")
     elif r[2]['warnflag'] == 2:
-        raise OptimixError("BFGS: %s" % r[2]['task'])
+        raise OptimixError("L-BFGS-B: %s" % r[2]['task'])
 
     proxy_function.set_solution(r[0])
 

@@ -1,0 +1,2 @@
+class BadSolutionError(Exception):
+    pass
