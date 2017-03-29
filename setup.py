@@ -34,7 +34,7 @@ def setup_package():
         description="Abstract function optimisation.",
         long_description=long_description,
         license="MIT",
-        url='https://github.com/glimix/optimix',
+        url='https://github.com/limix/optimix',
         packages=find_packages(),
         zip_safe=True,
         install_requires=install_requires,
