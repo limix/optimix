@@ -14,10 +14,9 @@ Public interface
 """
 from __future__ import unicode_literals
 
-# pylint: disable=E0611
-from numpy import array, asarray, atleast_1d, float64
-
 from ndarray_listener import ndarray_listener
+# pylint: disable=E0611
+from numpy import array, asarray, atleast_1d, float64, inf
 
 
 class Scalar(object):
@@ -31,16 +30,25 @@ class Scalar(object):
     """
     __slots__ = [
         'raw', '_listeners', '_fixed', 'value', '__array_interface__',
-        '__array_struct__'
+        '__array_struct__', '_bounds'
     ]
 
     def __init__(self, value):
+        self._bounds = (-inf, +inf)
         self._listeners = []
         self._fixed = False
         value = ndarray_listener(float64(value))
         self.raw = value
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
+
+    @property
+    def bounds(self):
+        return self._bounds
+
+    @bounds.setter
+    def bounds(self, v):
+        self._bounds = v
 
     def copy(self):
         """Return a copy."""
@@ -141,10 +149,11 @@ class Vector(object):
     """
     __slots__ = [
         'raw', '_listeners', '_fixed', '__array_interface__',
-        '__array_struct__', 'value'
+        '__array_struct__', 'value', '_bounds'
     ]
 
     def __init__(self, value):
+        self._bounds = [(-inf, +inf)] * len(value)
         self._listeners = []
         self._fixed = False
         value = asarray(value)
@@ -152,6 +161,14 @@ class Vector(object):
         self.raw = value
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
+
+    @property
+    def bounds(self):
+        return self._bounds
+
+    @bounds.setter
+    def bounds(self, v):
+        self._bounds = v
 
     def copy(self):
         """Return a copy."""

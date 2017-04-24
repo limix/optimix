@@ -1,5 +1,6 @@
 from __future__ import division
 
+import logging
 from numpy import asarray, concatenate
 from scipy.optimize import fmin_l_bfgs_b
 
@@ -19,6 +20,7 @@ class ProxyFunction(object):
         self._signal = -1 if negative else +1
         self.progress = progress
         self._solutions = []
+        self._logger = logging.getLogger(__name__)
 
     @property
     def solutions(self):
@@ -32,7 +34,12 @@ class ProxyFunction(object):
 
     def gradient(self):
         g = self._function.gradient()
-        return {name: self._signal * g[name] for name in self.names()}
+        grad = {name: self._signal * g[name] for name in self.names()}
+
+        if self._logger.getEffectiveLevel() <= logging.DEBUG:
+            self._logger.debug("Gradient: %s", str(grad))
+
+        return grad
 
     def unflatten(self, x):
         variables = self._function.variables().select(fixed=False)
@@ -49,11 +56,21 @@ class ProxyFunction(object):
         return do_flatten([d[name] for name in names])
 
     def __call__(self, x):
+
         x = asarray(x).ravel()
         self._solutions.append(x.copy())
         self._function.variables().set(self.unflatten(x))
+
+        if self._logger.getEffectiveLevel() <= logging.DEBUG:
+            for key, val in iter(self._function.variables().items()):
+                self._logger.debug("Setting %s to %s", key, val)
+
         v = self.value()
         g = self.flatten(self.gradient())
+
+        if self._logger.getEffectiveLevel() <= logging.DEBUG:
+            self._logger.debug("Function evaluation is %.10f", v)
+
         return v, g
 
     def set_solution(self, x):
@@ -72,7 +89,16 @@ def _try_minimize(proxy_function, n):
 
     try:
         x0 = proxy_function.get_solution()
-        return fmin_l_bfgs_b(proxy_function, x0, disp=disp)
+
+        bounds = []
+        for v in proxy_function._function.variables().values():
+            if len(v.shape) == 0:
+                bounds.append(v.bounds)
+            else:
+                bounds += v.bounds
+
+        return fmin_l_bfgs_b(proxy_function, x0, bounds=bounds,
+                             disp=disp)
 
     except BadSolutionError:
 

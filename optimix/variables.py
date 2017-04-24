@@ -16,6 +16,7 @@ from __future__ import unicode_literals
 
 class Variables(dict):
     r"""Set of variables."""
+
     def set(self, x):
         """Set variable values via a dictionary mapping name to value."""
         for name, value in iter(x.items()):
