@@ -62,8 +62,9 @@ class ProxyFunction(object):
         self._function.variables().set(self.unflatten(x))
 
         if self._logger.getEffectiveLevel() <= logging.DEBUG:
-            for key, val in iter(self._function.variables().items()):
-                self._logger.debug("Setting %s to %s", key, val)
+            var = self._function.variables().select(fixed=False)
+            for name in self.names():
+                self._logger.debug("Setting %s to %s", name, var[name])
 
         v = self.value()
         g = self.flatten(self.gradient())
@@ -83,6 +84,7 @@ class ProxyFunction(object):
 
 def _try_minimize(proxy_function, n):
     disp = 1 if proxy_function.progress else 0
+    logger = logging.getLogger()
 
     if n == 0:
         raise OptimixError("Too many bad solutions")
@@ -91,17 +93,18 @@ def _try_minimize(proxy_function, n):
         x0 = proxy_function.get_solution()
 
         bounds = []
-        vs = proxy_function._function.variables().select(fixed=False).values()
-        for v in vs:
-            if len(v.shape) == 0:
-                bounds.append(v.bounds)
-            else:
-                bounds += v.bounds
 
-        return fmin_l_bfgs_b(proxy_function, x0, bounds=bounds,
+        var = proxy_function._function.variables().select(fixed=False)
+        for name in proxy_function.names():
+            if len(var[name].shape) == 0:
+                bounds.append(var[name].bounds)
+            else:
+                bounds += var[name].bounds
+
+        res = fmin_l_bfgs_b(proxy_function, x0, bounds=bounds,
                              disp=disp)
 
-    except BadSolutionError:
+    except BadSolutionError as err:
 
         xs = proxy_function.solutions
         if len(xs) < 2:
@@ -109,9 +112,10 @@ def _try_minimize(proxy_function, n):
 
         proxy_function.set_solution(xs[-2] / 5 + xs[-1] / 5)
 
-        if disp == 1:
-            print("Optimix: Restarting L-BFGS-B due to bad solution.")
-        return _try_minimize(proxy_function, n - 1)
+        logger.info("Optimix: Restarting L-BFGS-B due to bad solution.")
+        res = _try_minimize(proxy_function, n - 1)
+
+    return res
 
 
 def _minimize(proxy_function):
