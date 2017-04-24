@@ -91,7 +91,8 @@ def _try_minimize(proxy_function, n):
         x0 = proxy_function.get_solution()
 
         bounds = []
-        for v in proxy_function._function.variables().values():
+        vs = proxy_function._function.variables().select(fixed=False).values()
+        for v in vs:
             if len(v.shape) == 0:
                 bounds.append(v.bounds)
             else:
