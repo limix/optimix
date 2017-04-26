@@ -107,7 +107,11 @@ class Scalar(object):
     def __getattr__(self, name):
         if name == 'value':
             name = 'raw'
-        return Scalar.__dict__[name].__get__(self)
+        r = Scalar.__dict__[name].__get__(self)
+        if name == 'raw':
+            for l in self._listeners:
+                l(None)
+        return r
 
     def _notify(self):
         for l in self._listeners:
