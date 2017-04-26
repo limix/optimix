@@ -3,7 +3,7 @@
 [![PyPIl](https://img.shields.io/pypi/l/optimix.svg?style=flat-square)](https://pypi.python.org/pypi/optimix/)
 [![PyPIv](https://img.shields.io/pypi/v/optimix.svg?style=flat-square)](https://pypi.python.org/pypi/optimix/)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/optimix/badges/version.svg)](https://anaconda.org/conda-forge/optimix)
-[![Documentation Status](https://readthedocs.org/projects/optimix/badge/?style=flat-square&version=latest)](https://optimix.readthedocs.io/en/latest/)
+[![Documentation Status](https://readthedocs.org/projects/optimix/badge/?style=flat-square&version=latest)](https://optimix.readthedocs.io/)
 
 Abstract function optimisation.
 
