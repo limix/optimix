@@ -89,6 +89,7 @@ def _try_minimize(proxy_function, n):
     if n == 0:
         raise OptimixError("Too many bad solutions")
 
+    warn = False
     try:
         x0 = proxy_function.get_solution()
 
@@ -104,8 +105,12 @@ def _try_minimize(proxy_function, n):
         res = fmin_l_bfgs_b(proxy_function, x0, bounds=bounds,
                              disp=disp)
 
-    except BadSolutionError as err:
+    except BadSolutionError:
+        warn = True
+    else:
+        warn = res[2]['warnflag'] > 0
 
+    if warn:
         xs = proxy_function.solutions
         if len(xs) < 2:
             raise OptimixError("Bad solution at the first iteration.")
