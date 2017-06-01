@@ -102,7 +102,7 @@ def _try_minimize(proxy_function, n):
             else:
                 bounds += var[name].bounds
 
-        res = fmin_l_bfgs_b(proxy_function, x0, bounds=bounds,
+        res = fmin_l_bfgs_b(proxy_function, x0, bounds=bounds, factr=1e5,
                              disp=disp)
 
     except BadSolutionError:
