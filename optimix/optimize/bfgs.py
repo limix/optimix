@@ -9,13 +9,13 @@ from ..exception import OptimixError
 
 
 def minimize(function, verbose=True):
-    r"""Minimize a function using BFGS.
+    r"""Minimize a function using L-BFGS-B.
 
     Parameters
     ----------
     function : object
-        Objective function. It has to implement the :class:`optimix.Function`
-        interface.
+        Objective function. It has to implement the
+        :class:`optimix.function.Function` interface.
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
     """
@@ -23,13 +23,13 @@ def minimize(function, verbose=True):
 
 
 def maximize(function, verbose=True):
-    r"""Maximize a function using BFGS.
+    r"""Maximize a function using L-BFGS-B.
 
     Parameters
     ----------
     function : object
-        Objective function. It has to implement the :class:`optimix.Function`
-        interface.
+        Objective function. It has to implement the
+        :class:`optimix.function.Function` interface.
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
     """

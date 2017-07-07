@@ -12,6 +12,7 @@ Optimix's documentation
     types
     variables
     function
+    optimize
 
 *****************
 Comments and bugs

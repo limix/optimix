@@ -2,15 +2,6 @@ r"""
 *****
 Types
 *****
-
-Introduction
-^^^^^^^^^^^^
-
-We have two variables types: :class:`optimix.types.Scalar` and
-:class:`optimix.types.Vector`.
-
-Public interface
-^^^^^^^^^^^^^^^^
 """
 from __future__ import unicode_literals
 
