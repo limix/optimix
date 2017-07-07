@@ -45,7 +45,7 @@ def test_check_grad():
 def test_check_grad_fprime():
     f = Quadratic1Scalar1()
     f.set_data(1.2)
-    f.feed().minimize(progress=False)
+    f.feed().minimize(verbose=False)
     assert_allclose(approx_fprime(f.feed())['scale'], 0, atol=1e-7)
 
 
@@ -65,7 +65,7 @@ class LinearMean(Function):
     def value(self, x):
         return x.dot(self.variables().get('effsizes').value)
 
-    def gradient(self, x): # pylint: disable=R0201
+    def gradient(self, x):  # pylint: disable=R0201
         return dict(effsizes=x)
 
 

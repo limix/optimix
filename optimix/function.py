@@ -2,15 +2,6 @@ r"""
 ********
 Function
 ********
-
-Introduction
-^^^^^^^^^^^^
-
-- :class:`optimix.function.Function`
-- :class:`optimix.function.Composite`
-
-Public interface
-^^^^^^^^^^^^^^^^
 """
 from __future__ import unicode_literals
 
@@ -23,14 +14,48 @@ from .variables import Variables, merge_variables
 class Function(object):
     r"""Base-class for object representing functions.
 
-    Args:
-        kwargs (dict): map of variable name to variable value.
+    Parameters
+    ----------
+    kwargs : dict
+        Map of variable name to variable value.
     """
 
     def __init__(self, **kwargs):
         self._variables = Variables(kwargs)
         self._data = dict()
         self._name = kwargs.get('name', 'unamed')
+
+    def value(self, *args):
+        r"""Evaluate the function at the ``args`` point.
+
+        Parameters
+        ----------
+        args : tuple
+            Point at the evaluation. The length of this :func:`tuple` is defined
+            by the user.
+
+        Returns
+        -------
+        float or array_like
+            Function evaluated at ``args``.
+        """
+        raise NotImplementedError
+
+    def gradient(self, *args):
+        r"""Evaluate the gradient at the ``args`` point.
+
+        Parameters
+        ----------
+        args : tuple
+            Point at the gradient evaluation. The length of this :func:`tuple` is
+            defined by the user.
+
+        Returns
+        -------
+        dict
+            Map between variables to their gradient values.
+        """
+        raise NotImplementedError
 
     @property
     def name(self):
@@ -42,7 +67,7 @@ class Function(object):
         return FunctionDataFeed(self, self._data[purpose], self._name)
 
     def fix(self, var_name):
-        """Set a variable fixed.
+        r"""Set a variable fixed.
 
         Args:
             var_name (str): variable name.
@@ -50,7 +75,7 @@ class Function(object):
         self._variables[var_name].fix()
 
     def unfix(self, var_name):
-        """Set a variable unfixed.
+        r"""Set a variable unfixed.
 
         Args:
             var_name (str): variable name.
@@ -58,7 +83,7 @@ class Function(object):
         self._variables[var_name].unfix()
 
     def isfixed(self, var_name):
-        """Return whether a variable it is fixed or not.
+        r"""Return whether a variable it is fixed or not.
 
         Args:
             var_name (str): variable name.
@@ -72,8 +97,10 @@ class Function(object):
     def set_nodata(self, purpose='learn'):
         r"""Disable data feeding.
 
-        Args:
-            purpose (str): name of the data source.
+        Parameters
+        ----------
+        purpose : str
+            Name of the data source.
         """
         purpose = unicode_airlock(purpose)
         self._data[purpose] = tuple()
@@ -81,8 +108,10 @@ class Function(object):
     def set_data(self, data, purpose='learn'):
         r"""Set a named data source.
 
-        Args:
-            purpose (str): name of the data source.
+        Parameters
+        ----------
+        purpose : str
+            Name of the data source.
         """
         purpose = unicode_airlock(purpose)
         if not isinstance(data, collections.Sequence):
@@ -92,8 +121,10 @@ class Function(object):
     def unset_data(self, purpose='learn'):
         r"""Unset a named data source.
 
-        Args:
-            purpose (str): name of the data source.
+        Parameters
+        ----------
+        purpose : str
+            Name of the data source.
         """
         purpose = unicode_airlock(purpose)
         del self._data[purpose]
@@ -139,13 +170,13 @@ class FunctionDataFeed(object):
     def variables(self):
         return self._target.variables()
 
-    def maximize(self, progress=True):
+    def maximize(self, verbose=True):
         from .optimize import maximize as _maximize
-        return _maximize(self, progress=progress)
+        return _maximize(self, verbose=verbose)
 
-    def minimize(self, progress=True):
+    def minimize(self, verbose=True):
         from .optimize import minimize as _minimize
-        return _minimize(self, progress=progress)
+        return _minimize(self, verbose=verbose)
 
 
 class FunctionReduceDataFeed(object):
@@ -180,10 +211,10 @@ class FunctionReduceDataFeed(object):
     def variables(self):
         return self._target.variables()
 
-    def maximize(self, progress=True):
+    def maximize(self, verbose=True):
         from .optimize import maximize as _maximize
-        return _maximize(self, progress=progress)
+        return _maximize(self, verbose=verbose)
 
-    def minimize(self, progress=True):
+    def minimize(self, verbose=True):
         from .optimize import minimize as _minimize
-        return _minimize(self, progress=progress)
+        return _minimize(self, verbose=verbose)

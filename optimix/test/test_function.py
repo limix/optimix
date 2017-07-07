@@ -22,7 +22,7 @@ class Quadratic1Scalar1(Function):
 def test_function_quadratic1scalar1():
     f = Quadratic1Scalar1()
     f.set_data(1.2)
-    f.feed().minimize(progress=False)
+    f.feed().minimize(verbose=False)
     assert_allclose(f.variables().get('scale').value, 5.0)
     f.variables().get('scale').value = 1.0
 
@@ -49,7 +49,7 @@ def test_function_quadratic2scalar1():
     x1 = 2.3
     x2 = 1.0
     f.set_data((x1, x2))
-    f.feed().minimize(progress=False)
+    f.feed().minimize(verbose=False)
     assert_allclose(f.variables().get('scale').value, 5.0)
 
 
@@ -80,7 +80,7 @@ def test_function_quadratic1scalar2():
     f = Quadratic1Scalar2()
     x = 1.2
     f.set_data(x)
-    f.feed().minimize(progress=False)
+    f.feed().minimize(verbose=False)
     assert_allclose(f.variables().get('a').value, 4.99999999927461)
     assert_allclose(f.variables().get('b').value, -0.408820867345221)
 
@@ -111,7 +111,7 @@ def test_function_quadratic2scalar2():
     x1 = 2.3
     x2 = 1.0
     f.set_data((x1, x2))
-    f.feed().minimize(progress=False)
+    f.feed().minimize(verbose=False)
     assert_allclose(f.variables().get('a').value, 5.000000014635099)
     assert_allclose(f.variables().get('b').value, -4.999999925540513)
 

@@ -3,6 +3,7 @@ def unicode_airlock(v):
         v = v.decode()
     return v
 
+
 def ascii_airlock(v):
     if not isinstance(v, bytes):
         v = v.encode()
