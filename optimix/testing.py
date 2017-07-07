@@ -62,9 +62,10 @@ class Assertion(object):
         item0 = self._item0
         item1 = self._item1
 
-        containers = [(item0, "item"), ([item0], "vector"), (_compact(
-            [item0]), "vector"), ([item0, item1], "vector"),
-                      (_compact([item0, item1]), "vector")]
+        containers = [(item0, "item"), ([item0], "vector")]
+        containers += [(_compact([item0]), "vector")]
+        containers += [([item0, item1], "vector")]
+        containers += [(_compact([item0, item1]), "vector")]
 
         return containers
 
