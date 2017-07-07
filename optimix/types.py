@@ -2,21 +2,13 @@ r"""
 *****
 Types
 *****
-
-Introduction
-^^^^^^^^^^^^
-
-We have two variables types: :class:`optimix.types.Scalar` and
-:class:`optimix.types.Vector`.
-
-Public interface
-^^^^^^^^^^^^^^^^
 """
 from __future__ import unicode_literals
 
-from ndarray_listener import ndarray_listener
 # pylint: disable=E0611
 from numpy import array, asarray, atleast_1d, float64, inf
+
+from ndarray_listener import ndarray_listener
 
 
 class Scalar(object):

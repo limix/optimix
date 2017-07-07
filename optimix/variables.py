@@ -2,14 +2,6 @@ r"""
 *********
 Variables
 *********
-
-Introduction
-^^^^^^^^^^^^
-
-:class:`.Variables` holds a set of variables.
-
-Public interface
-^^^^^^^^^^^^^^^^
 """
 from __future__ import unicode_literals
 

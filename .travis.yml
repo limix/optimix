@@ -35,6 +35,7 @@ notifications:
   email: false
 deploy:
   provider: pypi
+  server: https://upload.pypi.org/legacy/
   user: dhorta
   password:
     secure: khOKx8EHOLpZc27/Qg5ZMBpJ39Ostzf+B2Q9P8XneYKRtMgFXg/VkXIEjU/NRRqeEtiklb2GLcnsTU+gHelS3u2hHQHLMC18s/Lc3bEuMM1le29F7S01CRCk1jYJ159GFw3xXWXgwLg6xvYUcycbwDyMA1aJ4epvQ/+9xxxMOzuYmmY720h+ugbXDOB4NrRuGOWmbMy5LaICgmWIPvS7VERce0UKnnJLb1Q2rcPQvYDHRLETrNdjGOJxaqzTJd0NfbHj8YECGdM/JLMj+plZ+Bmn7YdghRtmzFmSy8VKmgMbVa3B8wF0yyM1667mOhs5yykyu9Qe9zNTYOWHseplgPg6EbhH3594PwEauka6nq3esRtvvy6YaQls7D4QOA458zWxWAuSmLgq+khpv5SknS9A7KNt66WzNKxoOuYSBSFcjcij6iqPhwVjm63omoUVCLZ9flVhXXAv5j9lRSC4sT3+ezyt6rbj/bn/qO4GEeZ7SJRun/i91oe1Lq/NVeBIl9e10ZDt/BhiKuxCqPOYX2H+LjLAtBoPoTPtYOPNIzUWOb1bRWl931HdrrfIQgJUlfdGP0weMTu12j5+gctFQu3mCk1BPjProJaAwt2vVbbvjPH34GQxmZQI5N2/kBoMFJypJWEHeRFnr8BZOfEm/iGUSidJXO6q8GcDQaYQjXo=
@@ -46,4 +47,4 @@ env:
   global:
     - secure: POtzEllTrT/a0Y6FYttr9FkRRUMRrteJbz7+pC5vSzb2mExirOVOUDotPX4WnDi2GtOcrJS9o8ENeaKftZHdEac276sTcVIt1pfNtBQxcpFRgBVBRyV6LnBf1pirCXq/q0C8M9CXkZpWjpHGXsJxUMgdSm/PCHlu0XH4tOhxPbpgEc1mg/9LdbCN36JGCwU/IBOxKD8mg4pwsri/3JZOWDJtn7yLaNs8SosMEt+O5FFEbEjt4dqc+NCqAIBRozWw4Dl1Jq3xyw7WmhYYCIQ50Ys/4jMWVgh8Rdc7PkuQjb6QclGGWDJhQnKVcA+lvQh3ej3ov/4vtbl2ctbQ+hGNLpTleeVtrChKdWHpLDDqiYjN0o8DGpSoj50v0kenFWZhDnKS78YEg4hT829fxPEztnTon7IzuHZVgvcLHTfM8HXyyJgoTZb2mu+IvEp5YB3VVscsn6clbOpnNh61ujw8at8LX06vCBmpa1ZYvsCDmoz+kT2ju0uTJ7wcTZHAPNyFJcVkHhmgb9W9kW2Bnxeads3bm2rw7vpaqlEl7XU9Wtl8+fwT+no9Mern9t/hQ/h731oVDMQ9sclUOnuO8akKNp1MmwR5Rmn49mTUSF6cJIRFDoIuDBCE5BtU+OdzRPHCez5P3luAkIHTOAZ7OPiJA73C5rCdsajbqFmvU6EUY+k=
     - PKG_NAME="optimix"
-    - PY_DEPS="scipy"
+    - PY_DEPS="numpy scipy sphinx_rtd_theme ndarray-listener"

@@ -1,15 +1,46 @@
-"""Wrapper for Brent search."""
+from __future__ import division
+
+import logging
+
 from numpy import asarray
 from tqdm import tqdm
 
 from brent_search import minimize as brent_minimize
 
 
+def minimize(function, verbose=True):
+    r"""Minimize a scalar function using Brent's method.
+
+    Parameters
+    ----------
+    function : object
+        Objective function. It has to implement the :class:`optimix.function.Function`
+        interface.
+    verbose : bool
+        ``True`` for verbose output; ``False`` otherwise.
+    """
+    _minimize(ProxyFunction(function, verbose, False))
+
+
+def maximize(function, verbose=False):
+    r"""Maximize a scalar function using Brent's method.
+
+    Parameters
+    ----------
+    function : object
+        Objective function. It has to implement the :class:`optimix.function.Function`
+        interface.
+    verbose : bool
+        ``True`` for verbose output; ``False`` otherwise.
+    """
+    _minimize(ProxyFunction(function, verbose, True))
+
+
 class ProxyFunction(object):
-    def __init__(self, function, progress, negative):
+    def __init__(self, function, verbose, negative):
         self._function = function
         self._signal = -1 if negative else +1
-        self._progress = tqdm(desc='Optimix', disable=not progress)
+        self._progress = tqdm(desc='Optimix', disable=not verbose)
         self._iteration = 0
 
     def names(self):
@@ -46,11 +77,3 @@ class ProxyFunction(object):
 def _minimize(proxy_function):
     x = asarray(brent_minimize(proxy_function))
     proxy_function.set_solution(x[0:1])
-
-
-def minimize(function, progress=True):
-    return _minimize(ProxyFunction(function, progress, False))
-
-
-def maximize(function, progress=False):
-    return _minimize(ProxyFunction(function, progress, True))
