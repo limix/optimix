@@ -9,8 +9,8 @@ L-BFGS-B
 .. autofunction:: optimix.optimize.minimize
 .. autofunction:: optimix.optimize.maximize
 
-Brent
-^^^^^
+Brent's method
+^^^^^^^^^^^^^^
 
 .. autofunction:: optimix.optimize.minimize_scalar
 .. autofunction:: optimix.optimize.maximize_scalar
