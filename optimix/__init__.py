@@ -1,3 +1,12 @@
+r"""
+***************
+optimix package
+***************
+
+Abstract function optimisation.
+
+"""
+
 from pkg_resources import DistributionNotFound as _DistributionNotFound
 from pkg_resources import get_distribution as _get_distribution
 
