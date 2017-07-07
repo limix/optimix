@@ -1,6 +1,22 @@
-from .brent import minimize as minimize_scalar
-from .brent import maximize as maximize_scalar
+r"""
+*****************************
+Function optimization methods
+*****************************
 
-from .bfgs import minimize
-from .bfgs import maximize
-from .exception import BadSolutionError
+BFGS
+^^^^
+
+.. autofunction:: .minimize
+.. autofunction:: .maximize
+
+Brent
+^^^^^
+
+.. autofunction:: .minimize_scalar
+.. autofunction:: .maximize_scalar
+
+"""
+
+from .bfgs import maximize, minimize
+from .brent import maximize as maximize_scalar
+from .brent import minimize as minimize_scalar

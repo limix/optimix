@@ -1,9 +1,9 @@
 from pkg_resources import DistributionNotFound as _DistributionNotFound
 from pkg_resources import get_distribution as _get_distribution
 
-from .exception import OptimixError
 from . import testing
 from .check_grad import approx_fprime, check_grad
+from .exception import OptimixError
 from .function import Function, FunctionReduce
 from .optimize import maximize, maximize_scalar, minimize, minimize_scalar
 from .types import Matrix, Scalar, Vector
@@ -12,6 +12,7 @@ try:
     __version__ = _get_distribution('optimix').version
 except _DistributionNotFound:
     __version__ = 'unknown'
+
 
 def test():
     import os

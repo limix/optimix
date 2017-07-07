@@ -139,13 +139,13 @@ class FunctionDataFeed(object):
     def variables(self):
         return self._target.variables()
 
-    def maximize(self, progress=True):
+    def maximize(self, verbose=True):
         from .optimize import maximize as _maximize
-        return _maximize(self, progress=progress)
+        return _maximize(self, verbose=verbose)
 
-    def minimize(self, progress=True):
+    def minimize(self, verbose=True):
         from .optimize import minimize as _minimize
-        return _minimize(self, progress=progress)
+        return _minimize(self, verbose=verbose)
 
 
 class FunctionReduceDataFeed(object):
@@ -180,10 +180,10 @@ class FunctionReduceDataFeed(object):
     def variables(self):
         return self._target.variables()
 
-    def maximize(self, progress=True):
+    def maximize(self, verbose=True):
         from .optimize import maximize as _maximize
-        return _maximize(self, progress=progress)
+        return _maximize(self, verbose=verbose)
 
-    def minimize(self, progress=True):
+    def minimize(self, verbose=True):
         from .optimize import minimize as _minimize
-        return _minimize(self, progress=progress)
+        return _minimize(self, verbose=verbose)

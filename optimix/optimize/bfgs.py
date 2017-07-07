@@ -1,24 +1,52 @@
 from __future__ import division
 
 import logging
+
 from numpy import asarray, concatenate
 from scipy.optimize import fmin_l_bfgs_b
 
 from ..exception import OptimixError
-from .exception import BadSolutionError
 
 
-def do_flatten(x):
+def minimize(function, verbose=True):
+    r"""Minimize a function using BFGS.
+
+    Parameters
+    ----------
+    function : object
+        Objective function. It has to implement the :class:`optimix.Function`
+        interface.
+    verbose : bool
+        ``True`` for verbose output; ``False`` otherwise.
+    """
+    _minimize(ProxyFunction(function, verbose, False))
+
+
+def maximize(function, verbose=True):
+    r"""Maximize a function using BFGS.
+
+    Parameters
+    ----------
+    function : object
+        Objective function. It has to implement the :class:`optimix.Function`
+        interface.
+    verbose : bool
+        ``True`` for verbose output; ``False`` otherwise.
+    """
+    _minimize(ProxyFunction(function, verbose, True))
+
+
+def _do_flatten(x):
     if isinstance(x, (list, tuple)):
         return concatenate([asarray(xi).ravel() for xi in x])
     return concatenate(x)
 
 
 class ProxyFunction(object):
-    def __init__(self, function, progress, negative):
+    def __init__(self, function, verbose, negative):
         self._function = function
         self._signal = -1 if negative else +1
-        self.progress = progress
+        self.verbose = verbose
         self._solutions = []
         self._logger = logging.getLogger(__name__)
 
@@ -53,7 +81,7 @@ class ProxyFunction(object):
 
     def flatten(self, d):
         names = self.names()
-        return do_flatten([d[name] for name in names])
+        return _do_flatten([d[name] for name in names])
 
     def __call__(self, x):
 
@@ -83,7 +111,7 @@ class ProxyFunction(object):
 
 
 def _try_minimize(proxy_function, n):
-    disp = 1 if proxy_function.progress else 0
+    disp = 1 if proxy_function.verbose else 0
     logger = logging.getLogger()
 
     if n == 0:
@@ -102,10 +130,10 @@ def _try_minimize(proxy_function, n):
             else:
                 bounds += var[name].bounds
 
-        res = fmin_l_bfgs_b(proxy_function, x0, bounds=bounds, factr=1e5,
-                             disp=disp)
+        res = fmin_l_bfgs_b(
+            proxy_function, x0, bounds=bounds, factr=1e5, disp=disp)
 
-    except BadSolutionError:
+    except OptimixError:
         warn = True
     else:
         warn = res[2]['warnflag'] > 0
@@ -134,11 +162,3 @@ def _minimize(proxy_function):
         raise OptimixError("L-BFGS-B: %s" % r[2]['task'])
 
     proxy_function.set_solution(r[0])
-
-
-def minimize(function, progress=True):
-    return _minimize(ProxyFunction(function, progress, False))
-
-
-def maximize(function, progress=True):
-    return _minimize(ProxyFunction(function, progress, True))
