@@ -1,10 +1,12 @@
 from __future__ import division
 
 from collections import defaultdict
-from numpy import asarray, finfo, sqrt, stack, atleast_1d, squeeze
+
+from numpy import asarray, atleast_1d, finfo, sqrt, squeeze, stack
 from numpy.linalg import norm
 
 _step = sqrt(finfo(float).eps)
+
 
 def approx_fprime(f, step=_step):
     f0 = f.value()
@@ -13,7 +15,7 @@ def approx_fprime(f, step=_step):
         value = f.variables().get(name).value
         ndim = value.ndim
         value = atleast_1d(value).ravel()
-        for i in range(len(value)): # pylint: disable=C0200
+        for i in range(len(value)):  # pylint: disable=C0200
             value[i] += step
             grad[name].append(asarray((f.value() - f0) / step))
             value[i] -= step
@@ -22,9 +24,10 @@ def approx_fprime(f, step=_step):
             grad[name] = squeeze(grad[name], axis=-1)
     return grad
 
+
 def check_grad(func, step=_step):
     g = func.gradient()
-    g = {n:asarray(gi) for n, gi in iter(g.items())}
+    g = {n: asarray(gi) for n, gi in iter(g.items())}
     fg = approx_fprime(func, step)
 
     names = set(g.keys()).union(fg.keys())

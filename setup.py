@@ -24,7 +24,7 @@ def setup_package():
         'scipy>=0.18', 'numpy>=1.11', 'ndarray-listener>=1.0.20',
         'brent-search>=1.0.17', 'tqdm'
     ]
-    tests_require = ['pytest>=3']
+    tests_require = ['pytest', 'pytest-console-scripts', 'pytest-pep8']
 
     metadata = dict(
         name='optimix',

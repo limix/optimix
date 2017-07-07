@@ -24,6 +24,12 @@ except _DistributionNotFound:
 
 
 def test():
+    try:
+        import pytest_pep8
+    except ImportError:
+        print("Please, install pytest-pep8 in order to proceed.")
+        return 1
+
     import os
     p = __import__('optimix').__path__[0]
     src_path = os.path.abspath(p)
@@ -39,3 +45,10 @@ def test():
         print("Congratulations. All tests have passed!")
 
     return return_code
+
+
+__all__ = [
+    'testing', 'approx_fprime', 'check_grad', 'OptimixError', 'Function',
+    'FunctionReduce', 'maximize', 'maximize_scalar', 'minimize',
+    'minimize_scalar', 'Matrix', 'Scalar', 'Vector'
+]

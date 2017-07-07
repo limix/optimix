@@ -16,7 +16,8 @@ def _nparams(o):
     except ImportError:
         from inspect import getargspec
 
-        return len(getargspec(o.value).args) - 1 # pylint: disable=W1505
+        return len(getargspec(o.value).args) - 1  # pylint: disable=W1505
+
 
 def _ni(v):
     return next(iter(v))
@@ -61,9 +62,8 @@ class Assertion(object):
         item0 = self._item0
         item1 = self._item1
 
-        containers = [(item0, "item"), ([item0], "vector"),
-                      (_compact([item0]), "vector"),
-                      ([item0, item1], "vector"),
+        containers = [(item0, "item"), ([item0], "vector"), (_compact(
+            [item0]), "vector"), ([item0, item1], "vector"),
                       (_compact([item0, item1]), "vector")]
 
         return containers
@@ -124,8 +124,10 @@ def _assert_valshape_msg_1d(example, value, x, xname):
 def _assert_valshape_msg_2d(example, value, xy, xyname):
     def _errmsg(premiss, value, lval, rval):
         msg = "Interface premiss %s violated." % premiss
-        msg += "\n  Got (%s:%s, %s:%s) -> %s:%s instead." % (
-            type(lval), lval, type(rval), rval, type(value), value)
+        msg += "\n  Got (%s:%s, %s:%s) -> %s:%s instead." % (type(lval), lval,
+                                                             type(rval), rval,
+                                                             type(value),
+                                                             value)
         return msg
 
     x, y = xy
