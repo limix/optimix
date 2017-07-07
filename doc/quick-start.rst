@@ -21,48 +21,43 @@ scalar variable (which we named here as `scale`), and implement the
 suffix of :meth:`derivative_scale` is due to the name we chosen for the
 variable.
 
-.. testcode::
+.. doctest::
 
-  from optimix import Function, Scalar, minimize
-
-  class Quadratic(Function):
-
-      def __init__(self):
-          super(Quadratic, self).__init__(scale=Scalar(1.0))
-
-      def value(self, x):
-          s = self.get('scale')
-          return (s - 5.0)**2 * x / 2.0
-
-      def derivative_scale(self, x):
-          s = self.get('scale')
-          return (s - 5.0) * x
-
-  f = Quadratic()
-  x = 1.2
-
-  print("Function evaluation at x: %g" % f.value(x))
-  print("Function gradient at x: %s" % f.gradient(x))
-
-  # For optimizating the function, we need a dataset
-  # associated with it. This is accomplished by calling
-  # the set_data method as follows:
-  f.set_data(x)
-
-  func = f.feed()
-
-  # We are now ready to minimize the function.
-  minimize(func)
-
-  # This will print the optimum found.
-  print("Optimum found: %g" % f.get('scale'))
-
-The output should be
-
-.. testoutput::
-
+  >>> from optimix import Function, Scalar, minimize
+  >>>
+  >>> class Quadratic(Function):
+  ...
+  ...   def __init__(self):
+  ...     super(Quadratic, self).__init__(scale=Scalar(1.0))
+  ...
+  ...   def value(self, x):
+  ...     s = self.variables().get('scale').value
+  ...     return (s - 5.0)**2 * x / 2.0
+  ...
+  ...   def gradient(self, x):
+  ...     s = self.variables().get('scale').value
+  ...     return dict(scale=(s - 5.0) * x)
+  >>>
+  >>> f = Quadratic()
+  >>> x = 1.2
+  >>>
+  >>> print("Function evaluation at x: %g" % f.value(x))
   Function evaluation at x: 9.6
-  Function gradient at x: [-4.8]
+  >>> print("Function gradient at x: %s" % f.gradient(x))
+  Function gradient at x: {'scale': ndarray_listener(-4.8)}
+  >>>
+  >>> # For optimizating the function, we need a dataset
+  >>> # associated with it. This is accomplished by calling
+  >>> # the set_data method as follows:
+  >>> f.set_data(x)
+  >>>
+  >>> func = f.feed()
+  >>>
+  >>> # We are now ready to minimize the function.
+  >>> minimize(func, verbose=False)
+  >>>
+  >>> # This will print the optimum found.
+  >>> print("Optimum found: %g" % f.variables().get('scale').value)
   Optimum found: 5
 
 And an example for two variables:

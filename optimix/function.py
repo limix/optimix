@@ -23,8 +23,10 @@ from .variables import Variables, merge_variables
 class Function(object):
     r"""Base-class for object representing functions.
 
-    Args:
-        kwargs (dict): map of variable name to variable value.
+    Parameters
+    ----------
+    kwargs : dict
+        Map of variable name to variable value.
     """
 
     def __init__(self, **kwargs):
