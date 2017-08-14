@@ -2,13 +2,12 @@ from __future__ import division
 
 import logging
 
+from brent_search import minimize as brent_minimize
 from numpy import asarray
 from tqdm import tqdm
 
-from brent_search import minimize as brent_minimize
 
-
-def minimize(function, verbose=True):
+def minimize(function, desc='Optimix', verbose=True):
     r"""Minimize a scalar function using Brent's method.
 
     Parameters
@@ -19,10 +18,10 @@ def minimize(function, verbose=True):
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
     """
-    _minimize(ProxyFunction(function, verbose, False))
+    _minimize(ProxyFunction(function, desc, verbose, False))
 
 
-def maximize(function, verbose=False):
+def maximize(function, desc='Optimix', verbose=False):
     r"""Maximize a scalar function using Brent's method.
 
     Parameters
@@ -33,14 +32,14 @@ def maximize(function, verbose=False):
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
     """
-    _minimize(ProxyFunction(function, verbose, True))
+    _minimize(ProxyFunction(function, desc, verbose, True))
 
 
 class ProxyFunction(object):
-    def __init__(self, function, verbose, negative):
+    def __init__(self, function, desc, verbose, negative):
         self._function = function
         self._signal = -1 if negative else +1
-        self._progress = tqdm(desc='Optimix', disable=not verbose)
+        self._progress = tqdm(desc=desc, disable=not verbose)
         self._iteration = 0
 
     def names(self):
