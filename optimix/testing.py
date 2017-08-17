@@ -1,9 +1,8 @@
+from ndarray_listener import ndarray_listener
 from numpy import asarray as _asarray
 from numpy import concatenate as _concat
 from numpy import stack
 from numpy.testing import assert_allclose
-
-from ndarray_listener import ndarray_listener
 
 from .check_grad import check_grad
 

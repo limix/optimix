@@ -5,10 +5,8 @@ Types
 """
 from __future__ import unicode_literals
 
-# pylint: disable=E0611
-from numpy import array, asarray, atleast_1d, float64, inf
-
 from ndarray_listener import ndarray_listener
+from numpy import array, asarray, atleast_1d, float64, inf
 
 
 class Scalar(object):

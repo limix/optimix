@@ -3,7 +3,6 @@ from __future__ import division
 import logging
 
 from numpy import asarray, concatenate
-from scipy.optimize import fmin_l_bfgs_b
 
 from ..exception import OptimixError
 
@@ -111,6 +110,8 @@ class ProxyFunction(object):
 
 
 def _try_minimize(proxy_function, n):
+    from scipy.optimize import fmin_l_bfgs_b
+
     disp = 1 if proxy_function.verbose else 0
     logger = logging.getLogger()
 

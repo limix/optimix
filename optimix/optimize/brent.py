@@ -1,8 +1,5 @@
 from __future__ import division
 
-import logging
-
-from brent_search import minimize as brent_minimize
 from numpy import asarray
 from tqdm import tqdm
 
@@ -74,5 +71,7 @@ class ProxyFunction(object):
 
 
 def _minimize(proxy_function):
+    from brent_search import minimize as brent_minimize
+
     x = asarray(brent_minimize(proxy_function))
     proxy_function.set_solution(x[0:1])
