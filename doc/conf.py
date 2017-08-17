@@ -26,7 +26,6 @@ def get_version(metadata):
 
 metadata = get_metadata()
 version = get_version(metadata)
-
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
