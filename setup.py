@@ -3,7 +3,7 @@ import sys
 from os import chdir, getcwd
 from os.path import abspath, dirname, join
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 try:
     from configparser import ConfigParser
@@ -57,7 +57,7 @@ def setup_package():
         config = ConfigParser()
         config.read('setup.cfg')
         metadata = dict(config.items('metadata'))
-        metadata['packages'] = eval(metadata['packages'])
+        metadata['packages'] = find_packages()
         metadata['platforms'] = eval(metadata['platforms'])
 
         metadata['version'] = get_init_metadata(metadata, 'version')
