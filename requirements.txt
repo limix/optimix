@@ -1,0 +1,5 @@
+numpy
+scipy
+ndarray-listener
+brent-search
+tqdm

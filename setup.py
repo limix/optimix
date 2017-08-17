@@ -1,57 +1,69 @@
-import os
+import re
 import sys
+from os import chdir, getcwd
+from os.path import abspath, dirname, join
 
-from setuptools import find_packages, setup
+from setuptools import setup
 
 try:
-    import pypandoc
-    long_description = pypandoc.convert_file('README.md', 'rst')
-except (OSError, IOError, ImportError):
-    long_description = open('README.md').read()
+    from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import ConfigParser
+
+
+class setup_folder(object):
+    def __init__(self):
+        self._old_path = None
+
+    def __enter__(self):
+        src_path = dirname(abspath(sys.argv[0]))
+        self._old_path = getcwd()
+        chdir(src_path)
+        sys.path.insert(0, src_path)
+
+    def __exit__(self, *_):
+        del sys.path[0]
+        chdir(self._old_path)
+
+
+def set_names(metadata):
+    pkgname = metadata['name']
+    prjname = pkgname.replace('-', '_')
+    metadata['packages'] = [prjname]
+
+
+def set_version(metadata):
+    expr = re.compile(r"__version__ *= *\"(.*)\"")
+    prjname = metadata['packages'][0]
+    data = open(join(prjname, "__init__.py")).read()
+    metadata['version'] = re.search(expr, data).group(1)
+
+
+def make_list(metadata, name):
+    if name in metadata:
+        metadata[name] = metadata[name].strip().split('\n')
+
+
+def set_long_description(metadata):
+    df = metadata['description_file']
+    metadata['long_description'] = open(df).read()
+    del metadata['description_file']
 
 
 def setup_package():
-    src_path = os.path.dirname(os.path.abspath(sys.argv[0]))
-    old_path = os.getcwd()
-    os.chdir(src_path)
-    sys.path.insert(0, src_path)
+    with setup_folder():
 
-    needs_pytest = {'pytest', 'test', 'ptr'}.intersection(sys.argv)
-    pytest_runner = ['pytest-runner'] if needs_pytest else []
+        config = ConfigParser()
+        config.read('setup.cfg')
+        metadata = dict(config.items('metadata'))
 
-    setup_requires = [] + pytest_runner
-    install_requires = [
-        'scipy>=0.18', 'numpy>=1.11', 'ndarray-listener>=1.0.20',
-        'brent-search>=1.0.17', 'tqdm'
-    ]
-    tests_require = ['pytest', 'pytest-console-scripts', 'pytest-pep8']
+        set_names(metadata)
+        set_version(metadata)
+        make_list(metadata, 'classifiers')
+        make_list(metadata, 'keywords')
+        set_long_description(metadata)
 
-    metadata = dict(
-        name='optimix',
-        version='1.2.14',
-        maintainer="Danilo Horta",
-        maintainer_email="horta@ebi.ac.uk",
-        description="Abstract function optimisation.",
-        long_description=long_description,
-        license="MIT",
-        url='https://github.com/limix/optimix',
-        packages=find_packages(),
-        zip_safe=True,
-        install_requires=install_requires,
-        setup_requires=setup_requires,
-        tests_require=tests_require,
-        include_package_data=True,
-        classifiers=[
-            "Development Status :: 5 - Production/Stable",
-            "License :: OSI Approved :: MIT License",
-            "Operating System :: OS Independent",
-        ], )
-
-    try:
         setup(**metadata)
-    finally:
-        del sys.path[0]
-        os.chdir(old_path)
 
 
 if __name__ == '__main__':
