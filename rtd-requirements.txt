@@ -1,1 +1,6 @@
+numpy
+scipy
+ndarray-listener
+brent-search
+tqdm
 sphinx_rtd_theme
