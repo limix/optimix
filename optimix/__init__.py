@@ -6,7 +6,7 @@ optimix package
 Abstract function optimisation.
 
 """
-from . import testing
+from . import optimize, testing
 from ._test import test
 from .check_grad import approx_fprime, check_grad
 from .exception import OptimixError
