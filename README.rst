@@ -3,7 +3,7 @@ optimix
 
 |PyPI-Status| |PyPI-Versions| |Conda-Forge-Status| |Conda-Downloads|
 
-|Build-Status| |Codacy-Grade| |License|
+|Build-Status| |Codacy-Grade| |License-Badge|
 
 Abstract function optimisation.
 
@@ -40,8 +40,8 @@ Authors
 License
 -------
 
-This project is licensed under the MIT License - see the
-License-File_ file for details.
+This project is licensed under the MIT License - see the `License file`_ file
+for details.
 
 .. |Build-Status| image:: https://travis-ci.org/limix/optimix.svg?branch=master
     :target: https://travis-ci.org/limix/optimix
@@ -61,10 +61,10 @@ License-File_ file for details.
 .. |Conda-Downloads| image:: https://anaconda.org/conda-forge/optimix/badges/downloads.svg
     :target: https://anaconda.org/conda-forge/optimix
 
-.. |License| image:: https://img.shields.io/pypi/l/optimix.svg
-    :target: https://raw.githubusercontent.com/optimix/optimix/master/LICENCE
+.. |License-Badge| image:: https://img.shields.io/pypi/l/optimix.svg
+    :target: https://raw.githubusercontent.com/optimix/optimix/master/LICENSE
 
-.. _License-File: https://raw.githubusercontent.com/limix/optimix/master/LICENSE
+.. _License file: https://raw.githubusercontent.com/limix/optimix/master/LICENSE
 
 .. _Danilo Horta: https://github.com/horta
 

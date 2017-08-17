@@ -50,6 +50,13 @@ def set_long_description(metadata):
     del metadata['description_file']
 
 
+def convert_types(metadata):
+    bools = ['True', 'False']
+    for k in metadata.keys():
+        if isinstance(metadata[k], str) and metadata[k] in bools:
+            metadata[k] = metadata[k] == 'True'
+
+
 def setup_package():
     with setup_folder():
 
@@ -62,6 +69,7 @@ def setup_package():
         make_list(metadata, 'classifiers')
         make_list(metadata, 'keywords')
         set_long_description(metadata)
+        convert_types(metadata)
 
         setup(**metadata)
 

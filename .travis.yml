@@ -12,15 +12,11 @@ cache:
 matrix:
   include:
   - python: 2.7
-  - python: 3.5
   - python: 3.6
   - env: DOCKER_IMAGE=quay.io/pypa/manylinux1_x86_64
   - os: osx
     language: generic
     env: PYENV=py27
-  - os: osx
-    language: generic
-    env: PYENV=py35
   - os: osx
     language: generic
     env: PYENV=py36
