@@ -66,7 +66,7 @@ for details.
 .. |License-Badge| image:: https://img.shields.io/pypi/l/optimix.svg
     :target: https://raw.githubusercontent.com/optimix/optimix/master/LICENSE.txt
 
-.. |Doc-Status| image:: https://readthedocs.org/projects/optimix/badge/?style=flat-square&version=latest
+.. |Doc-Status| image:: https://readthedocs.org/projects/optimix/badge/?style=flat-square&version=stable
     :target: https://optimix.readthedocs.io/
 
 .. _License file: https://raw.githubusercontent.com/limix/optimix/master/LICENSE.txt
