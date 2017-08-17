@@ -1,7 +1,8 @@
+
 optimix
 =======
 
-|PyPI-Status| |PyPI-Versions| |Conda-Forge-Status| |Conda-Downloads|
+|PyPI-Status| |Conda-Forge-Status| |Conda-Downloads|
 
 |Build-Status| |Codacy-Grade| |License-Badge|
 
@@ -22,7 +23,8 @@ An alternative way would be via pip_
 
     pip install optimix
 
-## Running the tests
+Running the tests
+-----------------
 
 After installation, you can test it
 
@@ -62,9 +64,9 @@ for details.
     :target: https://anaconda.org/conda-forge/optimix
 
 .. |License-Badge| image:: https://img.shields.io/pypi/l/optimix.svg
-    :target: https://raw.githubusercontent.com/optimix/optimix/master/LICENSE
+    :target: https://raw.githubusercontent.com/optimix/optimix/master/LICENSE.txt
 
-.. _License file: https://raw.githubusercontent.com/limix/optimix/master/LICENSE
+.. _License file: https://raw.githubusercontent.com/limix/optimix/master/LICENSE.txt
 
 .. _Danilo Horta: https://github.com/horta
 
@@ -73,5 +75,3 @@ for details.
 .. _pip: https://pypi.python.org/pypi/pip
 
 .. _pytest: http://docs.pytest.org/en/latest/
-
-https://readthedocs.org/projects/optimix/badge/?style=flat-square&version=latest

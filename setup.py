@@ -26,17 +26,11 @@ class setup_folder(object):
         chdir(self._old_path)
 
 
-def set_names(metadata):
-    pkgname = metadata['name']
-    prjname = pkgname.replace('-', '_')
-    metadata['packages'] = [prjname]
-
-
-def set_version(metadata):
-    expr = re.compile(r"__version__ *= *\"(.*)\"")
+def get_init_metadata(metadata, name):
+    expr = re.compile(r"__%s__ *= *\"(.*)\"" % name)
     prjname = metadata['packages'][0]
     data = open(join(prjname, "__init__.py")).read()
-    metadata['version'] = re.search(expr, data).group(1)
+    return re.search(expr, data).group(1)
 
 
 def make_list(metadata, name):
@@ -63,9 +57,13 @@ def setup_package():
         config = ConfigParser()
         config.read('setup.cfg')
         metadata = dict(config.items('metadata'))
+        metadata['packages'] = eval(metadata['packages'])
+        metadata['platforms'] = eval(metadata['platforms'])
 
-        set_names(metadata)
-        set_version(metadata)
+        metadata['version'] = get_init_metadata(metadata, 'version')
+        metadata['author'] = get_init_metadata(metadata, 'author')
+        metadata['author_email'] = get_init_metadata(metadata, 'author_email')
+        metadata['name'] = get_init_metadata(metadata, 'name')
         make_list(metadata, 'classifiers')
         make_list(metadata, 'keywords')
         set_long_description(metadata)
