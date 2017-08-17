@@ -4,7 +4,7 @@ optimix
 
 |PyPI-Status| |Conda-Forge-Status| |Conda-Downloads|
 
-|Build-Status| |Codacy-Grade| |License-Badge|
+|Build-Status| |Codacy-Grade| |License-Badge| |Doc-Status|
 
 Abstract function optimisation.
 
@@ -65,6 +65,9 @@ for details.
 
 .. |License-Badge| image:: https://img.shields.io/pypi/l/optimix.svg
     :target: https://raw.githubusercontent.com/optimix/optimix/master/LICENSE.txt
+
+.. |Doc-Status| image:: https://readthedocs.org/projects/optimix/badge/?style=flat-square&version=latest
+    :target: https://optimix.readthedocs.io/
 
 .. _License file: https://raw.githubusercontent.com/limix/optimix/master/LICENSE.txt
 

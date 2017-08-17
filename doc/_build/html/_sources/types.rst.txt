@@ -1,0 +1,2 @@
+.. automodule:: optimix.types
+  :members:
