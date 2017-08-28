@@ -15,7 +15,7 @@ from .optimize import maximize, maximize_scalar, minimize, minimize_scalar
 from .types import Matrix, Scalar, Vector
 
 __name__ = "optimix"
-__version__ = "1.2.16"
+__version__ = "1.2.17"
 __author__ = "Danilo Horta"
 __author_email__ = "horta@ebi.ac.uk"
 

@@ -1,7 +1,7 @@
 from __future__ import division
 
 from numpy import add
-from numpy.testing import assert_allclose
+from numpy.testing import assert_, assert_allclose
 
 from optimix import Function, FunctionReduce, Scalar
 
@@ -29,8 +29,8 @@ class Quadratic2Scalar2(Function):
 
 def test_function_variables():
     f = Quadratic2Scalar2()
-    assert f.variables().names()[0] == 'a'
-    assert f.variables().names()[1] == 'b'
+    assert_(f.variables().names()[0] == 'a')
+    assert_(f.variables().names()[1] == 'b')
 
 
 class QuadraticScalarReduce(FunctionReduce):
@@ -63,7 +63,8 @@ def test_function_variables_reduce():
         for j in range(2):
             for ii in range(2):
                 idx = i * 4 + j * 2 + ii
-                assert names[idx] == 'sum[%d].sum[%d].%s' % (i, j, letter[ii])
+                assert_(names[idx] == 'sum[%d].sum[%d].%s' % (i, j,
+                                                              letter[ii]))
 
 
 def test_function_variables_gradient_reduce():
@@ -88,8 +89,5 @@ def test_function_variables_gradient_reduce():
         for j in range(2):
             for ii in range(2):
                 idx = i * 4 + j * 2 + ii
-                assert names[idx] == 'sum[%d].sum[%d].%s' % (i, j, letter[ii])
-
-
-if __name__ == '__main__':
-    __import__('pytest').main([__file__, '-s'])
+                assert_(names[idx] == 'sum[%d].sum[%d].%s' % (i, j,
+                                                              letter[ii]))

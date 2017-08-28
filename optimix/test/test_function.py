@@ -10,11 +10,13 @@ class Quadratic1Scalar1(Function):
     def __init__(self):
         super(Quadratic1Scalar1, self).__init__(scale=Scalar(1.0))
 
-    def value(self, x):
+    def value(self, *args):
+        x = args[0]
         s = self.variables().get('scale').value
         return (s - 5.0)**2 * x / 2.0
 
-    def gradient(self, x):
+    def gradient(self, *args):
+        x = args[0]
         s = self.variables().get('scale').value
         return dict(scale=(s - 5.0) * x)
 
@@ -31,13 +33,15 @@ class Quadratic2Scalar1(Function):
     def __init__(self):
         super(Quadratic2Scalar1, self).__init__(scale=Scalar(1.0))
 
-    def value(self, x0, x1):
+    def value(self, *args):
+        x0, x1 = args
         s = self.variables().get('scale').value
         x0 = asarray(x0)[..., newaxis]
         x1 = asarray(x1)[..., newaxis]
         return (s - 5.0)**2 * dot(x0, transpose(x1)) / 2.0
 
-    def gradient(self, x0, x1):
+    def gradient(self, *args):
+        x0, x1 = args
         s = self.variables().get('scale').value
         x0 = asarray(x0)[..., newaxis]
         x1 = asarray(x1)[..., newaxis]
@@ -62,15 +66,18 @@ class Quadratic1Scalar2(Function):
         b = self.variables().get('b').value
         return ((a - 5.0)**2 * (b + 5.0)**2 * x) / 2.0
 
-    def gradient(self, x):
+    def gradient(self, *args):
+        x = args[0]
         return dict(a=self._derivative_a(x), b=self._derivative_b(x))
 
-    def _derivative_a(self, x):
+    def _derivative_a(self, *args):
+        x = args[0]
         a = self.variables().get('a').value
         b = self.variables().get('b').value
         return 2 * (a - 5.0) * (b + 5.0)**2 * x
 
-    def _derivative_b(self, x):
+    def _derivative_b(self, *args):
+        x = args[0]
         a = self.variables().get('a').value
         b = self.variables().get('b').value
         return 2 * (a - 5.0)**2 * (b + 5.0) * x
@@ -89,19 +96,23 @@ class Quadratic2Scalar2(Function):
     def __init__(self):
         super(Quadratic2Scalar2, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
 
-    def value(self, x0, x1):
+    def value(self, *args):
+        x0, x1 = args
         a = self.variables().get('a').value
         b = self.variables().get('b').value
         return ((a - 5.0)**2 * x0 + (b + 5.0)**2 * x1) / 2.0
 
-    def gradient(self, x0, x1):
+    def gradient(self, *args):
+        x0, x1 = args
         return dict(a=self._derivative_a(x0, x1), b=self._derivative_b(x0, x1))
 
-    def _derivative_a(self, x0, _):
+    def _derivative_a(self, *args):
+        x0 = args[0]
         a = self.variables().get('a').value
         return 2 * (a - 5.0) * x0
 
-    def _derivative_b(self, _, x1):
+    def _derivative_b(self, *args):
+        x1 = args[1]
         b = self.variables().get('b').value
         return 2 * (b + 5.0) * x1
 
@@ -120,19 +131,23 @@ class VectorValued(Function):
     def __init__(self):
         super(VectorValued, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
 
-    def value(self, x0, x1):
+    def value(self, *args):
+        x0, x1 = args
         a = self.variables().get('a').value
         b = self.variables().get('b').value
         return ((a - 5.0)**2 * x0 + (b + 5.0)**2 * x1) / 2.0
 
-    def gradient(self, x0, x1):
+    def gradient(self, *args):
+        x0, x1 = args
         return dict(a=self._derivative_a(x0, x1), b=self._derivative_b(x0, x1))
 
-    def _derivative_a(self, x0, _):
+    def _derivative_a(self, *args):
+        x0 = args[0]
         a = self.variables().get('a').value
         return 2 * (a - 5.0) * x0
 
-    def _derivative_b(self, _, x1):
+    def _derivative_b(self, *args):
+        x1 = args[1]
         b = self.variables().get('b').value
         return 2 * (b + 5.0) * x1
 
@@ -151,19 +166,23 @@ class VectorValuedMix(Function):
         super(VectorValuedMix, self).__init__(
             a=Scalar(1.0), b=Vector([1.0, 2.0]))
 
-    def value(self, x0, x1):
+    def value(self, *args):
+        x0, x1 = args
         a = self.variables().get('a').value
         b = self.variables().get('b').value
         return ((a - 5.0)**2 * x0 + 5.0**2 * x1 + sum(b * b)) / 2.0
 
-    def gradient(self, x0, x1):
+    def gradient(self, *args):
+        x0, x1 = args
         return dict(a=self._derivative_a(x0, x1), b=self._derivative_b(x0, x1))
 
-    def _derivative_a(self, x0, _):
+    def _derivative_a(self, *args):
+        x0 = args[0]
         a = self.variables().get('a').value
         return 2 * (a - 5.0) * x0
 
-    def _derivative_b(self, x0, _):
+    def _derivative_b(self, *args):
+        x0 = args[0]
         b = self.variables().get('b').value
         g = empty((len(x0), len(b)))
         g[:] = b
@@ -206,7 +225,3 @@ def test_function_quadratic1scalar1_reduce():
     f = f.feed()
     assert_allclose(f.value(), 0.8)
     assert_allclose(check_grad(f), 0, atol=1e-6)
-
-
-if __name__ == '__main__':
-    __import__('pytest').main([__file__, '-s'])

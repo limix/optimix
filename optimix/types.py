@@ -12,11 +12,13 @@ from numpy import array, asarray, atleast_1d, float64, inf
 class Scalar(object):
     r"""Scalar variable type.
 
-    It holds a ``float64`` value, listen to changes, and fix or
-    unfix its value.
+    It holds a 64-bits floating point value, stored via a zero-dimensional
+    ``ndarray_listener``, listen to changes, and fix or unfix its value.
 
-    Args:
-        value (float): initial value.
+    Parameters
+    ----------
+    value : float
+        Initial value.
     """
     __slots__ = [
         'raw', '_listeners', '_fixed', 'value', '__array_interface__',
@@ -74,23 +76,30 @@ class Scalar(object):
     def listen(self, you):
         """Request a callback for value modification.
 
-        Args:
-            you (object): an instance having ``__call__`` attribute.
+        Parameters
+        ----------
+        you : object
+            An instance having ``__call__`` attribute.
         """
         self._listeners.append(you)
+        self.raw.talk_to(you)
 
     def __setattr__(self, name, value):
         if name == 'value':
             try:
-                value = ndarray_listener(float64(value))
+                value = float64(value)
             except TypeError:
                 value = value[0]
-            Scalar.__dict__['raw'].__set__(self, value)
-            t = Scalar.__dict__['__array_interface__']
-            t.__set__(self, value.__array_interface__)
-            t = Scalar.__dict__['__array_struct__']
-            t.__set__(self, value.__array_struct__)
-            self._notify()
+
+            # Scalar.__dict__['raw'].itemset(value)
+            self.raw.itemset(value)
+
+            # Scalar.__dict__['raw'].__set__(self, value)
+            # t = Scalar.__dict__['__array_interface__']
+            # t.__set__(self, value.__array_interface__)
+            # t = Scalar.__dict__['__array_struct__']
+            # t.__set__(self, value.__array_struct__)
+            # self._notify()
         else:
             Scalar.__dict__[name].__set__(self, value)
 
@@ -98,9 +107,6 @@ class Scalar(object):
         if name == 'value':
             name = 'raw'
         r = Scalar.__dict__[name].__get__(self)
-        if name == 'raw':
-            for l in self._listeners:
-                l(None)
         return r
 
     def _notify(self):
@@ -135,11 +141,13 @@ class Scalar(object):
 class Vector(object):
     r"""Vector variable type.
 
-    It holds an array of ``float64`` values, listen to changes, and fix or
-    unfix its values.
+    It holds an array of 64-bits floating point values, via an one-dimensional
+    ``ndarray_listener``, listen to changes, and fix or unfix its values.
 
-    Args:
-        value (float): initial value.
+    Parameters
+    ----------
+    value : float
+        Initial value.
     """
     __slots__ = [
         'raw', '_listeners', '_fixed', '__array_interface__',
@@ -150,8 +158,9 @@ class Vector(object):
         self._bounds = [(-inf, +inf)] * len(value)
         self._listeners = []
         self._fixed = False
+        # value = ndarray_listener(float64(value))
         value = asarray(value)
-        value = atleast_1d(value).ravel()
+        value = ndarray_listener(atleast_1d(value).ravel())
         self.raw = value
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
@@ -198,22 +207,25 @@ class Vector(object):
     def listen(self, you):
         """Request a callback for value modification.
 
-        Args:
-            you (object): an instance having ``__call__`` attribute.
+        Parameters
+        ----------
+        you : object
+            An instance having ``__call__`` attribute.
         """
         self._listeners.append(you)
+        self.raw.talk_to(you)
 
     def __setattr__(self, name, value):
         if name == 'value':
             value = asarray(value)
             value = atleast_1d(value).ravel()
-
-            Vector.__dict__['raw'].__set__(self, value)
-            t = Vector.__dict__['__array_interface__']
-            t.__set__(self, value.__array_interface__)
-            t = Vector.__dict__['__array_struct__']
-            t.__set__(self, value.__array_struct__)
-            self._notify()
+            self.raw[:] = value
+            # Vector.__dict__['raw'].__set__(self, value)
+            # t = Vector.__dict__['__array_interface__']
+            # t.__set__(self, value.__array_interface__)
+            # t = Vector.__dict__['__array_struct__']
+            # t.__set__(self, value.__array_struct__)
+            # self._notify()
         else:
             Vector.__dict__[name].__set__(self, value)
 

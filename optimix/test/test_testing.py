@@ -45,7 +45,3 @@ def test_testing():
     a = Assertion(Scalar1, x0, x1, value, scale=1.0)
     a.assert_layout()
     a.assert_gradient()
-
-
-if __name__ == '__main__':
-    __import__('pytest').main([__file__, '-s'])

@@ -4,18 +4,19 @@ from numpy import add, zeros
 from numpy.random import RandomState
 from numpy.testing import assert_allclose
 
-from optimix import (Function, FunctionReduce, Scalar, Vector, approx_fprime,
-                     check_grad)
+from optimix import (
+    Function, FunctionReduce, Scalar, Vector, approx_fprime, check_grad
+)
 
 
 class QuadraticScalarReduce(FunctionReduce):
     def __init__(self, functions):
         super(QuadraticScalarReduce, self).__init__(functions, 'sum')
 
-    def value_reduce(self, values):  # pylint: disable=R0201
+    def value_reduce(self, values):
         return add.reduce(list(values.values()))
 
-    def gradient_reduce(self, _, gradients):  # pylint: disable=R0201
+    def gradient_reduce(self, _, gradients):
         grad = dict()
         for (gn, gv) in iter(gradients.items()):
             for n, v in iter(gv.items()):
@@ -27,11 +28,13 @@ class Quadratic1Scalar1(Function):
     def __init__(self):
         super(Quadratic1Scalar1, self).__init__(scale=Scalar(1.0))
 
-    def value(self, x):
+    def value(self, *args):
+        x = args[0]
         s = self.variables().get('scale').value
         return (s - 5.0)**2 * x / 2.0
 
-    def gradient(self, x):
+    def gradient(self, *args):
+        x = args[0]
         s = self.variables().get('scale').value
         return dict(scale=(s - 5.0) * x)
 
@@ -62,10 +65,12 @@ class LinearMean(Function):
     def __init__(self, size):
         Function.__init__(self, effsizes=Vector(zeros(size)))
 
-    def value(self, x):
+    def value(self, *args):
+        x = args[0]
         return x.dot(self.variables().get('effsizes').value)
 
-    def gradient(self, x):  # pylint: disable=R0201
+    def gradient(self, *args):
+        x = args[0]
         return dict(effsizes=x)
 
 
