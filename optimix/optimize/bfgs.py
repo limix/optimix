@@ -2,6 +2,8 @@ from __future__ import division
 
 import logging
 
+from numpy import abs as npabs
+from numpy import max as npmax
 from numpy import asarray, concatenate
 
 from ..exception import OptimixError
@@ -185,6 +187,10 @@ def _try_minimize(proxy_function, n, factr, pgtol):
 
 
 def _minimize(proxy_function, factr, pgtol):
+
+    g = proxy_function.flatten(proxy_function.gradient())
+    if npmax(npabs(g)) <= pgtol:
+        return
 
     r = _try_minimize(proxy_function, 5, factr=factr, pgtol=pgtol)
 
