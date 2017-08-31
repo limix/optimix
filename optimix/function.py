@@ -24,6 +24,8 @@ class Function(object):
         self._variables = Variables(kwargs)
         self._data = dict()
         self._name = kwargs.get('name', 'unamed')
+        self._factr = 1e5
+        self._pgtol = 1e-7
 
     def value(self, *args):
         r"""Evaluate the function at the ``args`` point.
@@ -64,7 +66,10 @@ class Function(object):
     def feed(self, purpose='learn'):
         r"""Return a function with attached data."""
         purpose = unicode_airlock(purpose)
-        return FunctionDataFeed(self, self._data[purpose], self._name)
+        f = FunctionDataFeed(self, self._data[purpose], self._name)
+        f.factr = self._factr
+        f.pgtol = self._pgtol
+        return f
 
     def fix(self, var_name):
         r"""Set a variable fixed.
@@ -134,6 +139,8 @@ class FunctionReduce(object):
     def __init__(self, functions, name='unamed'):
         self.functions = functions
         self.__name = name
+        self._factr = 1e5
+        self._pgtol = 1e-7
 
     def operand(self, i):
         return self.functions[i]
@@ -141,7 +148,10 @@ class FunctionReduce(object):
     def feed(self, purpose='learn'):
         purpose = unicode_airlock(purpose)
         fs = [f.feed(purpose) for f in self.functions]
-        return FunctionReduceDataFeed(self, fs, self.__name)
+        f = FunctionReduceDataFeed(self, fs, self.__name)
+        f.factr = self._factr
+        f.pgtol = self._pgtol
+        return f
 
     def variables(self):
         vars_list = [l.variables() for l in self.functions]
@@ -156,6 +166,24 @@ class FunctionDataFeed(object):
         self._target = target
         self.raw = data
         self._name = name
+        self._factr = 1e5
+        self._pgtol = 1e-7
+
+    @property
+    def factr(self):
+        return self._factr
+
+    @factr.setter
+    def factr(self, v):
+        self._factr = v
+
+    @property
+    def pgtol(self):
+        return self._pgtol
+
+    @pgtol.setter
+    def pgtol(self, v):
+        self._pgtol = v
 
     @property
     def name(self):
@@ -170,13 +198,15 @@ class FunctionDataFeed(object):
     def variables(self):
         return self._target.variables()
 
-    def maximize(self, verbose=True, factr=1e5, pgtol=1e-7):
+    def maximize(self, verbose=True):
         from .optimize import maximize as _maximize
-        return _maximize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+        return _maximize(
+            self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
 
-    def minimize(self, verbose=True, factr=1e5, pgtol=1e-7):
+    def minimize(self, verbose=True):
         from .optimize import minimize as _minimize
-        return _minimize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+        return _minimize(
+            self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
 
 
 class FunctionReduceDataFeed(object):
@@ -184,6 +214,24 @@ class FunctionReduceDataFeed(object):
         self._target = target
         self.functions = functions
         self.__name = name
+        self._factr = 1e5
+        self._pgtol = 1e-7
+
+    @property
+    def factr(self):
+        return self._factr
+
+    @factr.setter
+    def factr(self, v):
+        self._factr = v
+
+    @property
+    def pgtol(self):
+        return self._pgtol
+
+    @pgtol.setter
+    def pgtol(self, v):
+        self._pgtol = v
 
     @property
     def name(self):
@@ -211,10 +259,12 @@ class FunctionReduceDataFeed(object):
     def variables(self):
         return self._target.variables()
 
-    def maximize(self, verbose=True, factr=1e5, pgtol=1e-7):
+    def maximize(self, verbose=True):
         from .optimize import maximize as _maximize
-        return _maximize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+        return _maximize(
+            self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
 
-    def minimize(self, verbose=True, factr=1e5, pgtol=1e-7):
+    def minimize(self, verbose=True):
         from .optimize import minimize as _minimize
-        return _minimize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+        return _minimize(
+            self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
