@@ -33,8 +33,8 @@ class Function(object):
         Parameters
         ----------
         args : tuple
-            Point at the evaluation. The length of this :func:`tuple` is defined
-            by the user.
+            Point at the evaluation. The length of this :func:`tuple` is
+            defined by the user.
 
         Returns
         -------
@@ -49,8 +49,8 @@ class Function(object):
         Parameters
         ----------
         args : tuple
-            Point at the gradient evaluation. The length of this :func:`tuple` is
-            defined by the user.
+            Point at the gradient evaluation. The length of this :func:`tuple`
+            is defined by the user.
 
         Returns
         -------

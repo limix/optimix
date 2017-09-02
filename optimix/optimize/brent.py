@@ -10,8 +10,8 @@ def minimize(function, desc='Optimix', verbose=True):
     Parameters
     ----------
     function : object
-        Objective function. It has to implement the :class:`optimix.function.Function`
-        interface.
+        Objective function. It has to implement the
+        :class:`optimix.function.Function` interface.
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
     """
@@ -24,8 +24,8 @@ def maximize(function, desc='Optimix', verbose=False):
     Parameters
     ----------
     function : object
-        Objective function. It has to implement the :class:`optimix.function.Function`
-        interface.
+        Objective function. It has to implement the
+        :class:`optimix.function.Function` interface.
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
     """
