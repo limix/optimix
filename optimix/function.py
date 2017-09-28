@@ -93,7 +93,7 @@ class Function(object):
         Args:
             var_name (str): variable name.
         """
-        return self._variables[var_name].isfixed()
+        return self._variables[var_name].isfixed
 
     def variables(self):
         r"""Function variables."""
