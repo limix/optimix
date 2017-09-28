@@ -42,8 +42,8 @@ Authors
 License
 -------
 
-This project is licensed under the MIT License - see the `License file`_ file
-for details.
+This project is licensed under the MIT License - see the `License`_ file for
+details.
 
 .. |Build-Status| image:: https://travis-ci.org/limix/optimix.svg?branch=master
     :target: https://travis-ci.org/limix/optimix
@@ -69,7 +69,7 @@ for details.
 .. |Doc-Status| image:: https://readthedocs.org/projects/optimix/badge/?style=flat-square&version=stable
     :target: https://optimix.readthedocs.io/
 
-.. _License file: https://raw.githubusercontent.com/limix/optimix/master/LICENSE.txt
+.. _License: https://raw.githubusercontent.com/limix/optimix/master/LICENSE.txt
 
 .. _Danilo Horta: https://github.com/horta
 

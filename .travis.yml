@@ -1,14 +1,7 @@
 language: python
-sudo: required
-dist: trusty
 services: docker
 git:
   depth: 5
-cache:
-  pip: true
-  directories:
-  - "$HOME/bin"
-  - "$HOME/.download"
 matrix:
   include:
   - python: 2.7
