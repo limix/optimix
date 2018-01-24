@@ -14,13 +14,10 @@ from .function import Function, FunctionReduce
 from .optimize import maximize, maximize_scalar, minimize, minimize_scalar
 from .types import Matrix, Scalar, Vector
 
-__name__ = "optimix"
-__version__ = "1.2.21"
-__author__ = "Danilo Horta"
-__author_email__ = "horta@ebi.ac.uk"
+__version__ = "1.2.22"
 
 __all__ = [
-    "__name__", "__version__", "__author__", "__author_email__", "test",
+    "__version__", "test",
     'testing', 'approx_fprime', 'check_grad', 'OptimixError', 'Function',
     'FunctionReduce', 'maximize', 'maximize_scalar', 'minimize',
     'minimize_scalar', 'Matrix', 'Scalar', 'Vector'

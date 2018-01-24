@@ -1,7 +1,0 @@
-numpy
-scipy
-setuptools
-ndarray-listener
-brent-search
-tqdm
-sphinx_rtd_theme
