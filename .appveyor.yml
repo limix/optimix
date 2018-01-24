@@ -1,0 +1,21 @@
+build: off
+clone_depth: 5
+platform: x64
+configuration: Release
+
+environment:
+    PKG_NAME: optimix
+    PYTHON: "C:\\Python36-x64"
+
+install:
+    - set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+    - pip install -U wheel six pytest setuptools
+    - cp requirements.txt ..\ && cd ..\
+    - pip install -r requirements.txt -q
+    - del requirements.txt && cd %APPVEYOR_BUILD_FOLDER%
+    - python setup.py test
+    - pip install .
+
+test_script:
+    - cd C:\
+    - python -c "import sys; import %PKG_NAME%; sys.exit(%PKG_NAME%.test())"
