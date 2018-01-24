@@ -16,10 +16,10 @@ install:
 script:
     - python setup.py build_ext --inplace
     - coverage run --source optimix -m pytest
-    - python setup.py install && pip uninstall pandas-plink --yes
+    - python setup.py install && pip uninstall optimix --yes
     - python setup.py sdist
     - pip install dist/$(ls dist | grep -i -E '\.(gz)$' | head -1)
-    - pip uninstall pandas-plink --yes
+    - pip uninstall optimix --yes
 after_success:
     - codecov
 notifications:
