@@ -22,7 +22,7 @@ source_suffix = '.rst'
 
 master_doc = 'index'
 
-project = 'ndarray-listener'
+project = 'optimix'
 copyright = '2018, Danilo Horta'
 author = 'Danilo Horta'
 
@@ -47,10 +47,9 @@ html_sidebars = {
     ]
 }
 
-htmlhelp_basename = 'ndarray-listenerdoc'
+htmlhelp_basename = 'optimixdoc'
 
-man_pages = [(master_doc, 'ndarray-listener', 'ndarray-listener Documentation',
-              [author], 1)]
+man_pages = [(master_doc, 'optimix', 'optimix Documentation', [author], 1)]
 
 epub_title = project
 epub_author = author
