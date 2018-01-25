@@ -2,6 +2,8 @@ os: linux
 language: python
 sudo: false
 python: 3.6
+env:
+  - PKG_NAME=optimix
 addons:
   apt:
     packages:
