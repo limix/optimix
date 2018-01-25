@@ -8,5 +8,6 @@ pytest>=3.2.5
 scipy>=1.0.0
 setuptools>=38.4.0
 sphinx_rtd_theme>=0.2.4
+sphinx>=1.6.6
 toolz>=0.9.0
 tqdm>=4.19.5
