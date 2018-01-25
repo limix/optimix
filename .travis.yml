@@ -1,25 +1,15 @@
 os: linux
-language:       python
-sudo:           false
-python:
-    - '3.6'
+language: python
+sudo: false
+python: 3.6
 addons:
   apt:
     packages:
         - pandoc
         - libffi-dev
         - libffi6
-install:
-    - pushd . && cp requirements.txt ~/ && cd ~/
-    - travis_retry pip install -r requirements.txt -q
-    - rm requirements.txt && popd
 script:
-    - python setup.py build_ext --inplace
-    - coverage run --source optimix -m pytest
-    - python setup.py install && pip uninstall optimix --yes
-    - python setup.py sdist
-    - pip install dist/$(ls dist | grep -i -E '\.(gz)$' | head -1)
-    - pip uninstall optimix --yes
+    - bash <(curl -fsSL https://raw.githubusercontent.com/horta/ci/master/travis.sh)
 after_success:
     - codecov
 notifications:
