@@ -43,7 +43,7 @@ define a scalar variable (which we named here as `scale`), and implement the
   >>> print("Function evaluation at x: %g" % f.value(x))
   Function evaluation at x: 9.6
   >>> print("Function gradient at x: %s" % f.gradient(x))
-  Function gradient at x: {'scale': ndarray_listener(-4.8)}
+  Function gradient at x: {'scale': ndl(-4.8)}
   >>>
   >>> # For optimizating the function, we need a dataset
   >>> # associated with it. This is accomplished by calling

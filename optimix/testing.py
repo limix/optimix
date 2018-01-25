@@ -1,4 +1,4 @@
-from ndarray_listener import ndarray_listener
+from ndarray_listener import ndl
 from numpy import asarray as _asarray
 from numpy import concatenate as _concat
 from numpy import stack
@@ -33,7 +33,7 @@ def _do_flatten(x):
 
 
 def _isitem(v, e):
-    v = ndarray_listener(v)
+    v = ndl(v)
     return isinstance(v, type(e)) and v.shape == e.shape
 
 
@@ -52,9 +52,9 @@ class Assertion(object):
         self._func = func
         self._item0 = item0
         self._item1 = item1
-        self._value_example = ndarray_listener(value_example)
+        self._value_example = ndl(value_example)
         de = derivative_examples
-        de = {k: ndarray_listener(v) for k, v in de.items()}
+        de = {k: ndl(v) for k, v in de.items()}
         self._derivative_examples = {k: v for (k, v) in iter(de.items())}
 
     def _get_containers(self):

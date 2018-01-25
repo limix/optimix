@@ -5,7 +5,7 @@ Types
 """
 from __future__ import unicode_literals
 
-from ndarray_listener import ndarray_listener
+from ndarray_listener import ndl
 from numpy import array, asarray, atleast_1d, float64, inf
 
 
@@ -13,7 +13,7 @@ class Scalar(object):
     r"""Scalar variable type.
 
     It holds a 64-bits floating point value, stored via a zero-dimensional
-    ``ndarray_listener``, listen to changes, and fix or unfix its value.
+    ``ndl``, listen to changes, and fix or unfix its value.
 
     Parameters
     ----------
@@ -29,7 +29,7 @@ class Scalar(object):
         self._bounds = (-inf, +inf)
         self._listeners = []
         self._fixed = False
-        value = ndarray_listener(float64(value))
+        value = ndl(float64(value))
         self.raw = value
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
@@ -142,7 +142,7 @@ class Vector(object):
     r"""Vector variable type.
 
     It holds an array of 64-bits floating point values, via an one-dimensional
-    ``ndarray_listener``, listen to changes, and fix or unfix its values.
+    ``ndl``, listen to changes, and fix or unfix its values.
 
     Parameters
     ----------
@@ -158,9 +158,9 @@ class Vector(object):
         self._bounds = [(-inf, +inf)] * len(value)
         self._listeners = []
         self._fixed = False
-        # value = ndarray_listener(float64(value))
+        # value = ndl(float64(value))
         value = asarray(value)
-        value = ndarray_listener(atleast_1d(value).ravel())
+        value = ndl(atleast_1d(value).ravel())
         self.raw = value
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
@@ -231,7 +231,7 @@ class Vector(object):
 
     def __getattr__(self, name):
         if name == 'value':
-            v = ndarray_listener(Vector.__dict__['raw'].__get__(self))
+            v = ndl(Vector.__dict__['raw'].__get__(self))
             for l in self._listeners:
                 v.talk_to(l)
             return v

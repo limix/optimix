@@ -1,5 +1,4 @@
 from numpy.testing import assert_, assert_allclose, assert_equal
-
 from optimix import Scalar
 from optimix.variables import Variables, merge_variables
 
@@ -30,8 +29,8 @@ def test_variables_merge():
 
     a.get('a0').value += 1.0
 
-    assert_(a.get('a0').value == 2.0)
-    assert_(a.get('a0').value == c.get('a.a0').value)
+    assert_equal(a.get('a0').value, 2.0)
+    assert_equal(a.get('a0').value, c.get('a.a0').value)
 
 
 def test_variables_setattr():
@@ -40,5 +39,5 @@ def test_variables_setattr():
     a['a1'] = Scalar(2.0)
     a['a1'].value += 1.0
 
-    assert_(a.get('a0').value == 1.0)
-    assert_(a.get('a1').value == 3.0)
+    assert_equal(a.get('a0').value, 1.0)
+    assert_equal(a.get('a1').value, 3.0)
