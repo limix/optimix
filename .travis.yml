@@ -10,8 +10,6 @@ addons:
         - libffi6
 script:
     - bash <(curl -fsSL https://raw.githubusercontent.com/horta/ci/master/travis.sh)
-after_success:
-    - codecov
 notifications:
   email:
     recipients:
