@@ -24,4 +24,4 @@ deploy:
   on:
     tags: true
     repo: limix/optimix
-    branch: branch
+    branch: master
