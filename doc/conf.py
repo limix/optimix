@@ -11,9 +11,14 @@ def get_version():
     return optimix.__version__
 
 
+def get_name():
+    import optimix
+    return optimix.__name__
+
+
 extensions = [
     'sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.viewcode',
-    'sphinx.ext.intersphinx', 'sphinx.ext.napoleon'
+    'sphinx.ext.intersphinx', 'sphinx.ext.napoleon', 'sphinx.ext.mathjax'
 ]
 
 templates_path = ['_templates']
@@ -22,7 +27,7 @@ source_suffix = '.rst'
 
 master_doc = 'index'
 
-project = 'optimix'
+project = get_name()
 copyright = '2018, Danilo Horta'
 author = 'Danilo Horta'
 
@@ -47,9 +52,10 @@ html_sidebars = {
     ]
 }
 
-htmlhelp_basename = 'optimixdoc'
+htmlhelp_basename = '{}doc'.format(project)
 
-man_pages = [(master_doc, 'optimix', 'optimix Documentation', [author], 1)]
+man_pages = [(master_doc, get_name(), '{} documentation'.format(project),
+              [author], 1)]
 
 epub_title = project
 epub_author = author

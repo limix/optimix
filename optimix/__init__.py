@@ -16,7 +16,7 @@ from .optimize import maximize, maximize_scalar, minimize, minimize_scalar
 from .testit import test
 from .types import Matrix, Scalar, Vector
 
-__version__ = "1.2.22"
+__version__ = "1.2.23"
 
 __all__ = [
     "__version__", "test", 'testing', 'approx_fprime', 'check_grad',
