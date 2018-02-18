@@ -3,8 +3,8 @@ from __future__ import division
 import logging
 
 from numpy import abs as npabs
-from numpy import max as npmax
 from numpy import asarray, concatenate
+from numpy import max as npmax
 
 from ..exception import OptimixError
 
@@ -181,7 +181,7 @@ def _try_minimize(proxy_function, n, factr, pgtol):
         proxy_function.set_solution(xs[-2] / 5 + xs[-1] / 5)
 
         logger.info("Optimix: Restarting L-BFGS-B due to bad solution.")
-        res = _try_minimize(proxy_function, n - 1)
+        res = _try_minimize(proxy_function, n - 1, factr, pgtol)
 
     return res
 
