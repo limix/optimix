@@ -4,7 +4,7 @@ from numpy import concatenate as _concat
 from numpy import stack
 from numpy.testing import assert_allclose
 
-from .check_grad import check_grad
+from ._check_grad import check_grad
 
 
 def _nparams(o):
@@ -42,13 +42,11 @@ def _isvector(v, e):
 
 
 def _ismatrix(v, e):
-    return not _isitem(v, e) and not _isvector(v, e) and _isitem(
-        _ni(_ni(v)), e)
+    return not _isitem(v, e) and not _isvector(v, e) and _isitem(_ni(_ni(v)), e)
 
 
 class Assertion(object):
-    def __init__(self, func, item0, item1, value_example,
-                 **derivative_examples):
+    def __init__(self, func, item0, item1, value_example, **derivative_examples):
         self._func = func
         self._item0 = item0
         self._item1 = item1
@@ -89,28 +87,34 @@ class Assertion(object):
         if len(input_values) == _nparams(self._func()):
             v = self._func().value(*input_values)
             self._assert_valshape_msg(
-                v, input_values=input_values, container_names=container_names)
+                v, input_values=input_values, container_names=container_names
+            )
             return
 
         for cx in self._get_containers():
-            self._assert_value_shape(input_values + [cx[0]],
-                                     container_names + [cx[1]])
+            self._assert_value_shape(input_values + [cx[0]], container_names + [cx[1]])
 
     def _assert_valshape_msg(self, value, input_values, container_names):
         if len(input_values) == 1:
-            return _assert_valshape_msg_1d(self._value_example, value,
-                                           input_values[0], container_names[0])
+            return _assert_valshape_msg_1d(
+                self._value_example, value, input_values[0], container_names[0]
+            )
         elif len(input_values) == 2:
-            return _assert_valshape_msg_2d(self._value_example, value,
-                                           input_values, container_names)
+            return _assert_valshape_msg_2d(
+                self._value_example, value, input_values, container_names
+            )
         assert False
 
 
 def _assert_valshape_msg_1d(example, value, x, xname):
     def _errmsg(premiss, value, lval):
         msg = "Interface premiss %s violated." % premiss
-        msg += "\n  Got (%s:%s, ) -> %s:%s instead." % (type(lval), lval,
-                                                        type(value), value)
+        msg += "\n  Got (%s:%s, ) -> %s:%s instead." % (
+            type(lval),
+            lval,
+            type(value),
+            value,
+        )
         return msg
 
     if xname == "item":
@@ -124,10 +128,14 @@ def _assert_valshape_msg_1d(example, value, x, xname):
 def _assert_valshape_msg_2d(example, value, xy, xyname):
     def _errmsg(premiss, value, lval, rval):
         msg = "Interface premiss %s violated." % premiss
-        msg += "\n  Got (%s:%s, %s:%s) -> %s:%s instead." % (type(lval), lval,
-                                                             type(rval), rval,
-                                                             type(value),
-                                                             value)
+        msg += "\n  Got (%s:%s, %s:%s) -> %s:%s instead." % (
+            type(lval),
+            lval,
+            type(rval),
+            rval,
+            type(value),
+            value,
+        )
         return msg
 
     x, y = xy
@@ -135,17 +143,15 @@ def _assert_valshape_msg_2d(example, value, xy, xyname):
 
     if xname == "item" and yname == "item":
         if not _isitem(value, example):
-            raise AssertionError(
-                _errmsg("value(item, item) -> item", value, x, y))
+            raise AssertionError(_errmsg("value(item, item) -> item", value, x, y))
     elif xname == "item" and yname == "vector":
         if not _isvector(value, example):
-            raise AssertionError(
-                _errmsg("value(item, vector) -> vector", value, x, y))
+            raise AssertionError(_errmsg("value(item, vector) -> vector", value, x, y))
     elif xname == "vector" and yname == "item":
         if not _isvector(value, example):
-            raise AssertionError(
-                _errmsg("value(vector, item) -> vector", value, x, y))
+            raise AssertionError(_errmsg("value(vector, item) -> vector", value, x, y))
     elif xname == "vector" and yname == "vector":
         if not _ismatrix(value, example):
             raise AssertionError(
-                _errmsg("value(vector, vector) -> matrix", value, x, y))
+                _errmsg("value(vector, vector) -> matrix", value, x, y)
+            )

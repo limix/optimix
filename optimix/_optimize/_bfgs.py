@@ -6,7 +6,7 @@ from numpy import abs as npabs
 from numpy import asarray, concatenate
 from numpy import max as npmax
 
-from ..exception import OptimixError
+from .._exception import OptimixError
 
 
 def minimize(function, verbose=True, factr=1e5, pgtol=1e-7):
@@ -33,8 +33,7 @@ def minimize(function, verbose=True, factr=1e5, pgtol=1e-7):
         ``max{|proj g_i | i = 1, ..., n} <= pgtol``
         where ``pg_i`` is the i-th component of the projected gradient.
     """
-    _minimize(
-        ProxyFunction(function, verbose, False), factr=factr, pgtol=pgtol)
+    _minimize(ProxyFunction(function, verbose, False), factr=factr, pgtol=pgtol)
 
 
 def maximize(function, verbose=True, factr=1e5, pgtol=1e-7):
@@ -103,7 +102,7 @@ class ProxyFunction(object):
         offset = 0
         for name in self.names():
             size = variables.get(name).size
-            d[name] = x[offset:offset + size]
+            d[name] = x[offset : offset + size]
             offset += size
         return d
 
@@ -161,17 +160,13 @@ def _try_minimize(proxy_function, n, factr, pgtol):
                 bounds += var[name].bounds
 
         res = fmin_l_bfgs_b(
-            proxy_function,
-            x0,
-            bounds=bounds,
-            factr=factr,
-            pgtol=pgtol,
-            disp=disp)
+            proxy_function, x0, bounds=bounds, factr=factr, pgtol=pgtol, disp=disp
+        )
 
     except OptimixError:
         warn = True
     else:
-        warn = res[2]['warnflag'] > 0
+        warn = res[2]["warnflag"] > 0
 
     if warn:
         xs = proxy_function.solutions
@@ -194,10 +189,11 @@ def _minimize(proxy_function, factr, pgtol):
 
     r = _try_minimize(proxy_function, 5, factr=factr, pgtol=pgtol)
 
-    if r[2]['warnflag'] == 1:
-        raise OptimixError("L-BFGS-B: too many function evaluations" +
-                           " or too many iterations")
-    elif r[2]['warnflag'] == 2:
-        raise OptimixError("L-BFGS-B: %s" % r[2]['task'])
+    if r[2]["warnflag"] == 1:
+        raise OptimixError(
+            "L-BFGS-B: too many function evaluations" + " or too many iterations"
+        )
+    elif r[2]["warnflag"] == 2:
+        raise OptimixError("L-BFGS-B: %s" % r[2]["task"])
 
     proxy_function.set_solution(r[0])

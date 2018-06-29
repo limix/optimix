@@ -2,7 +2,6 @@ brent-search>=1.0.31
 ndarray-listener>=1.1.0
 numpy>=1.14.0
 pypandoc>=1.4
-pytest-pep8>=1.0.6
 pytest-runner>=3.0
 pytest>=3.2.5
 scipy>=1.0.0

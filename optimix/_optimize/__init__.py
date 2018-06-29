@@ -17,8 +17,8 @@ Brent's method
 
 """
 
-from .bfgs import maximize, minimize
-from .brent import maximize as maximize_scalar
-from .brent import minimize as minimize_scalar
+from ._bfgs import maximize, minimize
+from ._brent import maximize as maximize_scalar
+from ._brent import minimize as minimize_scalar
 
-__all__ = ['minimize', 'maximize', 'minimize_scalar', 'maximize_scalar']
+__all__ = ["minimize", "maximize", "minimize_scalar", "maximize_scalar"]

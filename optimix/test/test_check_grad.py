@@ -4,14 +4,12 @@ from numpy import add, zeros
 from numpy.random import RandomState
 from numpy.testing import assert_allclose
 
-from optimix import (
-    Function, FunctionReduce, Scalar, Vector, approx_fprime, check_grad
-)
+from optimix import Function, FunctionReduce, Scalar, Vector, approx_fprime, check_grad
 
 
 class QuadraticScalarReduce(FunctionReduce):
     def __init__(self, functions):
-        super(QuadraticScalarReduce, self).__init__(functions, 'sum')
+        super(QuadraticScalarReduce, self).__init__(functions, "sum")
 
     def value_reduce(self, values):
         return add.reduce(list(values.values()))
@@ -20,7 +18,7 @@ class QuadraticScalarReduce(FunctionReduce):
         grad = dict()
         for (gn, gv) in iter(gradients.items()):
             for n, v in iter(gv.items()):
-                grad[gn + '.' + n] = v
+                grad[gn + "." + n] = v
         return grad
 
 
@@ -30,12 +28,12 @@ class Quadratic1Scalar1(Function):
 
     def value(self, *args):
         x = args[0]
-        s = self.variables().get('scale').value
-        return (s - 5.0)**2 * x / 2.0
+        s = self.variables().get("scale").value
+        return (s - 5.0) ** 2 * x / 2.0
 
     def gradient(self, *args):
         x = args[0]
-        s = self.variables().get('scale').value
+        s = self.variables().get("scale").value
         return dict(scale=(s - 5.0) * x)
 
 
@@ -49,7 +47,7 @@ def test_check_grad_fprime():
     f = Quadratic1Scalar1()
     f.set_data(1.2)
     f.feed().minimize(verbose=False)
-    assert_allclose(approx_fprime(f.feed())['scale'], 0, atol=1e-7)
+    assert_allclose(approx_fprime(f.feed())["scale"], 0, atol=1e-7)
 
 
 def test_check_grad_reduce():
@@ -67,7 +65,7 @@ class LinearMean(Function):
 
     def value(self, *args):
         x = args[0]
-        return x.dot(self.variables().get('effsizes').value)
+        return x.dot(self.variables().get("effsizes").value)
 
     def gradient(self, *args):
         x = args[0]
@@ -82,5 +80,5 @@ def test_check_grad_vectors():
     assert_allclose(check_grad(mean.feed()), 0, atol=1e-7)
 
 
-if __name__ == '__main__':
-    __import__('pytest').main([__file__, '-s'])
+if __name__ == "__main__":
+    __import__("pytest").main([__file__, "-s"])

@@ -9,10 +9,10 @@ class Scalar1(Function):
         super(Scalar1, self).__init__(scale=Scalar(1.0))
 
     def value(self, x):
-        s = self.variables().get('scale').value
+        s = self.variables().get("scale").value
         return s * x
 
-    def gradient(self, x):  # pylint: disable=R0201
+    def gradient(self, x):
         return dict(scale=x)
 
 
@@ -21,13 +21,13 @@ class Quadratic2Scalar1(Function):
         super(Quadratic2Scalar1, self).__init__(scale=Scalar(1.0))
 
     def value(self, x0, x1):
-        s = self.variables().get('scale').value
+        s = self.variables().get("scale").value
         x0 = asarray(x0)[..., newaxis]
         x1 = asarray(x1)[..., newaxis]
-        return (s - 5.0)**2 * dot(x0, transpose(x1)) / 2.0
+        return (s - 5.0) ** 2 * dot(x0, transpose(x1)) / 2.0
 
     def gradient(self, x0, x1):
-        s = self.variables().get('scale').value
+        s = self.variables().get("scale").value
         x0 = asarray(x0)[..., newaxis]
         x1 = asarray(x1)[..., newaxis]
         return dict(scale=(s - 5.0) * dot(x0, transpose(x1)))

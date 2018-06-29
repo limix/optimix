@@ -8,7 +8,7 @@ from __future__ import unicode_literals
 import collections
 
 from ._unicode import unicode_airlock
-from .variables import Variables, merge_variables
+from ._variables import Variables, merge_variables
 
 
 class Function(object):
@@ -23,7 +23,7 @@ class Function(object):
     def __init__(self, **kwargs):
         self._variables = Variables(kwargs)
         self._data = dict()
-        self._name = kwargs.get('name', 'unamed')
+        self._name = kwargs.get("name", "unamed")
         self._factr = 1e5
         self._pgtol = 1e-7
 
@@ -63,7 +63,7 @@ class Function(object):
     def name(self):
         return self._name
 
-    def feed(self, purpose='learn'):
+    def feed(self, purpose="learn"):
         r"""Return a function with attached data."""
         purpose = unicode_airlock(purpose)
         f = FunctionDataFeed(self, self._data[purpose], self._name)
@@ -99,7 +99,7 @@ class Function(object):
         r"""Function variables."""
         return self._variables
 
-    def set_nodata(self, purpose='learn'):
+    def set_nodata(self, purpose="learn"):
         r"""Disable data feeding.
 
         Parameters
@@ -110,7 +110,7 @@ class Function(object):
         purpose = unicode_airlock(purpose)
         self._data[purpose] = tuple()
 
-    def set_data(self, data, purpose='learn'):
+    def set_data(self, data, purpose="learn"):
         r"""Set a named data source.
 
         Parameters
@@ -120,10 +120,10 @@ class Function(object):
         """
         purpose = unicode_airlock(purpose)
         if not isinstance(data, collections.Sequence):
-            data = (data, )
+            data = (data,)
         self._data[purpose] = data
 
-    def unset_data(self, purpose='learn'):
+    def unset_data(self, purpose="learn"):
         r"""Unset a named data source.
 
         Parameters
@@ -136,7 +136,7 @@ class Function(object):
 
 
 class FunctionReduce(object):
-    def __init__(self, functions, name='unamed'):
+    def __init__(self, functions, name="unamed"):
         self.functions = functions
         self.__name = name
         self._factr = 1e5
@@ -145,7 +145,7 @@ class FunctionReduce(object):
     def operand(self, i):
         return self.functions[i]
 
-    def feed(self, purpose='learn'):
+    def feed(self, purpose="learn"):
         purpose = unicode_airlock(purpose)
         fs = [f.feed(purpose) for f in self.functions]
         f = FunctionReduceDataFeed(self, fs, self.__name)
@@ -157,7 +157,7 @@ class FunctionReduce(object):
         vars_list = [l.variables() for l in self.functions]
         vd = dict()
         for (i, vs) in enumerate(vars_list):
-            vd['%s[%d]' % (self.__name, i)] = vs
+            vd["%s[%d]" % (self.__name, i)] = vs
         return merge_variables(vd)
 
 
@@ -199,18 +199,18 @@ class FunctionDataFeed(object):
         return self._target.variables()
 
     def maximize(self, verbose=True):
-        from .optimize import maximize as _maximize
-        return _maximize(
-            self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
+        from ._optimize import maximize as _maximize
+
+        return _maximize(self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
 
     def minimize(self, verbose=True):
-        from .optimize import minimize as _minimize
-        return _minimize(
-            self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
+        from ._optimize import minimize as _minimize
+
+        return _minimize(self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
 
 
 class FunctionReduceDataFeed(object):
-    def __init__(self, target, functions, name='unamed'):
+    def __init__(self, target, functions, name="unamed"):
         self._target = target
         self.functions = functions
         self.__name = name
@@ -240,19 +240,19 @@ class FunctionReduceDataFeed(object):
     def value(self):
         value = dict()
         for (i, f) in enumerate(self.functions):
-            value['%s[%d]' % (self.__name, i)] = f.value()
+            value["%s[%d]" % (self.__name, i)] = f.value()
         vr = self._target.value_reduce
         return vr(value)
 
     def gradient(self):
         value = dict()
         for (i, f) in enumerate(self.functions):
-            value['%s[%d]' % (self.__name, i)] = f.value()
+            value["%s[%d]" % (self.__name, i)] = f.value()
 
         grad = collections.defaultdict(dict)
         for (i, f) in enumerate(self.functions):
             for gn, gv in iter(f.gradient().items()):
-                grad['%s[%d]' % (self.__name, i)][gn] = gv
+                grad["%s[%d]" % (self.__name, i)][gn] = gv
         gr = self._target.gradient_reduce
         return gr(value, grad)
 
@@ -261,10 +261,11 @@ class FunctionReduceDataFeed(object):
 
     def maximize(self, verbose=True):
         from .optimize import maximize as _maximize
-        return _maximize(
-            self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
+
+        return _maximize(self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
 
     def minimize(self, verbose=True):
         from .optimize import minimize as _minimize
-        return _minimize(
-            self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
+
+        return _minimize(self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
+
