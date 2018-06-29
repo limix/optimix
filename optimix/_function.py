@@ -268,4 +268,3 @@ class FunctionReduceDataFeed(object):
         from .optimize import minimize as _minimize
 
         return _minimize(self, verbose=verbose, factr=self.factr, pgtol=self.pgtol)
-
