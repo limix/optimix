@@ -9,7 +9,7 @@ from numpy import max as npmax
 from .._exception import OptimixError
 
 
-def minimize(function, verbose=True, factr=1e5, pgtol=1e-7):
+def minimize(function, verbose, factr, pgtol):
     r"""Minimize a function using L-BFGS-B.
 
     Parameters
@@ -17,9 +17,9 @@ def minimize(function, verbose=True, factr=1e5, pgtol=1e-7):
     function : object
         Objective function. It has to implement the
         :class:`optimix.function.Function` interface.
-    verbose : bool, optional
+    verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
-    factr : float, optional
+    factr : float
         The iteration stops when
         ``(f^k - f^{k+1})/max{|f^k|,|f^{k+1}|,1} <= factr * eps``,
         where ``eps`` is the machine precision, which is automatically
@@ -28,7 +28,7 @@ def minimize(function, verbose=True, factr=1e5, pgtol=1e-7):
         high accuracy. See Notes for relationship to `ftol`, which is exposed
         (instead of `factr`) by the `scipy.optimize.minimize` interface to
         L-BFGS-B.
-    pgtol : float, optional
+    pgtol : float
         The iteration will stop when
         ``max{|proj g_i | i = 1, ..., n} <= pgtol``
         where ``pg_i`` is the i-th component of the projected gradient.
@@ -36,7 +36,7 @@ def minimize(function, verbose=True, factr=1e5, pgtol=1e-7):
     _minimize(ProxyFunction(function, verbose, False), factr=factr, pgtol=pgtol)
 
 
-def maximize(function, verbose=True, factr=1e5, pgtol=1e-7):
+def maximize(function, verbose, factr, pgtol):
     r"""Maximize a function using L-BFGS-B.
 
     Parameters
@@ -46,7 +46,7 @@ def maximize(function, verbose=True, factr=1e5, pgtol=1e-7):
         :class:`optimix.function.Function` interface.
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
-    factr : float, optional
+    factr : float
         The iteration stops when
         ``(f^k - f^{k+1})/max{|f^k|,|f^{k+1}|,1} <= factr * eps``,
         where ``eps`` is the machine precision, which is automatically
@@ -55,7 +55,7 @@ def maximize(function, verbose=True, factr=1e5, pgtol=1e-7):
         high accuracy. See Notes for relationship to `ftol`, which is exposed
         (instead of `factr`) by the `scipy.optimize.minimize` interface to
         L-BFGS-B.
-    pgtol : float, optional
+    pgtol : float
         The iteration will stop when
         ``max{|proj g_i | i = 1, ..., n} <= pgtol``
         where ``pg_i`` is the i-th component of the projected gradient.
