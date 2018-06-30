@@ -22,7 +22,7 @@ define a scalar variable (which we named here as `scale`), and implement the
 
 .. doctest::
 
-  >>> from optimix import Function, Scalar, minimize
+  >>> from optimix import Function, Scalar
   >>>
   >>> class Quadratic(Function):
   ...
@@ -63,7 +63,7 @@ And an example for two variables:
 
 .. doctest::
 
-  >>> from optimix import Function, Scalar, minimize
+  >>> from optimix import Function, Scalar
   >>>
   >>> class Quadratic(Function):
   ...
@@ -96,7 +96,7 @@ You can also define a function of two inputs (or more) in a very natural way:
 
 .. doctest::
 
-  >>> from optimix import Function, Scalar, minimize
+  >>> from optimix import Function, Scalar
   >>>
   >>> class Quadratic(Function):
   ...

@@ -74,24 +74,30 @@ class Function(object):
     def fix(self, var_name):
         r"""Set a variable fixed.
 
-        Args:
-            var_name (str): variable name.
+        Parameters
+        ----------
+        var_name : str
+            Variable name.
         """
         self._variables[var_name].fix()
 
     def unfix(self, var_name):
         r"""Set a variable unfixed.
 
-        Args:
-            var_name (str): variable name.
+        Parameters
+        ----------
+        var_name : str
+            Variable name.
         """
         self._variables[var_name].unfix()
 
     def isfixed(self, var_name):
         r"""Return whether a variable it is fixed or not.
 
-        Args:
-            var_name (str): variable name.
+        Parameters
+        ----------
+        var_name : str
+            Variable name.
         """
         return self._variables[var_name].isfixed
 

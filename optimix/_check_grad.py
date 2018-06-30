@@ -15,7 +15,7 @@ def approx_fprime(f, step=_step):
         value = f.variables().get(name).value
         ndim = value.ndim
         value = atleast_1d(value).ravel()
-        for i in range(len(value)):  # pylint: disable=C0200
+        for i in range(len(value)):
             value[i] += step
             grad[name].append(asarray((f.value() - f0) / step))
             value[i] -= step

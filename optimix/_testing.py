@@ -1,7 +1,5 @@
 from ndarray_listener import ndl
-from numpy import asarray as _asarray
-from numpy import concatenate as _concat
-from numpy import stack
+from numpy import asarray, concatenate, stack
 from numpy.testing import assert_allclose
 
 from ._check_grad import check_grad
@@ -15,7 +13,7 @@ def _nparams(o):
     except ImportError:
         from inspect import getargspec
 
-        return len(getargspec(o.value).args) - 1  # pylint: disable=W1505
+        return len(getargspec(o.value).args) - 1
 
 
 def _ni(v):
@@ -28,8 +26,8 @@ def _compact(x):
 
 def _do_flatten(x):
     if isinstance(x, (list, tuple)):
-        return _concat([_asarray(xi).ravel() for xi in x])
-    return _concat(x)
+        return concatenate([asarray(xi).ravel() for xi in x])
+    return concatenate(x)
 
 
 def _isitem(v, e):
