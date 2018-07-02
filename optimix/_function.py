@@ -9,7 +9,7 @@ import collections
 
 from ._unicode import unicode_airlock
 from ._variables import Variables, merge_variables
-from ._optimize import maximize, minimize
+from ._optimize import maximize, minimize, maximize_scalar, minimize_scalar
 
 FACTR = 1e5
 PGTOL = 1e-7
@@ -188,6 +188,12 @@ class FunctionDataFeed(object):
     def minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
         return minimize(self, verbose=verbose, factr=factr, pgtol=pgtol)
 
+    def maximize_scalar(self, desc="", verbose=True):
+        return maximize_scalar(self, desc=desc, verbose=verbose)
+
+    def minimize_scalar(self, desc="", verbose=True):
+        return minimize_scalar(self, desc=desc, verbose=verbose)
+
 
 class FunctionReduceDataFeed(object):
     def __init__(self, target, functions, name="unamed"):
@@ -221,8 +227,8 @@ class FunctionReduceDataFeed(object):
     def variables(self):
         return self._target.variables()
 
-    def maximize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
-        return maximize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+    def maximize_scalar(self, desc="", verbose=True):
+        return maximize_scalar(self, desc=desc, verbose=verbose)
 
-    def minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
-        return minimize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+    def minimize_scalar(self, desc="", verbose=True):
+        return minimize_scalar(self, desc=desc, verbose=verbose)
