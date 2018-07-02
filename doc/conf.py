@@ -43,7 +43,7 @@ language = None
 
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "conf.py"]
 
-pygments_style = "sphinx"
+pygments_style = "default"
 
 todo_include_todos = False
 

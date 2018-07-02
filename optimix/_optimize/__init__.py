@@ -6,14 +6,14 @@ Optimization methods
 L-BFGS-B
 ^^^^^^^^
 
-.. autofunction:: optimix.optimize.minimize
-.. autofunction:: optimix.optimize.maximize
+.. autofunction:: optimix._optimize.minimize
+.. autofunction:: optimix._optimize.maximize
 
 Brent's method
 ^^^^^^^^^^^^^^
 
-.. autofunction:: optimix.optimize.minimize_scalar
-.. autofunction:: optimix.optimize.maximize_scalar
+.. autofunction:: optimix._optimize.minimize_scalar
+.. autofunction:: optimix._optimize.maximize_scalar
 
 """
 

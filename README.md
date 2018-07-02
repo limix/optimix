@@ -14,9 +14,7 @@ pip install optimix
 
 from the command-line.
 
-
 ## Running the tests
-
 
 Enter
 
