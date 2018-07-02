@@ -227,6 +227,12 @@ class FunctionReduceDataFeed(object):
     def variables(self):
         return self._target.variables()
 
+    def maximize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
+        return maximize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+
+    def minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
+        return minimize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+
     def maximize_scalar(self, desc="", verbose=True):
         return maximize_scalar(self, desc=desc, verbose=verbose)
 
