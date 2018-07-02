@@ -1,2 +1,2 @@
-.. automodule:: optimix.variables
+.. automodule:: optimix._variables
   :members:

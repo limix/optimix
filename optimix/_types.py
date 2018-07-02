@@ -21,8 +21,13 @@ class Scalar(object):
         Initial value.
     """
     __slots__ = [
-        'raw', '_listeners', '_fixed', 'value', '__array_interface__',
-        '__array_struct__', '_bounds'
+        "raw",
+        "_listeners",
+        "_fixed",
+        "value",
+        "__array_interface__",
+        "__array_struct__",
+        "_bounds",
     ]
 
     def __init__(self, value):
@@ -85,27 +90,18 @@ class Scalar(object):
         self.raw.talk_to(you)
 
     def __setattr__(self, name, value):
-        if name == 'value':
+        if name == "value":
             try:
                 value = float64(value)
             except TypeError:
                 value = value[0]
-
-            # Scalar.__dict__['raw'].itemset(value)
             self.raw.itemset(value)
-
-            # Scalar.__dict__['raw'].__set__(self, value)
-            # t = Scalar.__dict__['__array_interface__']
-            # t.__set__(self, value.__array_interface__)
-            # t = Scalar.__dict__['__array_struct__']
-            # t.__set__(self, value.__array_struct__)
-            # self._notify()
         else:
             Scalar.__dict__[name].__set__(self, value)
 
     def __getattr__(self, name):
-        if name == 'value':
-            name = 'raw'
+        if name == "value":
+            name = "raw"
         r = Scalar.__dict__[name].__get__(self)
         return r
 
@@ -114,7 +110,7 @@ class Scalar(object):
             l(self.value)
 
     def __str__(self):
-        return 'Scalar(' + str(self.raw) + ')'
+        return "Scalar(" + str(self.raw) + ")"
 
     def __repr__(self):
         return repr(self.raw)
@@ -150,15 +146,19 @@ class Vector(object):
         Initial value.
     """
     __slots__ = [
-        'raw', '_listeners', '_fixed', '__array_interface__',
-        '__array_struct__', 'value', '_bounds'
+        "raw",
+        "_listeners",
+        "_fixed",
+        "__array_interface__",
+        "__array_struct__",
+        "value",
+        "_bounds",
     ]
 
     def __init__(self, value):
         self._bounds = [(-inf, +inf)] * len(value)
         self._listeners = []
         self._fixed = False
-        # value = ndl(float64(value))
         value = asarray(value)
         value = ndl(atleast_1d(value).ravel())
         self.raw = value
@@ -216,22 +216,16 @@ class Vector(object):
         self.raw.talk_to(you)
 
     def __setattr__(self, name, value):
-        if name == 'value':
+        if name == "value":
             value = asarray(value)
             value = atleast_1d(value).ravel()
             self.raw[:] = value
-            # Vector.__dict__['raw'].__set__(self, value)
-            # t = Vector.__dict__['__array_interface__']
-            # t.__set__(self, value.__array_interface__)
-            # t = Vector.__dict__['__array_struct__']
-            # t.__set__(self, value.__array_struct__)
-            # self._notify()
         else:
             Vector.__dict__[name].__set__(self, value)
 
     def __getattr__(self, name):
-        if name == 'value':
-            v = ndl(Vector.__dict__['raw'].__get__(self))
+        if name == "value":
+            v = ndl(Vector.__dict__["raw"].__get__(self))
             for l in self._listeners:
                 v.talk_to(l)
             return v
@@ -242,7 +236,7 @@ class Vector(object):
             l(self.asarray())
 
     def __str__(self):
-        return 'Vector(' + str(self.raw) + ')'
+        return "Vector(" + str(self.raw) + ")"
 
     def __repr__(self):
         return repr(self.raw)
@@ -267,7 +261,7 @@ class Vector(object):
 
 
 class Matrix(object):
-    __slots__ = ['raw', '_listeners', '_fixed']
+    __slots__ = ["raw", "_listeners", "_fixed"]
 
     def __init__(self, value):
         self._listeners = []
@@ -292,15 +286,15 @@ class Matrix(object):
         self._fixed = False
 
     def __setattr__(self, name, value):
-        if name == 'value':
-            Matrix.__dict__['raw'].__set__(self, value)
+        if name == "value":
+            Matrix.__dict__["raw"].__set__(self, value)
             self._notify()
         else:
             Matrix.__dict__[name].__set__(self, value)
 
     def __getattr__(self, name):
-        if name == 'value':
-            name = 'raw'
+        if name == "value":
+            name = "raw"
         return Matrix.__dict__[name].__get__(self)
 
     def listen(self, you):
@@ -311,7 +305,7 @@ class Matrix(object):
             l(self.value)
 
     def __str__(self):
-        return 'Matrix(' + str(self.raw) + ')'
+        return "Matrix(" + str(self.raw) + ")"
 
     def __repr__(self):
         return repr(self.raw)

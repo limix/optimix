@@ -22,7 +22,7 @@ define a scalar variable (which we named here as `scale`), and implement the
 
 .. doctest::
 
-  >>> from optimix import Function, Scalar, minimize
+  >>> from optimix import Function, Scalar
   >>>
   >>> class Quadratic(Function):
   ...
@@ -53,7 +53,7 @@ define a scalar variable (which we named here as `scale`), and implement the
   >>> func = f.feed()
   >>>
   >>> # We are now ready to minimize the function.
-  >>> minimize(func, verbose=False)
+  >>> func.minimize(verbose=False)
   >>>
   >>> # This will print the optimum found.
   >>> print("Optimum found: %g" % f.variables().get('scale').value)
@@ -63,7 +63,7 @@ And an example for two variables:
 
 .. doctest::
 
-  >>> from optimix import Function, Scalar, minimize
+  >>> from optimix import Function, Scalar
   >>>
   >>> class Quadratic(Function):
   ...
@@ -83,7 +83,7 @@ And an example for two variables:
   >>> f = Quadratic()
   >>> x = 1.2
   >>> f.set_data(x)
-  >>> minimize(f.feed(), verbose=False)
+  >>> f.feed().minimize(verbose=False)
   >>> a = f.variables().get('a').value
   >>> b = f.variables().get('b').value
   >>> print("Optimum found: (%g, %g)" % (a, b))
@@ -96,7 +96,7 @@ You can also define a function of two inputs (or more) in a very natural way:
 
 .. doctest::
 
-  >>> from optimix import Function, Scalar, minimize
+  >>> from optimix import Function, Scalar
   >>>
   >>> class Quadratic(Function):
   ...
@@ -117,7 +117,7 @@ You can also define a function of two inputs (or more) in a very natural way:
   >>> x0 = 2.3
   >>> x1 = 1.0
   >>> f.set_data((x0, x1))
-  >>> minimize(f.feed(), verbose=False)
+  >>> f.feed().minimize(verbose=False)
   >>>
   >>> a = f.variables().get('a').value
   >>> b = f.variables().get('b').value

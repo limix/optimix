@@ -1,2 +1,2 @@
-.. automodule:: optimix.optimize
+.. automodule:: optimix._optimize
   :members:

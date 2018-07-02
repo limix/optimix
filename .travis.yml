@@ -3,13 +3,9 @@ language: python
 sudo: false
 python: 3.6
 env:
-  - PKG_NAME=optimix
-addons:
-  apt:
-    packages:
-    - pandoc
+- PKG_NAME=optimix
 script:
-  - bash <(curl -fsSL https://raw.githubusercontent.com/horta/ci/master/travis.sh)
+- bash <(curl -fsSL https://raw.githubusercontent.com/horta/ci/master/travis.sh)
 notifications:
   email:
     recipients:

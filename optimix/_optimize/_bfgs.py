@@ -3,13 +3,13 @@ from __future__ import division
 import logging
 
 from numpy import abs as npabs
-from numpy import max as npmax
 from numpy import asarray, concatenate
+from numpy import max as npmax
 
-from ..exception import OptimixError
+from .._exception import OptimixError
 
 
-def minimize(function, verbose=True, factr=1e5, pgtol=1e-7):
+def minimize(function, verbose, factr, pgtol):
     r"""Minimize a function using L-BFGS-B.
 
     Parameters
@@ -17,9 +17,9 @@ def minimize(function, verbose=True, factr=1e5, pgtol=1e-7):
     function : object
         Objective function. It has to implement the
         :class:`optimix.function.Function` interface.
-    verbose : bool, optional
+    verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
-    factr : float, optional
+    factr : float
         The iteration stops when
         ``(f^k - f^{k+1})/max{|f^k|,|f^{k+1}|,1} <= factr * eps``,
         where ``eps`` is the machine precision, which is automatically
@@ -28,16 +28,15 @@ def minimize(function, verbose=True, factr=1e5, pgtol=1e-7):
         high accuracy. See Notes for relationship to `ftol`, which is exposed
         (instead of `factr`) by the `scipy.optimize.minimize` interface to
         L-BFGS-B.
-    pgtol : float, optional
+    pgtol : float
         The iteration will stop when
         ``max{|proj g_i | i = 1, ..., n} <= pgtol``
         where ``pg_i`` is the i-th component of the projected gradient.
     """
-    _minimize(
-        ProxyFunction(function, verbose, False), factr=factr, pgtol=pgtol)
+    _minimize(ProxyFunction(function, verbose, False), factr=factr, pgtol=pgtol)
 
 
-def maximize(function, verbose=True, factr=1e5, pgtol=1e-7):
+def maximize(function, verbose, factr, pgtol):
     r"""Maximize a function using L-BFGS-B.
 
     Parameters
@@ -47,7 +46,7 @@ def maximize(function, verbose=True, factr=1e5, pgtol=1e-7):
         :class:`optimix.function.Function` interface.
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
-    factr : float, optional
+    factr : float
         The iteration stops when
         ``(f^k - f^{k+1})/max{|f^k|,|f^{k+1}|,1} <= factr * eps``,
         where ``eps`` is the machine precision, which is automatically
@@ -56,7 +55,7 @@ def maximize(function, verbose=True, factr=1e5, pgtol=1e-7):
         high accuracy. See Notes for relationship to `ftol`, which is exposed
         (instead of `factr`) by the `scipy.optimize.minimize` interface to
         L-BFGS-B.
-    pgtol : float, optional
+    pgtol : float
         The iteration will stop when
         ``max{|proj g_i | i = 1, ..., n} <= pgtol``
         where ``pg_i`` is the i-th component of the projected gradient.
@@ -103,7 +102,7 @@ class ProxyFunction(object):
         offset = 0
         for name in self.names():
             size = variables.get(name).size
-            d[name] = x[offset:offset + size]
+            d[name] = x[offset : offset + size]
             offset += size
         return d
 
@@ -161,17 +160,13 @@ def _try_minimize(proxy_function, n, factr, pgtol):
                 bounds += var[name].bounds
 
         res = fmin_l_bfgs_b(
-            proxy_function,
-            x0,
-            bounds=bounds,
-            factr=factr,
-            pgtol=pgtol,
-            disp=disp)
+            proxy_function, x0, bounds=bounds, factr=factr, pgtol=pgtol, disp=disp
+        )
 
     except OptimixError:
         warn = True
     else:
-        warn = res[2]['warnflag'] > 0
+        warn = res[2]["warnflag"] > 0
 
     if warn:
         xs = proxy_function.solutions
@@ -181,7 +176,7 @@ def _try_minimize(proxy_function, n, factr, pgtol):
         proxy_function.set_solution(xs[-2] / 5 + xs[-1] / 5)
 
         logger.info("Optimix: Restarting L-BFGS-B due to bad solution.")
-        res = _try_minimize(proxy_function, n - 1)
+        res = _try_minimize(proxy_function, n - 1, factr, pgtol)
 
     return res
 
@@ -194,10 +189,11 @@ def _minimize(proxy_function, factr, pgtol):
 
     r = _try_minimize(proxy_function, 5, factr=factr, pgtol=pgtol)
 
-    if r[2]['warnflag'] == 1:
-        raise OptimixError("L-BFGS-B: too many function evaluations" +
-                           " or too many iterations")
-    elif r[2]['warnflag'] == 2:
-        raise OptimixError("L-BFGS-B: %s" % r[2]['task'])
+    if r[2]["warnflag"] == 1:
+        raise OptimixError(
+            "L-BFGS-B: too many function evaluations" + " or too many iterations"
+        )
+    elif r[2]["warnflag"] == 2:
+        raise OptimixError("L-BFGS-B: %s" % r[2]["task"])
 
     proxy_function.set_solution(r[0])

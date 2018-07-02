@@ -1,10 +1,11 @@
 from __future__ import division
 
+from brent_search import minimize as brent_minimize
 from numpy import asarray
 from tqdm import tqdm
 
 
-def minimize(function, desc='Optimix', verbose=True):
+def minimize(function, desc, verbose):
     r"""Minimize a scalar function using Brent's method.
 
     Parameters
@@ -18,7 +19,7 @@ def minimize(function, desc='Optimix', verbose=True):
     _minimize(ProxyFunction(function, desc, verbose, False))
 
 
-def maximize(function, desc='Optimix', verbose=False):
+def maximize(function, desc, verbose):
     r"""Maximize a scalar function using Brent's method.
 
     Parameters
@@ -51,7 +52,7 @@ class ProxyFunction(object):
         offset = 0
         for name in self.names():
             size = variables.get(name).size
-            d[name] = x[offset:offset + size]
+            d[name] = x[offset : offset + size]
             offset += size
         return d
 
@@ -71,7 +72,5 @@ class ProxyFunction(object):
 
 
 def _minimize(proxy_function):
-    from brent_search import minimize as brent_minimize
-
     x = asarray(brent_minimize(proxy_function))
     proxy_function.set_solution(x[0:1])
