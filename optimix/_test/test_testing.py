@@ -1,7 +1,6 @@
 from numpy import asarray, dot, newaxis, transpose
 
-from optimix import Function, Scalar
-from optimix.testing import Assertion
+from optimix import Function, Scalar, Assertion
 
 
 class Scalar1(Function):
