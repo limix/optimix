@@ -147,9 +147,22 @@ class FunctionReduce(object):
         self.__name = name
 
     def operand(self, i):
+        r"""Get the i-th function.
+        
+        Parameters
+        ----------
+        i : int
+            Function index.
+        
+        Returns
+        -------
+        function
+            The referred function.
+        """
         return self.functions[i]
 
     def feed(self, purpose="learn"):
+        r"""Return a function with attached data."""
         purpose = unicode_airlock(purpose)
         fs = [f.feed(purpose) for f in self.functions]
         f = FunctionReduceDataFeed(self, fs, self.__name)
