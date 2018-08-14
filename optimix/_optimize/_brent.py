@@ -2,7 +2,6 @@ from __future__ import division
 
 from brent_search import minimize as brent_minimize
 from numpy import asarray
-from tqdm import tqdm
 
 
 def minimize(function, desc, verbose):
@@ -35,6 +34,8 @@ def maximize(function, desc, verbose):
 
 class ProxyFunction(object):
     def __init__(self, function, desc, verbose, negative):
+        from tqdm import tqdm
+
         self._function = function
         self._signal = -1 if negative else +1
         self._progress = tqdm(desc=desc, disable=not verbose)
