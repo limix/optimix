@@ -1,6 +1,5 @@
 from __future__ import division
 
-from collections import defaultdict
 
 from numpy import asarray, atleast_1d, finfo, sqrt, squeeze, stack
 from numpy.linalg import norm
@@ -9,6 +8,8 @@ _step = sqrt(finfo(float).eps)
 
 
 def approx_fprime(f, step=_step):
+    from collections import defaultdict
+
     f0 = f.value()
     grad = defaultdict(list)
     for name in f.variables().names():

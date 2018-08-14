@@ -1,11 +1,7 @@
-brent-search>=1.0.33
-ndarray-listener>=1.1.2
 numpy>=1.14.5
-pandas>=0.23.1
 pytest-runner>=4.2
 pytest>=3.6.2
 scipy>=1.1.0
 setuptools>=39.2.0
 sphinx_rtd_theme>=0.4.0
 sphinx>=1.7.5
-tqdm>=4.23.4
