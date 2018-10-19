@@ -9,7 +9,7 @@ from numpy import max as npmax
 from .._exception import OptimixError
 
 
-def minimize(function, verbose, factr, pgtol):
+def minimize(function, verbose, factr, pgtol, **kwargs):
     r"""Minimize a function using L-BFGS-B.
 
     Parameters
@@ -33,10 +33,12 @@ def minimize(function, verbose, factr, pgtol):
         ``max{|proj g_i | i = 1, ..., n} <= pgtol``
         where ``pg_i`` is the i-th component of the projected gradient.
     """
-    _minimize(ProxyFunction(function, verbose, False), factr=factr, pgtol=pgtol)
+    _minimize(
+        ProxyFunction(function, verbose, False, **kwargs), factr=factr, pgtol=pgtol
+    )
 
 
-def maximize(function, verbose, factr, pgtol):
+def maximize(function, verbose, factr, pgtol, **kwargs):
     r"""Maximize a function using L-BFGS-B.
 
     Parameters
@@ -60,7 +62,9 @@ def maximize(function, verbose, factr, pgtol):
         ``max{|proj g_i | i = 1, ..., n} <= pgtol``
         where ``pg_i`` is the i-th component of the projected gradient.
     """
-    _minimize(ProxyFunction(function, verbose, True), factr=factr, pgtol=pgtol)
+    _minimize(
+        ProxyFunction(function, verbose, True, **kwargs), factr=factr, pgtol=pgtol
+    )
 
 
 def _do_flatten(x):
@@ -70,12 +74,13 @@ def _do_flatten(x):
 
 
 class ProxyFunction(object):
-    def __init__(self, function, verbose, negative):
+    def __init__(self, function, verbose, negative, **kwargs):
         self._function = function
         self._signal = -1 if negative else +1
         self.verbose = verbose
         self._solutions = []
         self._logger = logging.getLogger(__name__)
+        self._kwargs = kwargs
 
     @property
     def solutions(self):
@@ -85,10 +90,10 @@ class ProxyFunction(object):
         return sorted(self._function.variables().select(fixed=False).names())
 
     def value(self):
-        return self._signal * self._function.value()
+        return self._signal * self._function.value(**self._kwargs)
 
     def gradient(self):
-        g = self._function.gradient()
+        g = self._function.gradient(**self._kwargs)
         grad = {name: self._signal * g[name] for name in self.names()}
 
         if self._logger.getEffectiveLevel() <= logging.DEBUG:
@@ -121,8 +126,8 @@ class ProxyFunction(object):
             for name in self.names():
                 self._logger.debug("Setting %s to %s", name, var[name])
 
-        v = self.value()
-        g = self.flatten(self.gradient())
+        v = self.value(**self._kwargs)
+        g = self.flatten(self.gradient(**self._kwargs))
 
         if self._logger.getEffectiveLevel() <= logging.DEBUG:
             self._logger.debug("Function evaluation is %.10f", v)

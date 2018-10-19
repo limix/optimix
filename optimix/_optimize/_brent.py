@@ -4,7 +4,7 @@ from brent_search import minimize as brent_minimize
 from numpy import asarray
 
 
-def minimize(function, desc, verbose):
+def minimize(function, desc, verbose, **kwargs):
     r"""Minimize a scalar function using Brent's method.
 
     Parameters
@@ -15,10 +15,10 @@ def minimize(function, desc, verbose):
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
     """
-    _minimize(ProxyFunction(function, desc, verbose, False))
+    _minimize(ProxyFunction(function, desc, verbose, False, **kwargs))
 
 
-def maximize(function, desc, verbose):
+def maximize(function, desc, verbose, **kwargs):
     r"""Maximize a scalar function using Brent's method.
 
     Parameters
@@ -29,23 +29,24 @@ def maximize(function, desc, verbose):
     verbose : bool
         ``True`` for verbose output; ``False`` otherwise.
     """
-    _minimize(ProxyFunction(function, desc, verbose, True))
+    _minimize(ProxyFunction(function, desc, verbose, True, **kwargs))
 
 
 class ProxyFunction(object):
-    def __init__(self, function, desc, verbose, negative):
+    def __init__(self, function, desc, verbose, negative, **kwargs):
         from tqdm import tqdm
 
         self._function = function
         self._signal = -1 if negative else +1
         self._progress = tqdm(desc=desc, disable=not verbose)
         self._iteration = 0
+        self._kwargs = kwargs
 
     def names(self):
         return sorted(self._function.variables().select(fixed=False).names())
 
     def value(self):
-        return self._signal * self._function.value()
+        return self._signal * self._function.value(**self._kwargs)
 
     def unflatten(self, x):
         variables = self._function.variables().select(fixed=False)

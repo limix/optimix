@@ -29,7 +29,7 @@ class Function(object):
         self._data = dict()
         self._name = kwargs.get("name", "unamed")
 
-    def value(self, *args):
+    def value(self, *args, **kwargs):
         r"""Evaluate the function at the ``args`` point.
 
         Parameters
@@ -45,7 +45,7 @@ class Function(object):
         """
         raise NotImplementedError
 
-    def gradient(self, *args):
+    def gradient(self, *args, **kwargs):
         r"""Evaluate the gradient at the ``args`` point.
 
         Parameters
@@ -148,12 +148,12 @@ class FunctionReduce(object):
 
     def operand(self, i):
         r"""Get the i-th function.
-        
+
         Parameters
         ----------
         i : int
             Function index.
-        
+
         Returns
         -------
         function
@@ -186,26 +186,26 @@ class FunctionDataFeed(object):
     def name(self):
         return self._name
 
-    def value(self):
-        return self._target.value(*self.raw)
+    def value(self, **kwargs):
+        return self._target.value(*self.raw, **kwargs)
 
-    def gradient(self):
-        return self._target.gradient(*self.raw)
+    def gradient(self, **kwargs):
+        return self._target.gradient(*self.raw, **kwargs)
 
     def variables(self):
         return self._target.variables()
 
-    def maximize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
-        return maximize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+    def maximize(self, verbose=True, factr=FACTR, pgtol=PGTOL, **kwargs):
+        return maximize(self, verbose=verbose, factr=factr, pgtol=pgtol, **kwargs)
 
-    def minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
-        return minimize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+    def minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL, **kwargs):
+        return minimize(self, verbose=verbose, factr=factr, pgtol=pgtol, **kwargs)
 
-    def maximize_scalar(self, desc="", verbose=True):
-        return maximize_scalar(self, desc=desc, verbose=verbose)
+    def maximize_scalar(self, desc="", verbose=True, **kwargs):
+        return maximize_scalar(self, desc=desc, verbose=verbose, **kwargs)
 
-    def minimize_scalar(self, desc="", verbose=True):
-        return minimize_scalar(self, desc=desc, verbose=verbose)
+    def minimize_scalar(self, desc="", verbose=True, **kwargs):
+        return minimize_scalar(self, desc=desc, verbose=verbose, **kwargs)
 
 
 class FunctionReduceDataFeed(object):
@@ -218,36 +218,36 @@ class FunctionReduceDataFeed(object):
     def name(self):
         return self.__name
 
-    def value(self):
+    def value(self, **kwargs):
         value = dict()
         for (i, f) in enumerate(self.functions):
             value["%s[%d]" % (self.__name, i)] = f.value()
         vr = self._target.value_reduce
-        return vr(value)
+        return vr(value, **kwargs)
 
-    def gradient(self):
+    def gradient(self, **kwargs):
         value = dict()
         for (i, f) in enumerate(self.functions):
             value["%s[%d]" % (self.__name, i)] = f.value()
 
         grad = collections.defaultdict(dict)
         for (i, f) in enumerate(self.functions):
-            for gn, gv in iter(f.gradient().items()):
+            for gn, gv in iter(f.gradient(**kwargs).items()):
                 grad["%s[%d]" % (self.__name, i)][gn] = gv
         gr = self._target.gradient_reduce
-        return gr(value, grad)
+        return gr(value, grad, **kwargs)
 
     def variables(self):
         return self._target.variables()
 
-    def maximize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
-        return maximize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+    def maximize(self, verbose=True, factr=FACTR, pgtol=PGTOL, **kwargs):
+        return maximize(self, verbose=verbose, factr=factr, pgtol=pgtol, **kwargs)
 
-    def minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
-        return minimize(self, verbose=verbose, factr=factr, pgtol=pgtol)
+    def minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL, **kwargs):
+        return minimize(self, verbose=verbose, factr=factr, pgtol=pgtol, **kwargs)
 
-    def maximize_scalar(self, desc="", verbose=True):
-        return maximize_scalar(self, desc=desc, verbose=verbose)
+    def maximize_scalar(self, desc="", verbose=True, **kwargs):
+        return maximize_scalar(self, desc=desc, verbose=verbose, **kwargs)
 
-    def minimize_scalar(self, desc="", verbose=True):
-        return minimize_scalar(self, desc=desc, verbose=verbose)
+    def minimize_scalar(self, desc="", verbose=True, **kwargs):
+        return minimize_scalar(self, desc=desc, verbose=verbose, **kwargs)
