@@ -1,4 +1,5 @@
 from numpy.testing import assert_, assert_allclose, assert_equal
+
 from optimix import Scalar
 from optimix._variables import Variables, merge_variables
 

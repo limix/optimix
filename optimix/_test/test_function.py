@@ -156,9 +156,9 @@ def test_function_vectorvalued():
     f = VectorValued()
     x1 = array([1.5, 1.0, 0.0])
     x2 = array([0.0, -3.0, 1.0])
-    assert_allclose(f.value(x1, x2), [12., -46., 18.])
-    assert_allclose(f.gradient(x1, x2)["a"], array([-12., -8., -0.]))
-    assert_allclose(f.gradient(x1, x2)["b"], array([0., -36., 12.]))
+    assert_allclose(f.value(x1, x2), [12.0, -46.0, 18.0])
+    assert_allclose(f.gradient(x1, x2)["a"], array([-12.0, -8.0, -0.0]))
+    assert_allclose(f.gradient(x1, x2)["b"], array([0.0, -36.0, 12.0]))
 
 
 class VectorValuedMix(Function):
@@ -192,9 +192,9 @@ def test_function_vectorvaluedmix():
     f = VectorValuedMix()
     x1 = array([1.5, 1.0, 0.0])
     x2 = array([0.0, -3.0, 1.0])
-    assert_allclose(f.value(x1, x2), [14.5, -27., 15.])
-    assert_allclose(f.gradient(x1, x2)["a"], [-12., -8., -0.])
-    assert_allclose(f.gradient(x1, x2)["b"], [[1., 2.], [1., 2.], [1., 2.]])
+    assert_allclose(f.value(x1, x2), [14.5, -27.0, 15.0])
+    assert_allclose(f.gradient(x1, x2)["a"], [-12.0, -8.0, -0.0])
+    assert_allclose(f.gradient(x1, x2)["b"], [[1.0, 2.0], [1.0, 2.0], [1.0, 2.0]])
 
 
 class QuadraticScalarReduce(FunctionReduce):

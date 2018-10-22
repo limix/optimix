@@ -12,7 +12,7 @@ class Variables(dict):
     def set(self, x):
         """Set variable values via a dictionary mapping name to value."""
         for name, value in iter(x.items()):
-            if hasattr(value, 'ndim'):
+            if hasattr(value, "ndim"):
                 if self[name].value.ndim < value.ndim:
                     self[name].value.itemset(value.squeeze())
                 else:
@@ -35,18 +35,18 @@ class Variables(dict):
         raise AttributeError(msg)
 
     def __str__(self):
-        msg = 'Variables('
+        msg = "Variables("
         names = sorted(self.names())
 
         for i, n in enumerate(names):
             v = self[n]
             if i > 0:
-                msg += '          '
-            msg += '%s=%s' % (n, v)
+                msg += "          "
+            msg += "%s=%s" % (n, v)
             if i + 1 < len(names):
-                msg += ',\n'
+                msg += ",\n"
 
-        msg += ')'
+        msg += ")"
         return msg
 
     def __repr__(self):
@@ -58,6 +58,6 @@ def merge_variables(variables_dict):
 
     for (prefix, vs) in iter(variables_dict.items()):
         for (name, value) in iter(vs.items()):
-            variables[prefix + '.' + name] = value
+            variables[prefix + "." + name] = value
 
     return variables

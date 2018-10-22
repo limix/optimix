@@ -2,9 +2,7 @@ from __future__ import division
 
 import logging
 
-from numpy import abs as npabs
-from numpy import asarray, concatenate
-from numpy import max as npmax
+from numpy import abs as npabs, asarray, concatenate, max as npmax
 
 from .._exception import OptimixError
 

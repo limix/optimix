@@ -5,11 +5,12 @@ Function
 """
 from __future__ import unicode_literals
 
-import collections
+from collections import defaultdict
+from collections.abc import Sequence
 
+from ._optimize import maximize, maximize_scalar, minimize, minimize_scalar
 from ._unicode import unicode_airlock
 from ._variables import Variables, merge_variables
-from ._optimize import maximize, minimize, maximize_scalar, minimize_scalar
 
 FACTR = 1e5
 PGTOL = 1e-7
@@ -125,7 +126,7 @@ class Function(object):
             Name of the data source.
         """
         purpose = unicode_airlock(purpose)
-        if not isinstance(data, collections.Sequence):
+        if not isinstance(data, Sequence):
             data = (data,)
         self._data[purpose] = data
 
@@ -230,7 +231,7 @@ class FunctionReduceDataFeed(object):
         for (i, f) in enumerate(self.functions):
             value["%s[%d]" % (self.__name, i)] = f.value()
 
-        grad = collections.defaultdict(dict)
+        grad = defaultdict(dict)
         for (i, f) in enumerate(self.functions):
             for gn, gv in iter(f.gradient(**kwargs).items()):
                 grad["%s[%d]" % (self.__name, i)][gn] = gv

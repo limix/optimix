@@ -5,8 +5,9 @@ Types
 """
 from __future__ import unicode_literals
 
-from ndarray_listener import ndl
 from numpy import array, asarray, atleast_1d, float64, inf
+
+from ndarray_listener import ndl
 
 
 class Scalar(object):

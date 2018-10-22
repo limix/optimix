@@ -1,6 +1,5 @@
 from __future__ import division
 
-
 from numpy import asarray, atleast_1d, finfo, sqrt, squeeze, stack
 from numpy.linalg import norm
 

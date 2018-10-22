@@ -1,6 +1,7 @@
-from ndarray_listener import ndl
 from numpy import asarray, concatenate, stack
 from numpy.testing import assert_allclose
+
+from ndarray_listener import ndl
 
 from ._check_grad import check_grad
 

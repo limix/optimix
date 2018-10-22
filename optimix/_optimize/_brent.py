@@ -1,7 +1,8 @@
 from __future__ import division
 
-from brent_search import minimize as brent_minimize
 from numpy import asarray
+
+from brent_search import minimize as brent_minimize
 
 
 def minimize(function, desc, verbose, **kwargs):
