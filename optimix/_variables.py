@@ -61,3 +61,13 @@ def merge_variables(variables_dict):
             variables[prefix + "." + name] = value
 
     return variables
+
+
+def merge_variables2(variables_dict):
+    variables = Variables()
+
+    for (prefix, vs) in iter(variables_dict.items()):
+        for (name, value) in iter(vs.items()):
+            variables[prefix + name] = value
+
+    return variables

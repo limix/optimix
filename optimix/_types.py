@@ -58,6 +58,11 @@ class Scalar(object):
         return self.raw.shape
 
     @property
+    def ndim(self):
+        """Number of dimensions."""
+        return 0
+
+    @property
     def size(self):
         """Size according to :mod:`numpy`."""
         return self.raw.size
@@ -160,7 +165,7 @@ class Vector(object):
         self._bounds = [(-inf, +inf)] * len(value)
         self._listeners = []
         self._fixed = False
-        value = asarray(value)
+        value = asarray(value, float)
         value = ndl(atleast_1d(value).ravel())
         self.raw = value
         self.__array_interface__ = value.__array_interface__
@@ -182,6 +187,11 @@ class Vector(object):
     def shape(self):
         """Shape according to :mod:`numpy`."""
         return self.raw.shape
+
+    @property
+    def ndim(self):
+        """Number of dimensions."""
+        return len(self.shape)
 
     @property
     def size(self):

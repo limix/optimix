@@ -10,7 +10,7 @@ from __future__ import absolute_import as _absolute_import
 
 from ._check_grad import approx_fprime, check_grad
 from ._exception import OptimixError
-from ._function import Function, FunctionReduce
+from ._function import Function, FunctionReduce, Func
 from ._testit import test
 from ._types import Matrix, Scalar, Vector
 from ._testing import Assertion
@@ -29,4 +29,5 @@ __all__ = [
     "Scalar",
     "Vector",
     "Assertion",
+    "Func"
 ]

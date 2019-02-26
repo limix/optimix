@@ -10,10 +10,85 @@ from collections.abc import Sequence
 
 from ._optimize import maximize, maximize_scalar, minimize, minimize_scalar
 from ._unicode import unicode_airlock
-from ._variables import Variables, merge_variables
+from ._variables import Variables, merge_variables, merge_variables2
+from ._func_opt import FuncOpt
 
 FACTR = 1e5
 PGTOL = 1e-7
+
+
+class Func(FuncOpt):
+    def __init__(self, name, composite=[], **kwargs):
+        super(Func, self).__init__()
+        FuncOpt.__init__(self)
+        self._name = name
+        named_vars = {"": Variables(kwargs)}
+        inherited_vars = [f._variables for f in composite]
+        for (i, v) in enumerate(inherited_vars):
+            named_vars[f"{self._name}[{i}]."] = v
+        self._variables = merge_variables2(named_vars)
+
+        # vars = [f._variables for f in kwargs.pop("composite", [])]
+        # vars += [Variables(kwargs)]
+        # self._variables = merge_variables(vars)
+        # # merge_variables
+        # # vars_list = [l.variables() for l in self.functions]
+        # # vd = dict()
+        # # for (i, vs) in enumerate(vars_list):
+        # #     vd["%s[%d]" % (self.__name, i)] = vs
+        # # return merge_variables(vd)
+
+    def value(self):
+        raise NotImplementedError
+
+    def gradient(self):
+        raise NotImplementedError
+
+    @property
+    def name(self):
+        return self._name
+
+    def _fix(self, var_name):
+        self._variables[var_name].fix()
+
+    def _unfix(self, var_name):
+        self._variables[var_name].unfix()
+
+    def _isfixed(self, var_name):
+        return self._variables[var_name].isfixed
+
+    def _unfixed_names(self):
+        return sorted(self._variables.select(fixed=False).names())
+
+    def _check_grad(self, step=1.49e-08):
+        from numpy import asarray
+        from numpy.linalg import norm
+
+        g = self.gradient()
+        g = {n: asarray(gi) for n, gi in g.items()}
+        fg = self._approx_fprime(step)
+
+        names = set(g.keys()).union(fg.keys())
+        return sum(norm(fg[name] - g[name]) for name in names)
+
+    def _approx_fprime(self, step=1.49e-08):
+        from collections import defaultdict
+        from numpy import atleast_1d, asarray, squeeze, stack
+
+        f0 = self.value()
+        grad = defaultdict(list)
+        for name in self._variables.names():
+            value = self._variables.get(name).value
+            ndim = value.ndim
+            value = atleast_1d(value).ravel()
+            for i in range(len(value)):
+                value[i] += step
+                grad[name].append(asarray((self.value() - f0) / step))
+                value[i] -= step
+            grad[name] = stack(grad[name], axis=-1)
+            if ndim == 0:
+                grad[name] = squeeze(grad[name], axis=-1)
+        return grad
 
 
 class Function(object):
