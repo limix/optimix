@@ -158,7 +158,6 @@ def test_foo3func(capsys):
 
     f._minimize(verbose=False)
     assert_allclose(f.value(), 0, atol=1e-6)
-    assert_allclose(f.operand(0).c, 0.352_550_152_809_346)
     assert_allclose(f1.c, f.operand(0).c)
 
     f1.c = 1.5
