@@ -116,6 +116,10 @@ def test_foo2func(capsys):
     f.maximize(verbose=False)
     assert_allclose(f.c, 0, atol=1e-6)
 
+    f.c = 1.5
+    f.maximize_scalar(verbose=False)
+    assert_allclose(f.c, 0, atol=1e-6)
+
 
 class Foo3(Function):
     def __init__(self, funcs):

@@ -1,8 +1,3 @@
-"""
-********
-Function
-********
-"""
 from ._exception import OptimixError
 from ._variables import Variables, merge_variables
 
@@ -19,7 +14,8 @@ class FuncOpt:
         self.__flat_solution = None
 
     def minimize_scalar(self, desc="Progress", verbose=True):
-        """Minimize a scalar function using Brent's method.
+        """
+        Minimize a scalar function using Brent's method.
 
         Parameters
         ----------
@@ -42,7 +38,7 @@ class FuncOpt:
             var.value = x
             return self.__sign * self.value()
 
-        r = asarray(brent_minimize(func))
+        r = asarray(brent_minimize(func, a=var.bounds[0], b=var.bounds[1]))
         var.value = r[0]
         progress.close()
 
