@@ -1,7 +1,8 @@
-from numpy import add, array
-from numpy.testing import assert_allclose
+import pytest
+from numpy import add, array, nan
+from numpy.testing import assert_, assert_allclose
 
-from optimix import Function, Scalar, Vector
+from optimix import Function, OptimixError, Scalar, Vector
 
 
 class Foo1(Function):
@@ -59,13 +60,13 @@ def test_foo1func(capsys):
     assert_allclose(f.value(), 4)
     assert_allclose(f.check_grad(), 0, atol=1e-6)
 
-    f.minimize(verbose=False)
+    f._minimize(verbose=False)
     assert_allclose(f.value(), 0, atol=1e-6)
     assert_allclose(f.a, [0.296_404_030_827_721_43, 0.320_073_722_957_560_3])
     assert_allclose(f.b, [-0.296_404_030_827_721_43, -0.569_138_369_525_604])
     assert_allclose(f.c, 0.820_436_694_621_109_5)
 
-    f.minimize(verbose=True)
+    f._minimize(verbose=True)
     captured = capsys.readouterr()
     assert (
         captured.out == "Gradient near zero before the first iteration. "
@@ -74,7 +75,7 @@ def test_foo1func(capsys):
 
     f.c = 1.0
     f.fix_c()
-    f.minimize(verbose=False)
+    f._minimize(verbose=False)
     assert_allclose(f.value(), 0, atol=1e-6)
     assert_allclose(f.a, [0.335_604_171_088_476_3, 0.344_148_411_173_441_14])
     assert_allclose(f.b, [-0.335_604_171_088_476_3, -0.662_664_102_091_987_9])
@@ -113,11 +114,15 @@ def test_foo2func(capsys):
     assert_allclose(f.value(), 1)
     assert_allclose(f.check_grad(), 0, atol=1e-6)
 
-    f.maximize(verbose=False)
+    f._maximize(verbose=False)
     assert_allclose(f.c, 0, atol=1e-6)
 
     f.c = 1.5
-    f.maximize_scalar(verbose=False)
+    f._maximize_scalar(verbose=False)
+    assert_allclose(f.c, 0, atol=1e-6)
+
+    f.c = nan
+    f._maximize_scalar(verbose=False)
     assert_allclose(f.c, 0, atol=1e-6)
 
 
@@ -151,13 +156,62 @@ def test_foo3func(capsys):
     assert_allclose(f.value(), 5)
     assert_allclose(f.check_grad(), 0, atol=1e-6)
 
-    f.minimize(verbose=False)
+    f._minimize(verbose=False)
     assert_allclose(f.value(), 0, atol=1e-6)
     assert_allclose(f.operand(0).c, 0.352_550_152_809_346)
     assert_allclose(f1.c, f.operand(0).c)
 
     f1.c = 1.5
     f1.fix_c()
-    f.minimize(verbose=False)
+    f._minimize(verbose=False)
     assert_allclose(f.value(), 0, atol=1e-6)
     assert_allclose(f.operand(0).c, 1.5)
+    assert_(f1.c == 1.5)
+
+    with pytest.raises(ValueError):
+        f._maximize_scalar(verbose=False)
+
+    with pytest.raises(ValueError):
+        f._minimize_scalar(verbose=False)
+
+    f1.unfix_c()
+    f1.c = 5.0
+    f2.c = 1.0
+    f._minimize(verbose=False)
+    assert_allclose(f.value(), 0, atol=1e-5)
+    assert_(f1.c != 5.0)
+
+
+class Foo4(Function):
+    def __init__(self):
+        self._c = Scalar(1)
+        super(Foo4, self).__init__("Foo4", c=self._c)
+
+    @property
+    def c(self):
+        return self._c.value
+
+    @c.setter
+    def c(self, v):
+        self._c.value = v
+
+    def value(self):
+        c = self.c
+        return 1 / (c ** 2)
+
+    def gradient(self):
+        c = self.c
+        return {"c": +2 / (c ** 4)}
+
+    def check_grad(self):
+        return self._check_grad()
+
+
+def test_foo4func(capsys):
+    f = Foo4()
+    f.c = 1.0
+
+    assert_(abs(f.check_grad()) > 0.1)
+
+    with pytest.raises(OptimixError):
+        f._maximize(verbose=False)

@@ -13,7 +13,7 @@ class FuncOpt:
         self.__flat_gradient = None
         self.__flat_solution = None
 
-    def minimize_scalar(self, desc="Progress", verbose=True):
+    def _minimize_scalar(self, desc="Progress", verbose=True):
         """
         Minimize a scalar function using Brent's method.
 
@@ -42,12 +42,14 @@ class FuncOpt:
         var.value = r[0]
         progress.close()
 
-    def maximize_scalar(self, desc="Progress", verbose=True):
+    def _maximize_scalar(self, desc="Progress", verbose=True):
         self.__sign = -1.0
-        self.minimize_scalar(desc, verbose)
-        self.__sign = +1.0
+        try:
+            self._minimize_scalar(desc, verbose)
+        finally:
+            self.__sign = +1.0
 
-    def minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
+    def _minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
         from numpy import abs as npabs, max as npmax
         from numpy import empty, atleast_1d
 
@@ -79,10 +81,12 @@ class FuncOpt:
 
         _set_var_arr(r[0], self.__varnames(), self._variables)
 
-    def maximize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
+    def _maximize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
         self.__sign = -1.0
-        self.minimize(verbose=verbose, factr=factr, pgtol=pgtol)
-        self.__sign = +1.0
+        try:
+            self._minimize(verbose=verbose, factr=factr, pgtol=pgtol)
+        finally:
+            self.__sign = +1.0
 
     def __sign_value(self):
         return self.__sign * self.value()
@@ -242,17 +246,6 @@ class Function(FuncOpt):
             if ndim == 0:
                 grad[name] = squeeze(grad[name], axis=-1)
         return grad
-
-    def fix(self, var_name):
-        self._variables[var_name].fix()
-
-    def unfix(self, var_name):
-
-        self._variables[var_name].unfix()
-
-    def isfixed(self, var_name):
-
-        return self._variables[var_name].isfixed
 
 
 def _set_flat_arr(arrs, names, out):
