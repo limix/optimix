@@ -1,7 +1,4 @@
 """
-Optimix
-=======
-
 Abstract function optimisation.
 """
 from ._exception import OptimixError

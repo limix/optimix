@@ -1,8 +1,3 @@
-from numpy import array, asarray, atleast_1d, float64, inf
-
-from ndarray_listener import ndl
-
-
 class Scalar(object):
     """
     Scalar variable type.
@@ -27,6 +22,9 @@ class Scalar(object):
     ]
 
     def __init__(self, value):
+        from ndarray_listener import ndl
+        from numpy import float64, inf
+
         self._bounds = (-inf, +inf)
         self._listeners = []
         self._fixed = False
@@ -72,6 +70,8 @@ class Scalar(object):
         """
         Return a :class:`numpy.ndarray` representation.
         """
+        from numpy import array
+
         return array(self.raw)
 
     @property
@@ -106,6 +106,8 @@ class Scalar(object):
         self.raw.talk_to(you)
 
     def __setattr__(self, name, value):
+        from numpy import float64
+
         if name == "value":
             try:
                 value = float64(value)
@@ -174,6 +176,9 @@ class Vector(object):
     ]
 
     def __init__(self, value):
+        from numpy import asarray, atleast_1d, inf
+        from ndarray_listener import ndl
+
         self._bounds = [(-inf, +inf)] * len(value)
         self._listeners = []
         self._fixed = False
@@ -222,6 +227,8 @@ class Vector(object):
         """
         Return a :class:`numpy.ndarray` representation.
         """
+        from numpy import array
+
         return array(self.raw)
 
     @property
@@ -256,6 +263,8 @@ class Vector(object):
         self.raw.talk_to(you)
 
     def __setattr__(self, name, value):
+        from numpy import asarray, atleast_1d
+
         if name == "value":
             value = asarray(value)
             value = atleast_1d(value).ravel()
@@ -264,6 +273,8 @@ class Vector(object):
             Vector.__dict__[name].__set__(self, value)
 
     def __getattr__(self, name):
+        from ndarray_listener import ndl
+
         if name == "value":
             v = ndl(Vector.__dict__["raw"].__get__(self))
             for l in self._listeners:
@@ -313,6 +324,8 @@ class Matrix(object):
         return self.raw.size
 
     def asarray(self):
+        from numpy import asarray
+
         return asarray([self.raw])
 
     @property

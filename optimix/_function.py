@@ -18,6 +18,39 @@ class FuncOpt:
         self.__flat_gradient = None
         self.__flat_solution = None
 
+    def minimize_scalar(self, desc="Progress", verbose=True):
+        """Minimize a scalar function using Brent's method.
+
+        Parameters
+        ----------
+        verbose : bool
+            ``True`` for verbose output; ``False`` otherwise.
+        """
+        from tqdm import tqdm
+        from numpy import asarray
+        from brent_search import minimize as brent_minimize
+
+        variables = self._variables.select(fixed=False)
+        if len(variables) != 1:
+            raise ValueError("The number of variables must be equal to one.")
+
+        var = variables[variables.names()[0]]
+        progress = tqdm(desc=desc, disable=not verbose)
+
+        def func(x):
+            progress.update(1)
+            var.value = x
+            return self.__sign * self.value()
+
+        r = asarray(brent_minimize(func))
+        var.value = r[0]
+        progress.close()
+
+    def maximize_scalar(self, desc="Progress", verbose=True):
+        self.__sign = -1.0
+        self.minimize_scalar(desc, verbose)
+        self.__sign = +1.0
+
     def minimize(self, verbose=True, factr=FACTR, pgtol=PGTOL):
         from numpy import abs as npabs, max as npmax
         from numpy import empty, atleast_1d

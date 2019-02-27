@@ -8,7 +8,8 @@ from .._exception import OptimixError
 
 
 def minimize(function, verbose, factr, pgtol, **kwargs):
-    r"""Minimize a function using L-BFGS-B.
+    """
+    Minimize a function using L-BFGS-B.
 
     Parameters
     ----------
@@ -37,7 +38,8 @@ def minimize(function, verbose, factr, pgtol, **kwargs):
 
 
 def maximize(function, verbose, factr, pgtol, **kwargs):
-    r"""Maximize a function using L-BFGS-B.
+    """
+    Maximize a function using L-BFGS-B.
 
     Parameters
     ----------
