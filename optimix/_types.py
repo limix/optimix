@@ -1,17 +1,11 @@
-r"""
-*****
-Types
-*****
-"""
-from __future__ import unicode_literals
-
 from numpy import array, asarray, atleast_1d, float64, inf
 
 from ndarray_listener import ndl
 
 
 class Scalar(object):
-    r"""Scalar variable type.
+    """
+    Scalar variable type.
 
     It holds a 64-bits floating point value, stored via a zero-dimensional
     ``ndl``, listen to changes, and fix or unfix its value.
@@ -21,6 +15,7 @@ class Scalar(object):
     value : float
         Initial value.
     """
+
     __slots__ = [
         "raw",
         "_listeners",
@@ -54,38 +49,53 @@ class Scalar(object):
 
     @property
     def shape(self):
-        """Shape according to :mod:`numpy`."""
+        """
+        Shape according to :mod:`numpy`.
+        """
         return self.raw.shape
 
     @property
     def ndim(self):
-        """Number of dimensions."""
+        """
+        Number of dimensions.
+        """
         return 0
 
     @property
     def size(self):
-        """Size according to :mod:`numpy`."""
+        """
+        Size according to :mod:`numpy`.
+        """
         return self.raw.size
 
     def asarray(self):
-        """Return a :class:`numpy.ndarray` representation."""
+        """
+        Return a :class:`numpy.ndarray` representation.
+        """
         return array(self.raw)
 
     @property
     def isfixed(self):
-        """Return whether it is fixed or not."""
+        """
+        Return whether it is fixed or not.
+        """
         return self._fixed
 
     def fix(self):
-        """Set it fixed."""
+        """
+        Set it fixed.
+        """
         self._fixed = True
 
     def unfix(self):
-        """Set it unfixed."""
+        """
+        Set it unfixed.
+        """
         self._fixed = False
 
     def listen(self, you):
-        """Request a callback for value modification.
+        """
+        Request a callback for value modification.
 
         Parameters
         ----------
@@ -141,7 +151,8 @@ class Scalar(object):
 
 
 class Vector(object):
-    r"""Vector variable type.
+    """
+    Vector variable type.
 
     It holds an array of 64-bits floating point values, via an one-dimensional
     ``ndl``, listen to changes, and fix or unfix its values.
@@ -151,6 +162,7 @@ class Vector(object):
     value : float
         Initial value.
     """
+
     __slots__ = [
         "raw",
         "_listeners",
@@ -180,43 +192,60 @@ class Vector(object):
         self._bounds = v
 
     def copy(self):
-        """Return a copy."""
+        """
+        Return a copy.
+        """
         return Vector(self.raw)
 
     @property
     def shape(self):
-        """Shape according to :mod:`numpy`."""
+        """
+        Shape according to :mod:`numpy`.
+        """
         return self.raw.shape
 
     @property
     def ndim(self):
-        """Number of dimensions."""
+        """
+        Number of dimensions.
+        """
         return len(self.shape)
 
     @property
     def size(self):
-        """Size according to :mod:`numpy`."""
+        """
+        Size according to :mod:`numpy`.
+        """
         return self.raw.size
 
     def asarray(self):
-        """Return a :class:`numpy.ndarray` representation."""
+        """
+        Return a :class:`numpy.ndarray` representation.
+        """
         return array(self.raw)
 
     @property
     def isfixed(self):
-        """Return whether it is fixed or not."""
+        """
+        Return whether it is fixed or not.
+        """
         return self._fixed
 
     def fix(self):
-        """Set it fixed."""
+        """
+        Set it fixed.
+        """
         self._fixed = True
 
     def unfix(self):
-        """Set it unfixed."""
+        """
+        Set it unfixed.
+        """
         self._fixed = False
 
     def listen(self, you):
-        """Request a callback for value modification.
+        """
+        Request a callback for value modification.
 
         Parameters
         ----------
