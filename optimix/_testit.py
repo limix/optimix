@@ -1,5 +1,6 @@
 def test(verbose=True):
-    r"""Run tests to verify this package's integrity.
+    """
+    Run tests to verify this package's integrity.
 
     Parameters
     ----------
@@ -12,10 +13,10 @@ def test(verbose=True):
         Exit code: ``0`` for success.
     """
 
-    args = ['--doctest-modules', '-x']
+    args = ["--doctest-modules", "-x"]
     if not verbose:
-        args += ['--quiet']
+        args += ["--quiet"]
 
-    args += ['--pyargs', __name__.split('.')[0]]
+    args += ["--pyargs", __name__.split(".")[0]]
 
-    return __import__('pytest').main(args)
+    return __import__("pytest").main(args)

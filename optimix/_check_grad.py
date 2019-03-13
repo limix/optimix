@@ -1,13 +1,5 @@
-from __future__ import division
-
-
-from numpy import asarray, atleast_1d, finfo, sqrt, squeeze, stack
-from numpy.linalg import norm
-
-_step = sqrt(finfo(float).eps)
-
-
-def approx_fprime(f, step=_step):
+def approx_fprime(f, step=1.49e-08):
+    from numpy import asarray, atleast_1d, squeeze, stack
     from collections import defaultdict
 
     f0 = f.value()
@@ -26,7 +18,10 @@ def approx_fprime(f, step=_step):
     return grad
 
 
-def check_grad(func, step=_step):
+def check_grad(func, step=1.49e-08):
+    from numpy.linalg import norm
+    from numpy import asarray
+
     g = func.gradient()
     g = {n: asarray(gi) for n, gi in iter(g.items())}
     fg = approx_fprime(func, step)

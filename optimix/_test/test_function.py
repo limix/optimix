@@ -1,226 +1,216 @@
-from __future__ import division
+import pytest
+from numpy import add, array, nan
+from numpy.testing import assert_, assert_allclose
 
-from numpy import add, array, asarray, dot, empty, newaxis, transpose
-from numpy.testing import assert_allclose
-
-from optimix import Function, FunctionReduce, Scalar, Vector, check_grad
+from optimix import Function, OptimixError, Scalar, Vector
 
 
-class Quadratic1Scalar1(Function):
+class Foo1(Function):
     def __init__(self):
-        super(Quadratic1Scalar1, self).__init__(scale=Scalar(1.0))
+        self._a = Vector([0, 0])
+        self._b = Vector([0, 0])
+        self._c = Scalar(1)
+        super(Foo1, self).__init__("Foo1", a=self._a, b=self._b, c=self._c)
 
-    def value(self, *args):
-        x = args[0]
-        s = self.variables().get("scale").value
-        return (s - 5.0) ** 2 * x / 2.0
+    @property
+    def a(self):
+        return self._a.value
 
-    def gradient(self, *args):
-        x = args[0]
-        s = self.variables().get("scale").value
-        return dict(scale=(s - 5.0) * x)
+    @property
+    def b(self):
+        return self._b.value
+
+    @property
+    def c(self):
+        return self._c.value
+
+    def fix_c(self):
+        self._c.fix()
+
+    def unfix_c(self):
+        self._c.unfix()
+
+    @c.setter
+    def c(self, v):
+        self._c.value = v
+
+    def value(self):
+        a = self.a
+        b = self.b
+        c = self.c
+        return (a @ b - 3 + a @ [1, 1] - b @ [1, 2] + 1 / c) ** 2
+
+    def gradient(self):
+        a = self.a
+        b = self.b
+        c = self.c
+        v = a @ b - 3 + a @ [1, 1] - b @ [1, 2] + 1 / c
+        da = 2 * v * array([b[0] + 1, b[1] + 1])
+        db = 2 * v * array([a[0] - 1, a[1] - 2])
+        dc = 2 * v * -1 / (c ** 2)
+        return {"a": da, "b": db, "c": dc}
+
+    def check_grad(self):
+        return self._check_grad()
 
 
-def test_function_quadratic1scalar1():
-    f = Quadratic1Scalar1()
-    f.set_data(1.2)
-    f.feed().minimize(verbose=False)
-    assert_allclose(f.variables().get("scale").value, 5.0)
-    f.variables().get("scale").value = 1.0
+def test_foo1func(capsys):
+    f = Foo1()
+
+    assert_allclose(f.value(), 4)
+    assert_allclose(f.check_grad(), 0, atol=1e-6)
+
+    f._minimize(verbose=False)
+    assert_allclose(f.value(), 0, atol=1e-6)
+    assert_allclose(f.a, [0.296_404_030_827_721_43, 0.320_073_722_957_560_3])
+    assert_allclose(f.b, [-0.296_404_030_827_721_43, -0.569_138_369_525_604])
+    assert_allclose(f.c, 0.820_436_694_621_109_5)
+
+    f._minimize(verbose=True)
+    captured = capsys.readouterr()
+    assert (
+        captured.out == "Gradient near zero before the first iteration. "
+        "Returning the current value.\n"
+    )
+
+    f.c = 1.0
+    f.fix_c()
+    f._minimize(verbose=False)
+    assert_allclose(f.value(), 0, atol=1e-6)
+    assert_allclose(f.a, [0.335_604_171_088_476_3, 0.344_148_411_173_441_14])
+    assert_allclose(f.b, [-0.335_604_171_088_476_3, -0.662_664_102_091_987_9])
+    assert_allclose(f.c, 1)
 
 
-class Quadratic2Scalar1(Function):
+class Foo2(Function):
     def __init__(self):
-        super(Quadratic2Scalar1, self).__init__(scale=Scalar(1.0))
+        self._c = Scalar(1)
+        self._c.bounds = [1e-9, 1e9]
+        super(Foo2, self).__init__("Foo2", c=self._c)
 
-    def value(self, *args):
-        x0, x1 = args
-        s = self.variables().get("scale").value
-        x0 = asarray(x0)[..., newaxis]
-        x1 = asarray(x1)[..., newaxis]
-        return (s - 5.0) ** 2 * dot(x0, transpose(x1)) / 2.0
+    @property
+    def c(self):
+        return self._c.value
 
-    def gradient(self, *args):
-        x0, x1 = args
-        s = self.variables().get("scale").value
-        x0 = asarray(x0)[..., newaxis]
-        x1 = asarray(x1)[..., newaxis]
-        return dict(scale=(s - 5.0) * dot(x0, transpose(x1)))
+    @c.setter
+    def c(self, v):
+        self._c.value = v
 
+    def value(self):
+        c = self.c
+        return 1 / (c ** 2)
 
-def test_function_quadratic2scalar1():
-    f = Quadratic2Scalar1()
-    x1 = 2.3
-    x2 = 1.0
-    f.set_data((x1, x2))
-    f.feed().minimize(verbose=False)
-    assert_allclose(f.variables().get("scale").value, 5.0)
+    def gradient(self):
+        c = self.c
+        return {"c": -2 / (c ** 3)}
+
+    def check_grad(self):
+        return self._check_grad()
 
 
-class Quadratic1Scalar2(Function):
-    def __init__(self):
-        super(Quadratic1Scalar2, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
+def test_foo2func(capsys):
+    f = Foo2()
 
-    def value(self, x):
-        a = self.variables().get("a").value
-        b = self.variables().get("b").value
-        return ((a - 5.0) ** 2 * (b + 5.0) ** 2 * x) / 2.0
+    assert_allclose(f.value(), 1)
+    assert_allclose(f.check_grad(), 0, atol=1e-6)
 
-    def gradient(self, *args):
-        x = args[0]
-        return dict(a=self._derivative_a(x), b=self._derivative_b(x))
+    f._maximize(verbose=False)
+    assert_allclose(f.c, 0, atol=1e-6)
 
-    def _derivative_a(self, *args):
-        x = args[0]
-        a = self.variables().get("a").value
-        b = self.variables().get("b").value
-        return 2 * (a - 5.0) * (b + 5.0) ** 2 * x
+    f.c = 1.5
+    f._maximize_scalar(verbose=False)
+    assert_allclose(f.c, 0, atol=1e-6)
 
-    def _derivative_b(self, *args):
-        x = args[0]
-        a = self.variables().get("a").value
-        b = self.variables().get("b").value
-        return 2 * (a - 5.0) ** 2 * (b + 5.0) * x
+    f.c = nan
+    f._maximize_scalar(verbose=False)
+    assert_allclose(f.c, 0, atol=1e-6)
 
 
-def test_function_quadratic1scalar2():
-    f = Quadratic1Scalar2()
-    x = 1.2
-    f.set_data(x)
-    f.feed().minimize(verbose=False)
-    assert_allclose(f.variables().get("a").value, 4.99999999927461)
-    assert_allclose(f.variables().get("b").value, -0.408820867345221)
+class Foo3(Function):
+    def __init__(self, funcs):
+        self._funcs = funcs
+        super(Foo3, self).__init__("Foo3", funcs)
 
+    def value(self):
+        return add.reduce([f.value() for f in self._funcs])
 
-class Quadratic2Scalar2(Function):
-    def __init__(self):
-        super(Quadratic2Scalar2, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
-
-    def value(self, *args):
-        x0, x1 = args
-        a = self.variables().get("a").value
-        b = self.variables().get("b").value
-        return ((a - 5.0) ** 2 * x0 + (b + 5.0) ** 2 * x1) / 2.0
-
-    def gradient(self, *args):
-        x0, x1 = args
-        return dict(a=self._derivative_a(x0, x1), b=self._derivative_b(x0, x1))
-
-    def _derivative_a(self, *args):
-        x0 = args[0]
-        a = self.variables().get("a").value
-        return 2 * (a - 5.0) * x0
-
-    def _derivative_b(self, *args):
-        x1 = args[1]
-        b = self.variables().get("b").value
-        return 2 * (b + 5.0) * x1
-
-
-def test_function_quadratic2scalar2():
-    f = Quadratic2Scalar2()
-    x1 = 2.3
-    x2 = 1.0
-    f.set_data((x1, x2))
-    f.feed().minimize(verbose=False)
-    assert_allclose(f.variables().get("a").value, 5.000000014635099)
-    assert_allclose(f.variables().get("b").value, -4.999999925540513)
-
-
-class VectorValued(Function):
-    def __init__(self):
-        super(VectorValued, self).__init__(a=Scalar(1.0), b=Scalar(1.0))
-
-    def value(self, *args):
-        x0, x1 = args
-        a = self.variables().get("a").value
-        b = self.variables().get("b").value
-        return ((a - 5.0) ** 2 * x0 + (b + 5.0) ** 2 * x1) / 2.0
-
-    def gradient(self, *args):
-        x0, x1 = args
-        return dict(a=self._derivative_a(x0, x1), b=self._derivative_b(x0, x1))
-
-    def _derivative_a(self, *args):
-        x0 = args[0]
-        a = self.variables().get("a").value
-        return 2 * (a - 5.0) * x0
-
-    def _derivative_b(self, *args):
-        x1 = args[1]
-        b = self.variables().get("b").value
-        return 2 * (b + 5.0) * x1
-
-
-def test_function_vectorvalued():
-    f = VectorValued()
-    x1 = array([1.5, 1.0, 0.0])
-    x2 = array([0.0, -3.0, 1.0])
-    assert_allclose(f.value(x1, x2), [12., -46., 18.])
-    assert_allclose(f.gradient(x1, x2)["a"], array([-12., -8., -0.]))
-    assert_allclose(f.gradient(x1, x2)["b"], array([0., -36., 12.]))
-
-
-class VectorValuedMix(Function):
-    def __init__(self):
-        super(VectorValuedMix, self).__init__(a=Scalar(1.0), b=Vector([1.0, 2.0]))
-
-    def value(self, *args):
-        x0, x1 = args
-        a = self.variables().get("a").value
-        b = self.variables().get("b").value
-        return ((a - 5.0) ** 2 * x0 + 5.0 ** 2 * x1 + sum(b * b)) / 2.0
-
-    def gradient(self, *args):
-        x0, x1 = args
-        return dict(a=self._derivative_a(x0, x1), b=self._derivative_b(x0, x1))
-
-    def _derivative_a(self, *args):
-        x0 = args[0]
-        a = self.variables().get("a").value
-        return 2 * (a - 5.0) * x0
-
-    def _derivative_b(self, *args):
-        x0 = args[0]
-        b = self.variables().get("b").value
-        g = empty((len(x0), len(b)))
-        g[:] = b
-        return g
-
-
-def test_function_vectorvaluedmix():
-    f = VectorValuedMix()
-    x1 = array([1.5, 1.0, 0.0])
-    x2 = array([0.0, -3.0, 1.0])
-    assert_allclose(f.value(x1, x2), [14.5, -27., 15.])
-    assert_allclose(f.gradient(x1, x2)["a"], [-12., -8., -0.])
-    assert_allclose(f.gradient(x1, x2)["b"], [[1., 2.], [1., 2.], [1., 2.]])
-
-
-class QuadraticScalarReduce(FunctionReduce):
-    def __init__(self, functions):
-        super(QuadraticScalarReduce, self).__init__(functions, "sum")
-
-    def value_reduce(self, values):  # pylint: disable=R0201
-        return add.reduce(list(values.values()))
-
-    def gradient_reduce(self, _, gradients):  # pylint: disable=R0201
-        grad = dict()
-        for (gn, gv) in iter(gradients.items()):
-            for n, v in iter(gv.items()):
-                grad[gn + "." + n] = v
+    def gradient(self):
+        grad = {}
+        for i, f in enumerate(self._funcs):
+            for varname, g in f.gradient().items():
+                grad[f"{self._name}[{i}].{varname}"] = g
         return grad
 
+    def check_grad(self):
+        return self._check_grad()
 
-def test_function_quadratic1scalar1_reduce():
-    f1 = Quadratic1Scalar1()
-    f2 = Quadratic1Scalar1()
-    f = QuadraticScalarReduce([f1, f2])
-    x1 = 1.2
-    x2 = -1.1
-    f1.set_data(x1)
-    f2.set_data(x2)
+    def operand(self, i):
+        return self._funcs[i]
 
-    f = f.feed()
-    assert_allclose(f.value(), 0.8)
-    assert_allclose(check_grad(f), 0, atol=1e-6)
+
+def test_foo3func(capsys):
+    f1 = Foo1()
+    f2 = Foo2()
+    f = Foo3([f1, f2])
+
+    assert_allclose(f.value(), 5)
+    assert_allclose(f.check_grad(), 0, atol=1e-6)
+
+    f._minimize(verbose=False)
+    assert_allclose(f.value(), 0, atol=1e-6)
+    assert_allclose(f1.c, f.operand(0).c)
+
+    f1.c = 1.5
+    f1.fix_c()
+    f._minimize(verbose=False)
+    assert_allclose(f.value(), 0, atol=1e-6)
+    assert_allclose(f.operand(0).c, 1.5)
+    assert_(f1.c == 1.5)
+
+    with pytest.raises(ValueError):
+        f._maximize_scalar(verbose=False)
+
+    with pytest.raises(ValueError):
+        f._minimize_scalar(verbose=False)
+
+    f1.unfix_c()
+    f1.c = 5.0
+    f2.c = 1.0
+    f._minimize(verbose=False)
+    assert_allclose(f.value(), 0, atol=1e-5)
+    assert_(f1.c != 5.0)
+
+
+class Foo4(Function):
+    def __init__(self):
+        self._c = Scalar(1)
+        super(Foo4, self).__init__("Foo4", c=self._c)
+
+    @property
+    def c(self):
+        return self._c.value
+
+    @c.setter
+    def c(self, v):
+        self._c.value = v
+
+    def value(self):
+        c = self.c
+        return 1 / (c ** 2)
+
+    def gradient(self):
+        c = self.c
+        return {"c": +2 / (c ** 4)}
+
+    def check_grad(self):
+        return self._check_grad()
+
+
+def test_foo4func(capsys):
+    f = Foo4()
+    f.c = 1.0
+
+    assert_(abs(f.check_grad()) > 0.1)
+
+    with pytest.raises(OptimixError):
+        f._maximize(verbose=False)

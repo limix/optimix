@@ -6,10 +6,7 @@ configuration: Release
 environment:
     PKG_NAME: optimix
     PYTHON: "C:\\Python36-x64"
-
-install:
-    - set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
-    - python -m pip install intel-numpy intel-scipy
+    ARCH: x64
 
 build_script:
     - powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/horta/ci/master/appveyor.bat', 'appveyor.bat')" && appveyor.bat
