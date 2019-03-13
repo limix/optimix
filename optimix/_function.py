@@ -178,6 +178,9 @@ class Function(FuncOpt):
 
     @property
     def name(self):
+        """
+        Name of this function.
+        """
         return self._name
 
     @name.setter
@@ -234,7 +237,7 @@ class Function(FuncOpt):
 
         f0 = self.value()
         grad = defaultdict(list)
-        for name in self._variables.names():
+        for name in self._variables.select(fixed=False).names():
             value = self._variables.get(name).value
             ndim = value.ndim
             value = atleast_1d(value).ravel()
