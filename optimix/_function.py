@@ -97,7 +97,9 @@ class FuncOpt:
     def __call__(self, x):
         from numpy import atleast_1d
 
-        _set_var_arr(atleast_1d(x).ravel(), self.__varnames(), self._variables)
+        x = atleast_1d(x).ravel()
+        self.__solutions.append(x.copy())
+        _set_var_arr(x, self.__varnames(), self._variables)
         _set_flat_arr(self.gradient(), self.__varnames(), self.__flat_gradient)
 
         return self.__sign * self.value(), self.__sign * self.__flat_gradient
