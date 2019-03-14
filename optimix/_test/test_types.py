@@ -41,8 +41,8 @@ def test_types_scalar_listen():
         def __init__(self):
             self.value = None
 
-        def __call__(self, value):
-            self.value = value
+        def __call__(self):
+            self.value = 3.0
 
     l = Listener()
     a.listen(l)
@@ -58,8 +58,8 @@ def test_types_scalar_listen_indirect():
         def __init__(self):
             self.value = None
 
-        def __call__(self, value):
-            self.value = value
+        def __call__(self):
+            self.value = 3.0
 
     l = Listener()
 
@@ -108,8 +108,8 @@ def test_types_vector_listen():
         def __init__(self):
             self.value = None
 
-        def __call__(self, value):
-            self.value = value
+        def __call__(self):
+            self.value = asarray([3.0, -1.0])
 
     l = Listener()
     a.listen(l)
