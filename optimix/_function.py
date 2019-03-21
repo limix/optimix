@@ -76,7 +76,7 @@ class FuncOpt:
         if r[2]["warnflag"] == 1:
             msg = "L-BFGS-B: too many function evaluations or too many iterations"
             raise OptimixError(msg)
-        elif r[2]["warnflag"] == 2:
+        if r[2]["warnflag"] == 2:
             raise OptimixError("L-BFGS-B: {}".format(r[2]["task"]))
 
         _set_var_arr(r[0], self.__varnames(), self._variables)
@@ -139,7 +139,7 @@ class FuncOpt:
             if len(xs) < 2:
                 raise OptimixError("Bad solution at the first iteration.")
 
-            _set_var_arr(xs[-2] / 5 + xs[-1] / 5, self.__varnames(), self._variables)
+            _set_var_arr(xs[-2] / 2 + xs[-1] / 2, self.__varnames(), self._variables)
             res = self.__try_minimize(n - 1, factr, pgtol)
 
         return res
