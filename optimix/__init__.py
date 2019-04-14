@@ -6,7 +6,7 @@ from ._function import Function
 from ._testit import test
 from ._types import Matrix, Scalar, Vector
 
-__version__ = "3.0.2"
+__version__ = "3.0.3"
 
 __all__ = [
     "__version__",
