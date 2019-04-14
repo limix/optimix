@@ -13,7 +13,9 @@ class FuncOpt:
         self.__flat_gradient = None
         self.__flat_solution = None
 
-    def _minimize_scalar(self, desc="Progress", verbose=True):
+    def _minimize_scalar(
+        self, desc="Progress", rtol=1.4902e-08, atol=1.4902e-08, verbose=True
+    ):
         """
         Minimize a scalar function using Brent's method.
 
@@ -38,14 +40,18 @@ class FuncOpt:
             var.value = x
             return self.__sign * self.value()
 
-        r = asarray(brent_minimize(func, a=var.bounds[0], b=var.bounds[1]))
+        r = asarray(
+            brent_minimize(func, a=var.bounds[0], b=var.bounds[1], rtol=rtol, atol=atol)
+        )
         var.value = r[0]
         progress.close()
 
-    def _maximize_scalar(self, desc="Progress", verbose=True):
+    def _maximize_scalar(
+        self, desc="Progress", rtol=1.4902e-08, atol=1.4902e-08, verbose=True
+    ):
         self.__sign = -1.0
         try:
-            self._minimize_scalar(desc, verbose)
+            self._minimize_scalar(desc, rtol, atol, verbose)
         finally:
             self.__sign = +1.0
 
