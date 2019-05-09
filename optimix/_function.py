@@ -148,12 +148,12 @@ class FunctionReduce(object):
 
     def operand(self, i):
         r"""Get the i-th function.
-        
+
         Parameters
         ----------
         i : int
             Function index.
-        
+
         Returns
         -------
         function
