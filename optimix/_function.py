@@ -125,7 +125,7 @@ class Function(object):
             Name of the data source.
         """
         purpose = unicode_airlock(purpose)
-        if not isinstance(data, collections.Sequence):
+        if not isinstance(data, collections.abc.Sequence):
             data = (data,)
         self._data[purpose] = data
 
