@@ -108,7 +108,7 @@ class Foo2(Function):
         return self._check_grad()
 
 
-def test_foo2func(capsys):
+def test_foo2func():
     f = Foo2()
 
     assert_allclose(f.value(), 1)
@@ -148,7 +148,7 @@ class Foo3(Function):
         return self._funcs[i]
 
 
-def test_foo3func(capsys):
+def test_foo3func():
     f1 = Foo1()
     f2 = Foo2()
     f = Foo3([f1, f2])
@@ -206,7 +206,7 @@ class Foo4(Function):
         return self._check_grad()
 
 
-def test_foo4func(capsys):
+def test_foo4func():
     f = Foo4()
     f.c = 1.0
 

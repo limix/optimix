@@ -1,3 +1,6 @@
+__all__ = ["Scalar", "Vector", "Matrix"]
+
+
 class Scalar(object):
     """
     Scalar variable type.
@@ -53,7 +56,7 @@ class Scalar(object):
         return self.raw.shape
 
     @property
-    def ndim(self):
+    def ndim(_):
         """
         Number of dimensions.
         """
@@ -124,8 +127,8 @@ class Scalar(object):
         return r
 
     def _notify(self):
-        for l in self._listeners:
-            l(self.value)
+        for k in self._listeners:
+            k(self.value)
 
     def __str__(self):
         return "Scalar(" + str(self.raw) + ")"
@@ -277,14 +280,14 @@ class Vector(object):
 
         if name == "value":
             v = ndl(Vector.__dict__["raw"].__get__(self))
-            for l in self._listeners:
-                v.talk_to(l)
+            for k in self._listeners:
+                v.talk_to(k)
             return v
         return Vector.__dict__[name].__get__(self)
 
     def _notify(self):
-        for l in self._listeners:
-            l(self.asarray())
+        for k in self._listeners:
+            k(self.asarray())
 
     def __str__(self):
         return "Vector(" + str(self.raw) + ")"
@@ -354,8 +357,8 @@ class Matrix(object):
         self._listeners.append(you)
 
     def _notify(self):
-        for l in self._listeners:
-            l(self.value)
+        for k in self._listeners:
+            k(self.value)
 
     def __str__(self):
         return "Matrix(" + str(self.raw) + ")"

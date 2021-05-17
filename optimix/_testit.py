@@ -1,3 +1,6 @@
+__all__ = ["test"]
+
+
 def test(verbose=True):
     """
     Run tests to verify this package's integrity.

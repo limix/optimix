@@ -1,17 +1,24 @@
+import abc
+
 from ._exception import OptimixError
 from ._variables import Variables, merge_variables
+
+__all__ = ["Function"]
 
 FACTR = 1e5
 PGTOL = 1e-7
 
 
-class FuncOpt:
-    def __init__(self):
+class FuncOpt(metaclass=abc.ABCMeta):
+    def __init__(self, variables):
+        from numpy import zeros, nan
+
         self.__solutions = []
         self.__sign = +1.0
         self.__verbose = True
-        self.__flat_gradient = None
-        self.__flat_solution = None
+        self.__flat_gradient = zeros(1)
+        self.__flat_solution = nan
+        self._variables = variables
 
     def _minimize_scalar(
         self, desc="Progress", rtol=1.4902e-08, atol=1.4902e-08, verbose=True
@@ -45,6 +52,16 @@ class FuncOpt:
         )
         var.value = r[0]
         progress.close()
+
+    @abc.abstractmethod
+    def value(_):
+        return 0.0
+
+    @abc.abstractmethod
+    def gradient(_):
+        from numpy import zeros
+
+        return {"zero": zeros(1)}
 
     def _maximize_scalar(
         self, desc="Progress", rtol=1.4902e-08, atol=1.4902e-08, verbose=True
@@ -94,9 +111,6 @@ class FuncOpt:
         finally:
             self.__sign = +1.0
 
-    def __sign_value(self):
-        return self.__sign * self.value()
-
     def __varnames(self):
         return sorted(self._variables.select(fixed=False).names())
 
@@ -119,6 +133,7 @@ class FuncOpt:
             raise OptimixError("Too many bad solutions")
 
         warn = False
+        res = []
         try:
             _set_flat_arr(self._variables, self.__varnames(), self.__flat_solution)
 
@@ -165,8 +180,6 @@ class Function(FuncOpt):
         kwargs : dict
             Map of variable name to variable value.
         """
-        super(Function, self).__init__()
-        FuncOpt.__init__(self)
         self._name = name
 
         named_vars = {"": Variables(kwargs)}
@@ -176,13 +189,7 @@ class Function(FuncOpt):
             else:
                 named_vars[f"{self._name}[{i}]"] = f._variables
 
-        self._variables = merge_variables(named_vars)
-
-    def value(self):
-        raise NotImplementedError
-
-    def gradient(self):
-        raise NotImplementedError
+        super(Function, self).__init__(merge_variables(named_vars))
 
     @property
     def name(self):
@@ -236,24 +243,24 @@ class Function(FuncOpt):
         g = {n: asarray(gi) for n, gi in g.items()}
         fg = self._approx_fprime(step)
 
-        names = set(g.keys()).union(fg.keys())
+        names = set(g.keys()).intersection(fg.keys())
         return sum(norm(fg[name] - g[name]) for name in names)
 
     def _approx_fprime(self, step=1.49e-08):
-        from collections import defaultdict
         from numpy import atleast_1d, asarray, squeeze, stack
 
         f0 = self.value()
-        grad = defaultdict(list)
+        grad = {}
         for name in self._variables.select(fixed=False).names():
             value = self._variables.get(name).value
             ndim = value.ndim
             value = atleast_1d(value).ravel()
+            grads = []
             for i in range(len(value)):
                 value[i] += step
-                grad[name].append(asarray((self.value() - f0) / step))
+                grads.append(asarray((self.value() - f0) / step))
                 value[i] -= step
-            grad[name] = stack(grad[name], axis=-1)
+            grad[name] = stack(grads, axis=-1)
             if ndim == 0:
                 grad[name] = squeeze(grad[name], axis=-1)
         return grad

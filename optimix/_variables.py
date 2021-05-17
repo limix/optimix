@@ -1,3 +1,6 @@
+__all__ = ["Variables"]
+
+
 class Variables(dict):
     """
     Set of variables.
@@ -29,7 +32,8 @@ class Variables(dict):
         """
         return sorted(super(Variables, self).keys())
 
-    def keys(self):
+    @staticmethod
+    def keys():
         msg = "'Variables' object has no attribute 'keys'. "
         msg += "You might want to use attribute 'names' instead."
         raise AttributeError(msg)
