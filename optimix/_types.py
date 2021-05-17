@@ -16,7 +16,6 @@ class Scalar(object):
 
     __slots__ = [
         "raw",
-        "_listeners",
         "_fixed",
         "value",
         "__array_interface__",
@@ -29,7 +28,6 @@ class Scalar(object):
         from numpy import float64, inf
 
         self._bounds = (-inf, +inf)
-        self._listeners = []
         self._fixed = False
         value = ndl(float64(value))
         self.raw = value
@@ -105,7 +103,6 @@ class Scalar(object):
         you : object
             An instance having ``__call__`` attribute.
         """
-        self._listeners.append(you)
         self.raw.talk_to(you)
 
     def __setattr__(self, name, value):
@@ -123,12 +120,7 @@ class Scalar(object):
     def __getattr__(self, name):
         if name == "value":
             name = "raw"
-        r = Scalar.__dict__[name].__get__(self)
-        return r
-
-    def _notify(self):
-        for k in self._listeners:
-            k(self.value)
+        return Scalar.__dict__[name].__get__(self)
 
     def __str__(self):
         return "Scalar(" + str(self.raw) + ")"
@@ -170,7 +162,6 @@ class Vector(object):
 
     __slots__ = [
         "raw",
-        "_listeners",
         "_fixed",
         "__array_interface__",
         "__array_struct__",
@@ -183,7 +174,6 @@ class Vector(object):
         from ndarray_listener import ndl
 
         self._bounds = [(-inf, +inf)] * len(value)
-        self._listeners = []
         self._fixed = False
         value = asarray(value, float)
         value = ndl(atleast_1d(value).ravel())
@@ -262,7 +252,6 @@ class Vector(object):
         you : object
             An instance having ``__call__`` attribute.
         """
-        self._listeners.append(you)
         self.raw.talk_to(you)
 
     def __setattr__(self, name, value):
@@ -276,18 +265,9 @@ class Vector(object):
             Vector.__dict__[name].__set__(self, value)
 
     def __getattr__(self, name):
-        from ndarray_listener import ndl
-
         if name == "value":
-            v = ndl(Vector.__dict__["raw"].__get__(self))
-            for k in self._listeners:
-                v.talk_to(k)
-            return v
+            name = "raw"
         return Vector.__dict__[name].__get__(self)
-
-    def _notify(self):
-        for k in self._listeners:
-            k(self.asarray())
 
     def __str__(self):
         return "Vector(" + str(self.raw) + ")"
@@ -315,10 +295,9 @@ class Vector(object):
 
 
 class Matrix(object):
-    __slots__ = ["raw", "_listeners", "_fixed"]
+    __slots__ = ["raw", "_fixed"]
 
     def __init__(self, value):
-        self._listeners = []
         self._fixed = False
         self.raw = value
 
@@ -344,7 +323,6 @@ class Matrix(object):
     def __setattr__(self, name, value):
         if name == "value":
             Matrix.__dict__["raw"].__set__(self, value)
-            self._notify()
         else:
             Matrix.__dict__[name].__set__(self, value)
 
@@ -354,11 +332,7 @@ class Matrix(object):
         return Matrix.__dict__[name].__get__(self)
 
     def listen(self, you):
-        self._listeners.append(you)
-
-    def _notify(self):
-        for k in self._listeners:
-            k(self.value)
+        self.raw.talk_to(you)
 
     def __str__(self):
         return "Matrix(" + str(self.raw) + ")"
