@@ -12,14 +12,6 @@ pip install optimix
 
 from the command-line.
 
-## Running the tests
-
-Enter
-
-```python
-python -c "import optimix; optimix.test()"
-```
-
 ## Authors
 
 * [Danilo Horta](https://github.com/horta)
