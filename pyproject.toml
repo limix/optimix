@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "optimix"
-version = "3.0.4"
+version = "3.0.5"
 description = "Abstract function optimisation"
 authors = ["Danilo Horta <danilo.horta@pm.me>"]
 license = "MIT"
