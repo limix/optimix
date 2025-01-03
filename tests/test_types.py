@@ -66,7 +66,7 @@ def test_types_scalar_listen_indirect():
     a.listen(l)
 
     value = a.value
-    value.itemset(3.0)
+    value[()] = 3.0
 
     assert_(l.value == 3.0)
 

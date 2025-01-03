@@ -106,14 +106,14 @@ class Scalar(object):
         self.raw.talk_to(you)
 
     def __setattr__(self, name, value):
-        from numpy import float64
+        from numpy import float64, ndarray
 
         if name == "value":
-            try:
+            if isinstance(value, ndarray):
+                value = value.flat[0]
+            else:
                 value = float64(value)
-            except TypeError:
-                value = value[0]
-            self.raw.itemset(value)
+            self.raw[()] = value
         else:
             Scalar.__dict__[name].__set__(self, value)
 
