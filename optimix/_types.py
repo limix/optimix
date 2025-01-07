@@ -20,6 +20,7 @@ class Scalar(object):
         "value",
         "__array_interface__",
         "__array_struct__",
+        "__array_wrap__",
         "_bounds",
     ]
 
@@ -33,6 +34,7 @@ class Scalar(object):
         self.raw = value
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
+        self.__array_wrap__ = value.__array_wrap__
 
     @property
     def bounds(self):
@@ -165,6 +167,7 @@ class Vector(object):
         "_fixed",
         "__array_interface__",
         "__array_struct__",
+        "__array_wrap__",
         "value",
         "_bounds",
     ]
@@ -180,6 +183,7 @@ class Vector(object):
         self.raw = value
         self.__array_interface__ = value.__array_interface__
         self.__array_struct__ = value.__array_struct__
+        self.__array_wrap__ = value.__array_wrap__
 
     @property
     def bounds(self):
